@@ -24,86 +24,85 @@ let SodiumAPI = {
   crypto_kdf_derive_from_key
 }
 
-function crypto_generichash_batch(output, batch, key) {
-  let batchMap = {}
+function crypto_generichash_batch(out, batch, key) {
+  if (!key) key = new Uint8Array(32)
+
+  const state = new Uint8Array(384)
+  crypto_generichash_init(state, key, out.byteLength)
+
   for (let i = 0; i < batch.length; i++) {
-    batchMap[i.toString()] = batch[i]
+    crypto_generichash_update(state, batch[i])
   }
 
-  const out = Libsodium.crypto_generichash_batch(output, batchMap, key)
-  return new Uint8Array(out)
+  crypto_generichash_final(state, out)
 }
 
 function crypto_aead_xchacha20poly1305_ietf_keygen(k) {
-  const key = Libsodium.crypto_aead_xchacha20poly1305_ietf_keygen(k)
-  return new Uint8Array(k)
+  k.set(new Uint8Array(Libsodium.crypto_aead_xchacha20poly1305_ietf_keygen(k)))
 }
 
 function crypto_aead_xchacha20poly1305_ietf_encrypt(...args) {
-  const ciphertext = Libsodium.crypto_aead_xchacha20poly1305_ietf_encrypt(...Array.from(args, a => Array.from(a)))
-  return new Uint8Array(ciphertext)
+  args[0].set(new Uint8Array(Libsodium.crypto_aead_xchacha20poly1305_ietf_encrypt(...Array.from(args, a => Array.from(a)))))
 }
 
-function crypto_aead_xchacha20poly1305_ietf_decrypt(m, nsec, c, ad, npub, k) {
-  const plaintext = Libsodium.crypto_aead_xchacha20poly1305_ietf_decrypt(...(arguments.map(Array.from)))
-  return new Uint8Array(plaintext)
+function crypto_aead_xchacha20poly1305_ietf_decrypt(...args) {
+  args[0].set(new Uint8Array(Libsodium.crypto_aead_xchacha20poly1305_ietf_decrypt(...Array.from(args, a => Array.from(a)))))
 }
 
 function crypto_core_ed25519_scalar_random (r) {
-  return new Uint8Array(Libsodium.crypto_core_ed25519_scalar_random(Array.from(r)))
+  r.set(new Uint8Array(Libsodium.crypto_core_ed25519_scalar_random(Array.from(r))))
 }
 
-function crypto_core_ed25519_add (r, p, q) {
-  return new Uint8Array(Libsodium.crypto_core_ed25519_add(...(arguments.map(Array.from))))
+function crypto_core_ed25519_add (...args) {
+  args[0].set(new Uint8Array(Libsodium.crypto_core_ed25519_add(...Array.from(args, a => Array.from(a)))))
 }
 
-function crypto_core_ed25519_sub (r, p, q) {
-  return new Uint8Array(Libsodium.crypto_core_ed25519_sub(...(arguments.map(Array.from))))
+function crypto_core_ed25519_sub (...args) {
+  args[0].set(new Uint8Array(Libsodium.crypto_core_ed25519_sub(...Array.from(args, a => Array.from(a)))))
 }
 
-function crypto_core_ed25519_from_uniform (p, r) {
-  return new Uint8Array(Libsodium.crypto_core_ed25519_from_uniform(...(arguments.map(Array.from))))
+function crypto_core_ed25519_from_uniform (...args) {
+  args[0].set(new Uint8Array(Libsodium.crypto_core_ed25519_from_uniform(...Array.from(args, a => Array.from(a)))))
 }
 
-function crypto_pwhash (out, passwd, salt, opslimit, memlimit, alg) {
-  const bufArgs = arguments.slice(0, 3)
-  return new Uint8Array(Libsodium.crypto_pwhash(...(bufArgs.map(Array.from)), opslimit, memlimit, alg))
+function crypto_pwhash (...args) {
+  args[0].set(new Uint8Array(Libsodium.crypto_pwhash(...Array.from(args.slice(0, 3), a => Array.from(a)))), ...args.slice(3))
 }
 
-function crypto_scalarmult_ed25519 (q, n, p) {
-  return new Uint8Array(Libsodium.crypto_scalarmult_ed25519(...(arguments.map(Array.from))))
+function crypto_scalarmult_ed25519 (...args) {
+  args[0].set(new Uint8Array(Libsodium.crypto_scalarmult_ed25519(...Array.from(args, a => Array.from(a)))))
 }
 
-function crypto_scalarmult_ed25519_noclamp (q, n, p) {
-  return new Uint8Array(Libsodium.crypto_scalarmult_ed25519_noclamp(...(arguments.map(Array.from))))
+function crypto_scalarmult_ed25519_noclamp (...args) {
+  args[0].set(new Uint8Array(Libsodium.crypto_scalarmult_ed25519_noclamp(...Array.from(args, a => Array.from(a)))))
 }
 
-function crypto_scalarmult_ed25519_base (q, n) {
-  return new Uint8Array(Libsodium.crypto_scalarmult_ed25519_base(...(arguments.map(Array.from))))
+function crypto_scalarmult_ed25519_base (...args) {
+  args[0].set(new Uint8Array(Libsodium.crypto_scalarmult_ed25519_base(...Array.from(args, a => Array.from(a)))))
 }
 
-function crypto_scalarmult_ed25519_base_noclamp (q, n) {
-  return new Uint8Array(Libsodium.crypto_scalarmult_ed25519_base_noclamp(...(arguments.map(Array.from))))
+function crypto_scalarmult_ed25519_base_noclamp (...args) {
+  args[0].set(new Uint8Array(Libsodium.crypto_scalarmult_ed25519_base_noclamp(...Array.from(args, a => Array.from(a)))))
 }
 
-function crypto_generichash_init (state, key, outlen) {
-  return new Uint8Array(Libsodium.crypto_generichash_init(...(arguments.map(Array.from))))
+function crypto_generichash_init (...args) {
+  args[0].set(new Uint8Array(Libsodium.crypto_generichash_init(...Array.from(args.slice(0, 2), a => Array.from(a)), args[2])))
 }
 
-function crypto_generichash_update (state, input) {
-  return new Uint8Array(Libsodium.crypto_generichash_update(...(arguments.map(Array.from))))
+function crypto_generichash_update (...args) {
+  args[0].set(new Uint8Array(Libsodium.crypto_generichash_update(...Array.from(args, a => Array.from(a)))))
 }
 
-function crypto_generichash_final (state, out) {
-  return new Uint8Array(Libsodium.crypto_generichash_final(...(arguments.map(Array.from))))
+function crypto_generichash_final (...args) {
+  args[1].set(new Uint8Array(Libsodium.crypto_generichash_final(...Array.from(args, a => Array.from(a)))))
 }
 
 function crypto_kdf_keygen (...args) { 
   args[0].set(new Uint8Array(Libsodium.crypto_kdf_keygen(...Array.from(args, a => Array.from(a)))))
 }
 
-function crypto_kdf_derive_from_key (subkey, subkey_id, ctx, key) {
-  return new Uint8Array(Libsodium.crypto_kdf_derive_from_key(...(arguments.map(Array.from))))
+function crypto_kdf_derive_from_key (...args) {
+  args[0].set(new Uint8Array(Libsodium.crypto_kdf_derive_from_key(...Array.from(args, a => Array.from(a)))))
 }
 
 module.exports = SodiumAPI;
