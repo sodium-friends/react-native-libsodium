@@ -11,16 +11,13 @@ npm install react-native-libsodium
 ## Usage
 
 ```js
-import Libsodium from "react-native-libsodium";
+import sodium from "react-native-libsodium";
 
 // ...
 
-const result = await Libsodium.multiply(3, 7);
+const key = new Uint8Array(sodium.crypto_kdf_KEYBYTES)
+const result = await sodium.crypto_kdf_keygen(key);
 ```
-
-## Contributing
-
-See the [contributing guide](CONTRIBUTING.md) to learn how to contribute to the repository and the development workflow.
 
 ## License
 
