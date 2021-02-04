@@ -1,4 +1,4 @@
-package com.reactnativelibsodium;
+package com.reactnativelibsodium.rn;
 
 import java.util.ArrayList;
 import java.util.Collections;
