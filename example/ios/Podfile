@@ -8,14 +8,13 @@ target 'LibsodiumExample' do
 
   use_react_native!(:path => config["reactNativePath"])
 
-      pod 'react-native-libsodium', :path => '../..'
   
   # Enables Flipper.
   #
   # Note that if you have use_frameworks! enabled, Flipper will not work and
   # you should disable these next few lines.
-  use_flipper!
+  # use_flipper!
   post_install do |installer|
-    flipper_post_install(installer)
+    # flipper_post_install(installer)
   end
 end
