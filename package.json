@@ -29,6 +29,7 @@
     "release": "release-it",
     "example": "yarn --cwd example",
     "pods": "cd example && pod-install --quiet",
+    "post-install": "tar -xzf precompiled.tgz",
     "bootstrap": "yarn example && yarn && yarn pods"
   },
   "keywords": [
