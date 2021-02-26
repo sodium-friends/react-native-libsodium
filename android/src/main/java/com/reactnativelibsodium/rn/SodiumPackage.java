@@ -10,13 +10,13 @@ import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.uimanager.ViewManager;
 import com.facebook.react.bridge.JavaScriptModule;
 
-public class LibsodiumPackage implements ReactPackage {
+public class SodiumPackage implements ReactPackage {
     @Override
    public List<NativeModule> createNativeModules(
            ReactApplicationContext reactContext) {
        List<NativeModule> modules = new ArrayList<>();
 
-       modules.add(new LibsodiumModule(reactContext));
+       modules.add(new SodiumModule(reactContext));
 
        return modules;
    }

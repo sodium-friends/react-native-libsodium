@@ -1,11 +1,10 @@
 #import "RCTBridgeModule.h"
 #import "RCTUtils.h"
-#import "Libsodium.h"
+#import "RCTSodium.h"
 #import "sodium.h"
-#import "stdio.h"
 #include "macros.h"
 
-@implementation Libsodium
+@implementation RCTSodium
 
 static bool isInitialized;
 

@@ -30,20 +30,20 @@ import com.reactnativelibsodium.jni.Sodium;
 import com.reactnativelibsodium.jni.NaCl;
 import com.reactnativelibsodium.helpers.*;
 
-public class LibsodiumModule extends ReactContextBaseJavaModule {
+public class SodiumModule extends ReactContextBaseJavaModule {
 
   private final ReactApplicationContext reactContext;
 
   private Sodium sodium = NaCl.sodium();
 
-  public LibsodiumModule(ReactApplicationContext reactContext) {
+  public SodiumModule(ReactApplicationContext reactContext) {
       super(reactContext);
       this.reactContext = reactContext;
   }
 
   @Override
   public String getName() {
-      return "Libsodium";
+      return "Sodium";
   }
   
   @Override
