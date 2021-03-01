@@ -4,6 +4,9 @@
   "bugs": {
     "url": "https://github.com/synonymdev/react-native-libsodium/issues"
   },
+  "author": [
+    "synonymdev"
+  ],
   "bundleDependencies": false,
   "deprecated": false,
   "description": "The Sodium crypto library for React Native.",
@@ -78,5 +81,5 @@
   },
   "source": "index.js",
   "types": "index.d.ts",
-  "version": "0.0.0"
+  "version": "0.0.1"
 }

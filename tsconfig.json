@@ -1,14 +1,12 @@
 {
-<<<<<<< HEAD
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "react-native-libsodium": ["./src/index"]
+      "react-native-sodium": ["./index"]
     },
     "allowUnreachableCode": false,
     "allowUnusedLabels": false,
     "esModuleInterop": true,
-    "importsNotUsedAsValues": "error",
     "forceConsistentCasingInFileNames": true,
     "jsx": "react",
     "lib": ["esnext"],
@@ -26,30 +24,3 @@
     "target": "esnext"
   }
 }
-=======
-    "compilerOptions": {
-      "baseUrl": ".",
-      "paths": {
-        "react-native-sodium": ["./index"]
-      },
-      "allowUnreachableCode": false,
-      "allowUnusedLabels": false,
-      "esModuleInterop": true,
-      "forceConsistentCasingInFileNames": true,
-      "jsx": "react",
-      "lib": ["esnext"],
-      "module": "esnext",
-      "moduleResolution": "node",
-      "noFallthroughCasesInSwitch": true,
-      "noImplicitReturns": true,
-      "noImplicitUseStrict": false,
-      "noStrictGenericChecks": false,
-      "noUnusedLocals": true,
-      "noUnusedParameters": true,
-      "resolveJsonModule": true,
-      "skipLibCheck": true,
-      "strict": true,
-      "target": "esnext"
-    }
-  }
->>>>>>> 6ea05c9 (update to work as npm module)

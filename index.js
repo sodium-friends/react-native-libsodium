@@ -1,8 +1,3 @@
-<<<<<<< HEAD
-import Libsodium from './src/sodium.js';
-
-export default Libsodium;
-=======
 /**
  * @providesModule Sodium
  * @flow
@@ -172,4 +167,3 @@ function mapArgs (arg) {
   if (arg == null) return new Array(0)
   return Array.from(arg)
 }
->>>>>>> 6ea05c9 (update to work as npm module)
