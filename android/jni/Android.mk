@@ -19,7 +19,7 @@ LIB_FOLDER := lib
 # Bugfix for x86, which should refer to the i686 folder
 MY_ARCH_FOLDER := $(TARGET_ARCH)
 ifeq ($(MY_ARCH_FOLDER),arm)
-    MY_ARCH_FOLDER = armv6
+    MY_ARCH_FOLDER = armv7-a
 endif
 ifeq ($(MY_ARCH_FOLDER),arm64)
     MY_ARCH_FOLDER = armv8-a
