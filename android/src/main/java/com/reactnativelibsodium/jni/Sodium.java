@@ -49,6 +49,10 @@ public class Sodium {
     return SodiumJNI.randombytes_seedbytes();
   }
 
+  public static int sodium_memcmp(SWIGTYPE_p_void b1_, SWIGTYPE_p_void b2_, int len) {
+    return SodiumJNI.sodium_memcmp(SWIGTYPE_p_void.getCPtr(b1_), SWIGTYPE_p_void.getCPtr(b2_), len);
+  }
+
   public static void sodium_increment(byte[] src_dst_number, int number_len) {
     SodiumJNI.sodium_increment(src_dst_number, number_len);
   }
@@ -757,6 +761,18 @@ public class Sodium {
     return SodiumJNI.crypto_core_ed25519_bytes();
   }
 
+  public static int crypto_core_ed25519_nonreducedscalarbytes() {
+    return SodiumJNI.crypto_core_ed25519_nonreducedscalarbytes();
+  }
+
+  public static int crypto_core_ed25519_scalarbytes() {
+    return SodiumJNI.crypto_core_ed25519_scalarbytes();
+  }
+
+  public static int crypto_core_ed25519_uniformbytes() {
+    return SodiumJNI.crypto_core_ed25519_uniformbytes();
+  }
+
   public static int crypto_core_ed25519_add(byte[] r, byte[] p, byte[] q) {
     return SodiumJNI.crypto_core_ed25519_add(r, p, q);
   }
@@ -1027,6 +1043,14 @@ public class Sodium {
 
   public static int crypto_scalarmult_ed25519(byte[] q, byte[] n, byte[] p) {
     return SodiumJNI.crypto_scalarmult_ed25519(q, n, p);
+  }
+
+  public static int crypto_scalarmult_ed25519_bytes() {
+    return SodiumJNI.crypto_scalarmult_ed25519_bytes();
+  }
+
+  public static int crypto_scalarmult_ed25519_scalarbytes() {
+    return SodiumJNI.crypto_scalarmult_ed25519_scalarbytes();
   }
 
   public static int crypto_secretbox_xsalsa20poly1305_keybytes() {

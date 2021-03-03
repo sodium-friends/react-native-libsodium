@@ -139,14 +139,14 @@ public class SodiumModule extends ReactContextBaseJavaModule {
     constants.put("crypto_aead_xchacha20poly1305_ietf_NPUBBYTES", this.sodium.crypto_aead_xchacha20poly1305_ietf_npubbytes());
     constants.put("crypto_aead_xchacha20poly1305_ietf_NSECBYTES", this.sodium.crypto_aead_xchacha20poly1305_ietf_nsecbytes());
     constants.put("crypto_aead_xchacha20poly1305_ietf_MESSAGEBYTES_MAX", this.sodium.crypto_aead_xchacha20poly1305_ietf_messagebytes_max());
-    constants.put("crypto_kx_PUBLICKEYBYTES", this.sodium.crypto_kx_publickeybytes());
-    constants.put("crypto_kx_SECRETKEYBYTES", this.sodium.crypto_kx_secretkeybytes());
-    constants.put("crypto_kx_SEEDBYTES", this.sodium.crypto_kx_seedbytes());
-    constants.put("crypto_kx_SESSIONKEYBYTES", this.sodium.crypto_kx_sessionkeybytes());
+    // constants.put("crypto_kx_PUBLICKEYBYTES", this.sodium.crypto_kx_publickeybytes());
+    // constants.put("crypto_kx_SECRETKEYBYTES", this.sodium.crypto_kx_secretkeybytes());
+    // constants.put("crypto_kx_SEEDBYTES", this.sodium.crypto_kx_seedbytes());
+    // constants.put("crypto_kx_SESSIONKEYBYTES", this.sodium.crypto_kx_sessionkeybytes());
     constants.put("crypto_secretstream_xchacha20poly1305_ABYTES", this.sodium.crypto_secretstream_xchacha20poly1305_abytes());
     constants.put("crypto_secretstream_xchacha20poly1305_HEADERBYTES", this.sodium.crypto_secretstream_xchacha20poly1305_headerbytes());
     constants.put("crypto_secretstream_xchacha20poly1305_KEYBYTES", this.sodium.crypto_secretstream_xchacha20poly1305_keybytes());
-    constants.put("crypto_secretstream_xchacha20poly1305_TAGBYTES", this.sodium.crypto_secretstream_xchacha20poly1305_tagbytes());
+    constants.put("crypto_secretstream_xchacha20poly1305_TAGBYTES", 1);
     constants.put("crypto_secretstream_xchacha20poly1305_MESSAGEBYTES_MAX", this.sodium.crypto_secretstream_xchacha20poly1305_messagebytes_max());
 
     return constants;

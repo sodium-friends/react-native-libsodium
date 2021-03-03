@@ -17,7 +17,7 @@ echo $destlib/$jnilib
 
 #sudo cp /usr/local/lib/libsodium.* /usr/lib
 
-SODIUM_LIB_DIR=../libsodium/libsodium-${TARGET_HOST}/lib
+SODIUM_LIB_DIR=../../libsodium/libsodium-${TARGET_HOST}/lib
 
 gcc -I../libsodium/src/libsodium/include -I${JAVA_HOME}/include -I${JAVA_HOME}/include/linux -I${JAVA_HOME}/include/darwin sodium_wrap.c -shared -fPIC -L${SODIUM_LIB_DIR} -L/usr/local/lib -L/usr/lib -lsodium -o $jnilib
 sudo rm -f $destlib/$jnilib

@@ -1553,7 +1553,6 @@ int crypto_stream_xsalsa20_xor_ic(unsigned char *c,
 size_t crypto_secretstream_xchacha20poly1305_keybytes(void);
 size_t crypto_secretstream_xchacha20poly1305_headerbytes(void);
 size_t crypto_secretstream_xchacha20poly1305_abytes(void);
-size_t crypto_secretstream_xchacha20poly1305_tagbytes(void);
 size_t crypto_secretstream_xchacha20poly1305_statebytes(void);
 
 size_t crypto_secretstream_xchacha20poly1305_tag_message(void);

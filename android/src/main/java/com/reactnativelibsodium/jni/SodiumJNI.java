@@ -19,6 +19,7 @@ public class SodiumJNI {
   public final static native void randombytes_stir();
   public final static native void randombytes_buf_deterministic(byte[] jarg1, int jarg2, byte[] jarg3);
   public final static native int randombytes_seedbytes();
+  public final static native int sodium_memcmp(long jarg1, long jarg2, int jarg3);
   public final static native void sodium_increment(byte[] jarg1, int jarg2);
   public final static native int crypto_secretbox_keybytes();
   public final static native int crypto_secretbox_noncebytes();
@@ -196,6 +197,9 @@ public class SodiumJNI {
   public final static native int crypto_core_salsa20_constbytes();
   public final static native int crypto_core_salsa20(byte[] jarg1, byte[] jarg2, byte[] jarg3, byte[] jarg4);
   public final static native int crypto_core_ed25519_bytes();
+  public final static native int crypto_core_ed25519_nonreducedscalarbytes();
+  public final static native int crypto_core_ed25519_scalarbytes();
+  public final static native int crypto_core_ed25519_uniformbytes();
   public final static native int crypto_core_ed25519_add(byte[] jarg1, byte[] jarg2, byte[] jarg3);
   public final static native int crypto_core_ed25519_sub(byte[] jarg1, byte[] jarg2, byte[] jarg3);
   public final static native void crypto_core_ed25519_scalar_random(byte[] jarg1);
@@ -264,6 +268,8 @@ public class SodiumJNI {
   public final static native int crypto_scalarmult_ed25519_noclamp(byte[] jarg1, byte[] jarg2, byte[] jarg3);
   public final static native int crypto_scalarmult_ed25519_base(byte[] jarg1, byte[] jarg2);
   public final static native int crypto_scalarmult_ed25519(byte[] jarg1, byte[] jarg2, byte[] jarg3);
+  public final static native int crypto_scalarmult_ed25519_bytes();
+  public final static native int crypto_scalarmult_ed25519_scalarbytes();
   public final static native int crypto_secretbox_xsalsa20poly1305_keybytes();
   public final static native int crypto_secretbox_xsalsa20poly1305_noncebytes();
   public final static native int crypto_secretbox_xsalsa20poly1305_zerobytes();
