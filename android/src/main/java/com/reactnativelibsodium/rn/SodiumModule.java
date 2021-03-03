@@ -190,13 +190,13 @@ public class SodiumModule extends ReactContextBaseJavaModule {
     return ArrayUtil.toWritableArray(key);
   }
 
-  @ReactMethod
-  public void randombytes_buf(ReadableArray in, Promise promise) {
+  @ReactMethod(isBlockingSynchronousMethod = true)
+  public WritableArray randombytes_buf(ReadableArray in) {
 
     byte[] buf = ArgumentsEx.toByteArray(in);
     this.sodium.randombytes_buf(buf, buf.length);
 
-    promise.resolve(ArrayUtil.toWritableArray(buf));
+    return ArrayUtil.toWritableArray(buf);
   }
 
   @ReactMethod(isBlockingSynchronousMethod = true)

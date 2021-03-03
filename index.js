@@ -28,7 +28,8 @@ let SodiumAPI = {
   crypto_generichash_final,
   crypto_kdf_keygen,
   crypto_kdf_derive_from_key,
-  crypto_secretbox_easy
+  crypto_secretbox_easy,
+  randombytes_buf
 }
 
 function crypto_secretbox_easy(...args) {
@@ -51,6 +52,10 @@ function crypto_generichash_batch(out, batch, key) {
 
 function crypto_aead_xchacha20poly1305_ietf_keygen(k) {
   k.set(new Uint8Array(Sodium.crypto_aead_xchacha20poly1305_ietf_keygen(Array.from(k))))
+}
+
+function randombytes_buf(buf) {
+  buf.set(new Uint8Array(Sodium.randombytes_buf(Array.from(buf))))
 }
 
 function crypto_aead_xchacha20poly1305_ietf_encrypt(...args) {
