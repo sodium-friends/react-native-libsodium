@@ -49,10 +49,6 @@ public class Sodium {
     return SodiumJNI.randombytes_seedbytes();
   }
 
-  public static int sodium_memcmp(SWIGTYPE_p_void b1_, SWIGTYPE_p_void b2_, int len) {
-    return SodiumJNI.sodium_memcmp(SWIGTYPE_p_void.getCPtr(b1_), SWIGTYPE_p_void.getCPtr(b2_), len);
-  }
-
   public static void sodium_increment(byte[] src_dst_number, int number_len) {
     SodiumJNI.sodium_increment(src_dst_number, number_len);
   }

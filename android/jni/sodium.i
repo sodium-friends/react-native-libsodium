@@ -289,9 +289,9 @@ size_t randombytes_seedbytes(void);
 /*
     helpers API
 */
-int sodium_memcmp(const void * const b1_,
+/*int sodium_memcmp(const void * const b1_,
                   const void * const b2_,
-                  size_t len);
+                  size_t len);*/
 
 void sodium_increment(unsigned char *src_dst_number,
                       const size_t number_len);

@@ -19,7 +19,6 @@ public class SodiumJNI {
   public final static native void randombytes_stir();
   public final static native void randombytes_buf_deterministic(byte[] jarg1, int jarg2, byte[] jarg3);
   public final static native int randombytes_seedbytes();
-  public final static native int sodium_memcmp(long jarg1, long jarg2, int jarg3);
   public final static native void sodium_increment(byte[] jarg1, int jarg2);
   public final static native int crypto_secretbox_keybytes();
   public final static native int crypto_secretbox_noncebytes();
