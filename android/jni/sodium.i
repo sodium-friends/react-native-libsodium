@@ -1024,6 +1024,9 @@ int crypto_core_salsa20(unsigned char *out,
     Core ed25519
 */
 size_t crypto_core_ed25519_bytes(void);
+size_t crypto_core_ed25519_nonreducedscalarbytes(void);
+size_t crypto_core_ed25519_scalarbytes(void);
+size_t crypto_core_ed25519_uniformbytes(void);
 
 int crypto_core_ed25519_add(unsigned char *r,
                         const unsigned char *p, const unsigned char *q);
@@ -1296,6 +1299,9 @@ int crypto_scalarmult_ed25519_noclamp(unsigned char *q, const unsigned char *n,
 int crypto_scalarmult_ed25519_base(unsigned char *q, const unsigned char *n);
 int crypto_scalarmult_ed25519(unsigned char *q, const unsigned char *n,
                               const unsigned char *p);
+
+size_t crypto_scalarmult_ed25519_bytes(void);
+size_t crypto_scalarmult_ed25519_scalarbytes(void);
 /*
     SecretBox XSalsa20Poly1305
 */
@@ -1547,6 +1553,7 @@ int crypto_stream_xsalsa20_xor_ic(unsigned char *c,
 size_t crypto_secretstream_xchacha20poly1305_keybytes(void);
 size_t crypto_secretstream_xchacha20poly1305_headerbytes(void);
 size_t crypto_secretstream_xchacha20poly1305_abytes(void);
+size_t crypto_secretstream_xchacha20poly1305_tagbytes(void);
 size_t crypto_secretstream_xchacha20poly1305_statebytes(void);
 
 size_t crypto_secretstream_xchacha20poly1305_tag_message(void);
