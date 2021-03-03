@@ -118,6 +118,16 @@ RCT_EXPORT_BLOCKING_SYNCHRONOUS_METHOD(
 }
 
 RCT_EXPORT_BLOCKING_SYNCHRONOUS_METHOD(
+  randombytes_buf:(NSArray*)buf)
+{
+  RN_RESULT_BUFFER_NO_CHECK(buf)
+
+  randombytes_buf(buf_data, buflen);
+
+  RN_RETURN_BUFFER(buf)
+}
+
+RCT_EXPORT_BLOCKING_SYNCHRONOUS_METHOD(
   crypto_aead_xchacha20poly1305_ietf_encrypt:(NSArray *) c
                                               m:(NSArray *) m
                                               ad:(NSArray *) ad

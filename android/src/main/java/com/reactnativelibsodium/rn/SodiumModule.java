@@ -85,25 +85,25 @@ public class SodiumModule extends ReactContextBaseJavaModule {
     // constants.put("crypto_auth_KEYBYTES", this.sodium.crypto_auth_keybytes());
     // constants.put("crypto_onetimeauth_BYTES", this.sodium.crypto_onetimeauth_bytes());
     // constants.put("crypto_onetimeauth_KEYBYTES", this.sodium.crypto_onetimeauth_keybytes());
-    // constants.put("crypto_pwhash_ALG_ARGON2I13", this.sodium.crypto_pwhash_alg_argon2i13());
+    constants.put("crypto_pwhash_ALG_ARGON2I13", this.sodium.crypto_pwhash_alg_argon2i13());
     // constants.put("crypto_pwhash_ALG_ARGON2ID13", this.sodium.crypto_pwhash_alg_argon2id13());
-    // constants.put("crypto_pwhash_ALG_DEFAULT", this.sodium.crypto_pwhash_alg_default());
-    // constants.put("crypto_pwhash_BYTES_MIN", this.sodium.crypto_pwhash_bytes_min());
-    // constants.put("crypto_pwhash_BYTES_MAX", this.sodium.crypto_pwhash_bytes_max());
-    // constants.put("crypto_pwhash_PASSWD_MIN", this.sodium.crypto_pwhash_passwd_min());
-    // constants.put("crypto_pwhash_PASSWD_MAX", this.sodium.crypto_pwhash_passwd_max());
-    // constants.put("crypto_pwhash_SALTBYTES", this.sodium.crypto_pwhash_saltbytes());
-    // constants.put("crypto_pwhash_STRBYTES", this.sodium.crypto_pwhash_strbytes());
-    // constants.put("crypto_pwhash_OPSLIMIT_MIN", this.sodium.crypto_pwhash_opslimit_min());
-    // constants.put("crypto_pwhash_OPSLIMIT_MAX", this.sodium.crypto_pwhash_opslimit_max());
-    // constants.put("crypto_pwhash_MEMLIMIT_MIN", this.sodium.crypto_pwhash_memlimit_min());
-    // constants.put("crypto_pwhash_MEMLIMIT_MAX", this.sodium.crypto_pwhash_memlimit_max());
-    // constants.put("crypto_pwhash_OPSLIMIT_INTERACTIVE", this.sodium.crypto_pwhash_opslimit_interactive());
-    // constants.put("crypto_pwhash_MEMLIMIT_INTERACTIVE", this.sodium.crypto_pwhash_memlimit_interactive());
-    // constants.put("crypto_pwhash_OPSLIMIT_MODERATE", this.sodium.crypto_pwhash_opslimit_moderate());
-    // constants.put("crypto_pwhash_MEMLIMIT_MODERATE", this.sodium.crypto_pwhash_memlimit_moderate());
-    // constants.put("crypto_pwhash_OPSLIMIT_SENSITIVE", this.sodium.crypto_pwhash_opslimit_sensitive());
-    // constants.put("crypto_pwhash_MEMLIMIT_SENSITIVE", this.sodium.crypto_pwhash_memlimit_sensitive());
+    constants.put("crypto_pwhash_ALG_DEFAULT", this.sodium.crypto_pwhash_alg_default());
+    constants.put("crypto_pwhash_BYTES_MIN", this.sodium.crypto_pwhash_bytes_min());
+    constants.put("crypto_pwhash_BYTES_MAX", this.sodium.crypto_pwhash_bytes_max());
+    constants.put("crypto_pwhash_PASSWD_MIN", this.sodium.crypto_pwhash_passwd_min());
+    constants.put("crypto_pwhash_PASSWD_MAX", this.sodium.crypto_pwhash_passwd_max());
+    constants.put("crypto_pwhash_SALTBYTES", this.sodium.crypto_pwhash_saltbytes());
+    constants.put("crypto_pwhash_STRBYTES", this.sodium.crypto_pwhash_strbytes());
+    constants.put("crypto_pwhash_OPSLIMIT_MIN", this.sodium.crypto_pwhash_opslimit_min());
+    constants.put("crypto_pwhash_OPSLIMIT_MAX", this.sodium.crypto_pwhash_opslimit_max());
+    constants.put("crypto_pwhash_MEMLIMIT_MIN", this.sodium.crypto_pwhash_memlimit_min());
+    constants.put("crypto_pwhash_MEMLIMIT_MAX", this.sodium.crypto_pwhash_memlimit_max());
+    constants.put("crypto_pwhash_OPSLIMIT_INTERACTIVE", this.sodium.crypto_pwhash_opslimit_interactive());
+    constants.put("crypto_pwhash_MEMLIMIT_INTERACTIVE", this.sodium.crypto_pwhash_memlimit_interactive());
+    constants.put("crypto_pwhash_OPSLIMIT_MODERATE", this.sodium.crypto_pwhash_opslimit_moderate());
+    constants.put("crypto_pwhash_MEMLIMIT_MODERATE", this.sodium.crypto_pwhash_memlimit_moderate());
+    constants.put("crypto_pwhash_OPSLIMIT_SENSITIVE", this.sodium.crypto_pwhash_opslimit_sensitive());
+    constants.put("crypto_pwhash_MEMLIMIT_SENSITIVE", this.sodium.crypto_pwhash_memlimit_sensitive());
     // constants.put("crypto_pwhash_scryptsalsa208sha256_BYTES_MIN", this.sodium.crypto_pwhash_scryptsalsa208sha256_bytes_min());
     // constants.put("crypto_pwhash_scryptsalsa208sha256_BYTES_MAX", this.sodium.crypto_pwhash_scryptsalsa208sha256_bytes_max());
     // constants.put("crypto_pwhash_scryptsalsa208sha256_PASSWD_MIN", this.sodium.crypto_pwhash_scryptsalsa208sha256_passwd_min());
@@ -278,10 +278,6 @@ public class SodiumModule extends ReactContextBaseJavaModule {
 
     return ArrayUtil.toWritableArray(_p);
   }
-  
-  // public void sodium_memcmp (String, Promise promise) {
-
-  // }
 
   @ReactMethod(isBlockingSynchronousMethod = true)
   public WritableArray crypto_pwhash (ReadableArray out, ReadableArray passwd, ReadableArray salt, int opslimit, int memlimit, int alg) {

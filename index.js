@@ -4,6 +4,7 @@
  */
 
 import { NativeModules } from 'react-native';
+import bint from 'bint8array';
 
 const { Sodium } = NativeModules;
 // console.log(NativeModules)
@@ -29,7 +30,8 @@ let SodiumAPI = {
   crypto_kdf_keygen,
   crypto_kdf_derive_from_key,
   crypto_secretbox_easy,
-  randombytes_buf
+  randombytes_buf,
+  sodium_memcmp
 }
 
 function crypto_secretbox_easy(...args) {
@@ -164,6 +166,10 @@ function crypto_kdf_derive_from_key (...args) {
   if (nativeResult === 'FAILURE') throw new Error('crypto_kdf_derive_from_key execution failed.')
 
   args[0].set(new Uint8Array(nativeResult))
+}
+
+function sodium_memcmp (a, b) {
+  return bint.compare(a, b) === 0
 }
 
 module.exports = SodiumAPI;
