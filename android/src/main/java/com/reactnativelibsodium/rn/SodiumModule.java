@@ -150,10 +150,11 @@ public class SodiumModule extends ReactContextBaseJavaModule {
     constants.put("crypto_secretstream_xchacha20poly1305_KEYBYTES", this.sodium.crypto_secretstream_xchacha20poly1305_keybytes());
     constants.put("crypto_secretstream_xchacha20poly1305_TAGBYTES", 1);
     constants.put("crypto_secretstream_xchacha20poly1305_MESSAGEBYTES_MAX", this.sodium.crypto_secretstream_xchacha20poly1305_messagebytes_max());
-    constants.put("crypto_secretstream_xchacha20poly1305_TAG_MESSAGE", this.sodium.crypto_secretstream_xchacha20poly1305_tag_message());
-    constants.put("crypto_secretstream_xchacha20poly1305_TAG_PUSH", this.sodium.crypto_secretstream_xchacha20poly1305_tag_push());
-    constants.put("crypto_secretstream_xchacha20poly1305_TAG_REKEY", this.sodium.crypto_secretstream_xchacha20poly1305_tag_rekey());
-    constants.put("crypto_secretstream_xchacha20poly1305_TAG_FINAL", this.sodium.crypto_secretstream_xchacha20poly1305_tag_final());
+    constants.put("_crypto_secretstream_xchacha20poly1305_TAG_MESSAGE", this.sodium.crypto_secretstream_xchacha20poly1305_tag_message());
+    constants.put("_crypto_secretstream_xchacha20poly1305_TAG_PUSH", this.sodium.crypto_secretstream_xchacha20poly1305_tag_push());
+    constants.put("_crypto_secretstream_xchacha20poly1305_TAG_REKEY", this.sodium.crypto_secretstream_xchacha20poly1305_tag_rekey());
+    constants.put("_crypto_secretstream_xchacha20poly1305_TAG_FINAL", this.sodium.crypto_secretstream_xchacha20poly1305_tag_final());
+
 
     return constants;
   }
@@ -260,7 +261,7 @@ public class SodiumModule extends ReactContextBaseJavaModule {
     byte[] _k = ArgumentsEx.toByteArray(k);
 
     this.sodium.crypto_secretstream_xchacha20poly1305_init_push(_state, _header, _k);
-    
+
     ByteArrayOutputStream outputStream = new ByteArrayOutputStream( );
 
     try {
@@ -284,7 +285,7 @@ public class SodiumModule extends ReactContextBaseJavaModule {
     byte[] _tag = ArgumentsEx.toByteArray(tag);
     int[] clen_p = new int[1];
 
-    this.sodium.crypto_secretstream_xchacha20poly1305_push(_state, _c, clen_p, _m, _m.length, _ad, _ad.length, (short) tag[0]);
+    this.sodium.crypto_secretstream_xchacha20poly1305_push(_state, _c, clen_p, _m, _m.length, _ad, _ad.length, (short) _tag[0]);
 
     ByteArrayOutputStream outputStream = new ByteArrayOutputStream( );
 
@@ -321,7 +322,7 @@ public class SodiumModule extends ReactContextBaseJavaModule {
     int[] mlen_p = new int[1];
 
     this.sodium.crypto_secretstream_xchacha20poly1305_pull(_state, _m, mlen_p, _tag, _c, _c.length, _ad, _ad.length);
-    
+
     ByteArrayOutputStream outputStream = new ByteArrayOutputStream( );
 
     try {
