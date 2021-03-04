@@ -9,6 +9,7 @@ import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.Callback;
 
 import java.nio.*;
+import java.io.*;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.Map;
@@ -207,15 +208,15 @@ public class SodiumModule extends ReactContextBaseJavaModule {
     byte[] _nsec = ArgumentsEx.toByteArray(nsec);
     byte[] _npub = ArgumentsEx.toByteArray(npub);
     byte[] _k = ArgumentsEx.toByteArray(k);
-    int[] c_len = new int[1];
+    int[] clen_p = new int[1];
 
     this.sodium.crypto_aead_xchacha20poly1305_ietf_encrypt(
-      _c, c_len,
+      _c, clen_p,
       _m, m.size(),
       _ad, ad.size(),
       _nsec, _npub, _k);
     
-    return ArrayUtil.toWritableArray(c_len);
+    return ArrayUtil.toWritableArray( Arrays.copyOfRange(_c, 0, clen_p[0] ) );
   }
 
   @ReactMethod(isBlockingSynchronousMethod = true)
@@ -226,16 +227,88 @@ public class SodiumModule extends ReactContextBaseJavaModule {
     byte[] _ad = ArgumentsEx.toByteArray(ad);
     byte[] _npub = ArgumentsEx.toByteArray(npub);
     byte[] _k = ArgumentsEx.toByteArray(k);
-    int[] m_len = new int[1];
+    int[] mlen_p = new int[1];
 
     this.sodium.crypto_aead_xchacha20poly1305_ietf_decrypt(
-      _m, m_len,
+      _m, mlen_p,
       _nsec,
       _c,  c.size(),
       _ad, ad.size(),
       _npub, _k);
     
-    return ArrayUtil.toWritableArray(m_len);
+    return ArrayUtil.toWritableArray( Arrays.copyOfRange(_m, 0, mlen_p[0] ) );
+  }
+
+  @ReactMethod(isBlockingSynchronousMethod = true)
+  public WritableArray crypto_secretstream_xchacha20poly1305_keygen(ReadableArray k) {
+
+    byte[] key = ArgumentsEx.toByteArray(k);
+    this.sodium.crypto_secretstream_xchacha20poly1305_keygen(key);
+
+    return ArrayUtil.toWritableArray(key);
+  }
+
+  @ReactMethod(isBlockingSynchronousMethod = true)
+  public WritableArray crypto_secretstream_xchacha20poly1305_init_push(ReadableArray state, ReadableArray header, ReadableArray k) {
+    byte[] _state = ArgumentsEx.toByteArray(state);
+    byte[] _header = ArgumentsEx.toByteArray(header);
+    byte[] _k = ArgumentsEx.toByteArray(k);
+
+    this.sodium.crypto_secretstream_xchacha20poly1305_init_push(_state, _header, _k);
+    
+    return ArrayUtil.toWritableArray(_state);
+  }
+
+  @ReactMethod(isBlockingSynchronousMethod = true)
+  public WritableArray crypto_secretstream_xchacha20poly1305_push(ReadableArray state, ReadableArray c, ReadableArray m, ReadableArray ad, ReadableArray tag) {
+    byte[] _state = ArgumentsEx.toByteArray(state);
+    byte[] _c = ArgumentsEx.toByteArray(c);
+    byte[] _m = ArgumentsEx.toByteArray(m);
+    byte[] _ad = ArgumentsEx.toByteArray(ad);
+    byte[] _tag = ArgumentsEx.toByteArray(tag);
+    int[] clen_p = new int[1];
+
+    this.sodium.crypto_secretstream_xchacha20poly1305_push(_state, _c, clen_p, _m, _m.length, _ad, _ad.length, _tag);
+
+    ByteArrayOutputStream outputStream = new ByteArrayOutputStream( );
+    outputStream.write( _state );
+    outputStream.write( Arrays.copyOfRange(_c, 0, clen_p[0] ) ); // put dynamic length entry last
+
+    byte ret[] = outputStream.toByteArray( );
+
+    return ArrayUtil.toWritableArray(ret)
+  }
+
+  @ReactMethod(isBlockingSynchronousMethod = true)
+  public WritableArray crypto_secretstream_xchacha20poly1305_init_pull(ReadableArray state, ReadableArray header, ReadableArray k) {
+    byte[] _state = ArgumentsEx.toByteArray(state);
+    byte[] _header = ArgumentsEx.toByteArray(header);
+    byte[] _k = ArgumentsEx.toByteArray(k);
+
+    this.sodium.crypto_secretstream_xchacha20poly1305_init_pull(_state, _header, _k);
+    
+    return ArrayUtil.toWritableArray(_state);
+  }
+
+  @ReactMethod(isBlockingSynchronousMethod = true)
+  public WritableArray crypto_secretstream_xchacha20poly1305_pull(ReadableArray state, ReadableArray m, ReadableArray tag, ReadableArray c, ReadableArray ad) {
+    byte[] _state = ArgumentsEx.toByteArray(state);
+    byte[] _c = ArgumentsEx.toByteArray(c);
+    byte[] _m = ArgumentsEx.toByteArray(m);
+    byte[] _ad = ArgumentsEx.toByteArray(ad);
+    byte[] _tag = ArgumentsEx.toByteArray(tag);
+    int[] mlen_p = new int[1];
+    
+    this.sodium.crypto_secretstream_xchacha20poly1305_pull(_state, _m, mlen_p, _tag, _c, _c.length, _ad, _ad.length);
+    
+    ByteArrayOutputStream outputStream = new ByteArrayOutputStream( );
+    outputStream.write( _state );
+    outputStream.write( _tag );
+    outputStream.write( Arrays.copyOfRange(_m, 0, mlen_p[0] ) ); // put dynamic length entry last
+
+    byte ret[] = outputStream.toByteArray( );
+
+    return ArrayUtil.toWritableArray(ret)
   }
 
   @ReactMethod(isBlockingSynchronousMethod = true)

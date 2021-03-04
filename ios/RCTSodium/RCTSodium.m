@@ -22,7 +22,8 @@ NSString * const ERR_BAD_EC_POINT = @"BAD_EC_POINT";
 NSString * const ERR_BAD_SCALAR = @"BAD_SCALAR";
 NSString * const ERR_BAD_SIG = @"BAD_SIG";
 NSString * const ERR_BAD_CONTEXT = @"BAD_CONTEXT";
-NSString * const ERR_BAD_HASH_STATE = @"ERR_BAD_HASH_STATE";
+NSString * const ERR_BAD_STATE = @"ERR_BAD_STATE";
+NSString * const ERR_BAD_HEADER = @"ERR_BAD_HEADER";
 NSString * const ERR_FAILURE = @"FAILURE";
 NSString * const ERR_BAD_OUTPUT = @"BAD_OUTPUT";
 NSString * const ERR_BAD_PWD = @"BAD_PWD";
@@ -30,6 +31,7 @@ NSString * const ERR_BAD_SALT = @"BAD_SALT";
 NSString * const ERR_BAD_OPS = @"BAD_OPS";
 NSString * const ERR_BAD_MEM = @"BAD_MEM";
 NSString * const ERR_BAD_ALG = @"BAD_ALG";
+NSString * const ERR_BAD_ASSOC_DATA = @"BAD_ASSOC_DATA";
 
 RCT_EXPORT_MODULE()
 
@@ -301,7 +303,7 @@ RCT_EXPORT_BLOCKING_SYNCHRONOUS_METHOD(
 RCT_EXPORT_BLOCKING_SYNCHRONOUS_METHOD(
   crypto_generichash_init:(NSArray *)state key:(NSArray *) key outlen: (nonnull NSNumber *) outlen)
 {
-  RN_RESULT_BUFFER(state, crypto_generichash_statebytes(), ERR_BAD_HASH_STATE)
+  RN_RESULT_BUFFER(state, crypto_generichash_statebytes(), ERR_BAD_STATE)
   crypto_generichash_state *c_state = (crypto_generichash_state *) state_data;
   RN_ARG_BUFFER_MIN_MAX_OR_NULL(key, crypto_generichash_KEYBYTES_MIN, crypto_generichash_KEYBYTES_MAX, ERR_BAD_KEY)
 
@@ -313,7 +315,7 @@ RCT_EXPORT_BLOCKING_SYNCHRONOUS_METHOD(
 RCT_EXPORT_BLOCKING_SYNCHRONOUS_METHOD(
   crypto_generichash_update:(NSArray *)state in:(NSArray *) in)
 {
-  RN_ARG_BUFFER(state, crypto_generichash_statebytes(), ERR_BAD_HASH_STATE)
+  RN_ARG_BUFFER(state, crypto_generichash_statebytes(), ERR_BAD_STATE)
   crypto_generichash_state *c_state = (crypto_generichash_state *) state_data;
   RN_ARG_BUFFER_NO_CHECK(in)
 
@@ -325,7 +327,7 @@ RCT_EXPORT_BLOCKING_SYNCHRONOUS_METHOD(
 RCT_EXPORT_BLOCKING_SYNCHRONOUS_METHOD(
   crypto_generichash_final:(NSArray *)state out:(NSArray *) out)
 {
-  RN_ARG_BUFFER(state, crypto_generichash_statebytes(), ERR_BAD_HASH_STATE)
+  RN_ARG_BUFFER(state, crypto_generichash_statebytes(), ERR_BAD_STATE)
   crypto_generichash_state * c_state = (crypto_generichash_state *) state_data;
   RN_RESULT_BUFFER_NO_CHECK(out)
 
@@ -359,6 +361,101 @@ RCT_EXPORT_BLOCKING_SYNCHRONOUS_METHOD(
                                               key_data))
 
   RN_RETURN_BUFFER(subkey)
+}
+
+RCT_EXPORT_BLOCKING_SYNCHRONOUS_METHOD(
+  crypto_secretstream_xchacha20poly1305_keygen:(NSArray*)k)
+{
+  RN_RESULT_BUFFER(k, crypto_secretstream_xchacha20poly1305_KEYBYTES, ERR_BAD_KEY)
+
+  crypto_secretstream_xchacha20poly1305_keygen(k_data);
+
+  RN_RETURN_BUFFER(k)
+}
+
+RCT_EXPORT_BLOCKING_SYNCHRONOUS_METHOD(
+  crypto_secretstream_xchacha20poly1305_init_push:(NSArray *) state
+                                                  header:(NSArray *) header
+                                                  k:(NSArray *) k)
+{
+  RN_RESULT_BUFFER(state, crypto_secretstream_xchacha20poly1305_STATEBYTES, ERR_BAD_STATE)
+  RN_ARG_BUFFER(header, crypto_secretstream_xchacha20poly1305_HEADERBYTES, ERR_BAD_HEADER)
+  RN_ARG_BUFFER(key, crypto_secretstream_xchacha20poly1305_HEADERBYTES, ERR_BAD_KEY)
+
+  RN_CHECK_FAILURE(crypto_secretstream_xchacha20poly1305_init_push(state_data,
+                                                                   header_data,
+                                                                   k_data))
+
+  RN_RETURN_BUFFERS_2(state, header, headerlen)
+}
+
+RCT_EXPORT_BLOCKING_SYNCHRONOUS_METHOD(
+  crypto_secretstream_xchacha20poly1305_push:(NSArray *) state,
+                                             c: (NSArray *) c,
+                                             m: (NSArray *) m,
+                                             ad: (NSArray *) ad,
+                                             tag: (nonnull NSNumber *) tag)
+{
+  RN_RESULT_BUFFER(state, crypto_secretstream_xchacha20poly1305_STATEBYTES, ERR_BAD_STATE)
+  RN_ARG_BUFFER_NO_CHECK(c)
+  RN_ARG_CONST_BUFFER(ad, crypto_secretstream_xchacha20poly1305_HEADERBYTES, ERR_BAD_ASSOC_DATA)
+
+  unsigned long long mlen_check = clen - crypto_secretstream_xchacha20poly1305_ABYTES;
+  RN_ARG_BUFFER(m, mlen_check, ERR_BAD_CIPHERTEXT_LENGTH)
+
+  RN_CHECK_FAILURE(crypto_secretstream_xchacha20poly1305_push(state_data,
+                                                              c_data,
+                                                              &clen_p,
+                                                              m_data,
+                                                              mlen,
+                                                              ad_data,
+                                                              adlen,
+                                                              tag))
+
+  RN_RETURN_BUFFERS_2(state, c, clen)
+}
+
+RCT_EXPORT_BLOCKING_SYNCHRONOUS_METHOD(
+  crypto_secretstream_xchacha20poly1305_init_pull:(NSArray *) state
+                                                  header:(NSArray *) header
+                                                  k:(NSArray *) k)
+{
+  RN_RESULT_BUFFER(state, crypto_secretstream_xchacha20poly1305_STATEBYTES, ERR_BAD_STATE)
+  RN_ARG_CONST_BUFFER(header, crypto_secretstream_xchacha20poly1305_HEADERBYTES, ERR_BAD_HEADER)
+  RN_ARG_CONST_BUFFER(key, crypto_secretstream_xchacha20poly1305_HEADERBYTES, ERR_BAD_KEY)
+
+  RN_CHECK_FAILURE(crypto_secretstream_xchacha20poly1305_init_pull(state_data,
+                                                                   header_data,
+                                                                   k_data))
+
+  RN_RETURN_BUFFER(state)
+}
+
+RCT_EXPORT_BLOCKING_SYNCHRONOUS_METHOD(
+  crypto_secretstream_xchacha20poly1305_push:(NSArray *) state,
+                                             c: (NSArray *) c,
+                                             m: (NSArray *) m,
+                                             ad: (NSArray *) ad,
+                                             tag: (nonnull NSNumber *) tag)
+{
+  RN_RESULT_BUFFER(state, crypto_secretstream_xchacha20poly1305_STATEBYTES, ERR_BAD_STATE)
+  RN_ARG_CONST_BUFFER_NO_CHECK(c)
+  RN_RESULT_BUFFER(ad, crypto_secretstream_xchacha20poly1305_HEADERBYTES, ERR_BAD_ASSOC_DATA)
+
+  unsigned long long mlen_check = clen - crypto_secretstream_xchacha20poly1305_ABYTES;
+  RN_RESULT_BUFFER(m, mlen_check, ERR_BAD_CIPHERTEXT_LENGTH)
+  unsigned char[] tag_p[1];
+
+  RN_CHECK_FAILURE(crypto_secretstream_xchacha20poly1305_push(state_data,
+                                                              m_data,
+                                                              &mlen,
+                                                              &tag_p,
+                                                              c_data,
+                                                              clen,
+                                                              ad_data,
+                                                              adlen))
+
+  RN_RETURN_BUFFERS_3(state, tag_p, m, mlen)
 }
 
 @end
