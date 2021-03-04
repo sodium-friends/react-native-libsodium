@@ -14,6 +14,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.HashMap;
+import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
 import android.util.Log;
@@ -54,7 +55,6 @@ public class SodiumModule extends ReactContextBaseJavaModule {
     // constants.put("crypto_onetimeauth_STATEBYTES", this.sodium.crypto_onetimeauth_statebytes());
     // constants.put("crypto_hash_sha256_STATEBYTES", this.sodium.crypto_hash_sha256_statebytes());
     // constants.put("crypto_hash_sha512_STATEBYTES", this.sodium.crypto_hash_sha512_statebytes());
-    // constants.put("crypto_secretstream_xchacha20poly1305_STATEBYTES", this.sodium.crypto_secretstream_xchacha20poly1305_statebytes());
     // constants.put("crypto_stream_xor_STATEBYTES", this.sodium.crypto_stream_xor_statebytes());
     // constants.put("crypto_stream_chacha20_xor_STATEBYTES", this.sodium.crypto_stream_chacha20_xor_statebytes());
     // constants.put("randombytes_SEEDBYTES", this.sodium.randombytes_seedbytes());
@@ -144,11 +144,16 @@ public class SodiumModule extends ReactContextBaseJavaModule {
     // constants.put("crypto_kx_SECRETKEYBYTES", this.sodium.crypto_kx_secretkeybytes());
     // constants.put("crypto_kx_SEEDBYTES", this.sodium.crypto_kx_seedbytes());
     // constants.put("crypto_kx_SESSIONKEYBYTES", this.sodium.crypto_kx_sessionkeybytes());
+    constants.put("crypto_secretstream_xchacha20poly1305_STATEBYTES", this.sodium.crypto_secretstream_xchacha20poly1305_statebytes());
     constants.put("crypto_secretstream_xchacha20poly1305_ABYTES", this.sodium.crypto_secretstream_xchacha20poly1305_abytes());
     constants.put("crypto_secretstream_xchacha20poly1305_HEADERBYTES", this.sodium.crypto_secretstream_xchacha20poly1305_headerbytes());
     constants.put("crypto_secretstream_xchacha20poly1305_KEYBYTES", this.sodium.crypto_secretstream_xchacha20poly1305_keybytes());
     constants.put("crypto_secretstream_xchacha20poly1305_TAGBYTES", 1);
     constants.put("crypto_secretstream_xchacha20poly1305_MESSAGEBYTES_MAX", this.sodium.crypto_secretstream_xchacha20poly1305_messagebytes_max());
+    constants.put("crypto_secretstream_xchacha20poly1305_TAG_MESSAGE", this.sodium.crypto_secretstream_xchacha20poly1305_tag_message());
+    constants.put("crypto_secretstream_xchacha20poly1305_TAG_PUSH", this.sodium.crypto_secretstream_xchacha20poly1305_tag_push());
+    constants.put("crypto_secretstream_xchacha20poly1305_TAG_REKEY", this.sodium.crypto_secretstream_xchacha20poly1305_tag_rekey());
+    constants.put("crypto_secretstream_xchacha20poly1305_TAG_FINAL", this.sodium.crypto_secretstream_xchacha20poly1305_tag_final());
 
     return constants;
   }
@@ -256,7 +261,18 @@ public class SodiumModule extends ReactContextBaseJavaModule {
 
     this.sodium.crypto_secretstream_xchacha20poly1305_init_push(_state, _header, _k);
     
-    return ArrayUtil.toWritableArray(_state);
+    ByteArrayOutputStream outputStream = new ByteArrayOutputStream( );
+
+    try {
+      outputStream.write( _state );
+      outputStream.write( _header ); // put dynamic length entry last
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+
+    byte ret[] = outputStream.toByteArray( );
+
+    return ArrayUtil.toWritableArray(ret);
   }
 
   @ReactMethod(isBlockingSynchronousMethod = true)
@@ -268,15 +284,20 @@ public class SodiumModule extends ReactContextBaseJavaModule {
     byte[] _tag = ArgumentsEx.toByteArray(tag);
     int[] clen_p = new int[1];
 
-    this.sodium.crypto_secretstream_xchacha20poly1305_push(_state, _c, clen_p, _m, _m.length, _ad, _ad.length, _tag);
+    this.sodium.crypto_secretstream_xchacha20poly1305_push(_state, _c, clen_p, _m, _m.length, _ad, _ad.length, (short) tag[0]);
 
     ByteArrayOutputStream outputStream = new ByteArrayOutputStream( );
-    outputStream.write( _state );
-    outputStream.write( Arrays.copyOfRange(_c, 0, clen_p[0] ) ); // put dynamic length entry last
+
+    try {
+      outputStream.write( _state );
+      outputStream.write( Arrays.copyOfRange(_c, 0, clen_p[0] ) ); // put dynamic length entry last
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
 
     byte ret[] = outputStream.toByteArray( );
 
-    return ArrayUtil.toWritableArray(ret)
+    return ArrayUtil.toWritableArray(ret);
   }
 
   @ReactMethod(isBlockingSynchronousMethod = true)
@@ -298,17 +319,22 @@ public class SodiumModule extends ReactContextBaseJavaModule {
     byte[] _ad = ArgumentsEx.toByteArray(ad);
     byte[] _tag = ArgumentsEx.toByteArray(tag);
     int[] mlen_p = new int[1];
-    
+
     this.sodium.crypto_secretstream_xchacha20poly1305_pull(_state, _m, mlen_p, _tag, _c, _c.length, _ad, _ad.length);
     
     ByteArrayOutputStream outputStream = new ByteArrayOutputStream( );
-    outputStream.write( _state );
-    outputStream.write( _tag );
-    outputStream.write( Arrays.copyOfRange(_m, 0, mlen_p[0] ) ); // put dynamic length entry last
+
+    try {
+      outputStream.write( _state );
+      outputStream.write( _tag );
+      outputStream.write( Arrays.copyOfRange(_m, 0, mlen_p[0] ) ); // put dynamic length entry last
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
 
     byte ret[] = outputStream.toByteArray( );
 
-    return ArrayUtil.toWritableArray(ret)
+    return ArrayUtil.toWritableArray(ret);
   }
 
   @ReactMethod(isBlockingSynchronousMethod = true)
