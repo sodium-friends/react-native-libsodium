@@ -78,7 +78,7 @@ function randombytes_buf(buf) {
 
 function crypto_aead_xchacha20poly1305_ietf_encrypt(...args) {
   const nativeResult = Sodium.crypto_aead_xchacha20poly1305_ietf_encrypt(...Array.from(args, mapArgs))
-  if (nativeResult === 'FAILURE') throw new Error('crypto_aead_xchacha20poly1305_ietf_encrypt execeution failed.')
+  if (typeof nativeResult === 'string') throw new Error('crypto_aead_xchacha20poly1305_ietf_encrypt execeution failed: ' + nativeResult + '.')
   const res = new Uint8Array(nativeResult)
   args[0].set(res)
   return res.byteLength
@@ -86,7 +86,7 @@ function crypto_aead_xchacha20poly1305_ietf_encrypt(...args) {
 
 function crypto_aead_xchacha20poly1305_ietf_decrypt(...args) {
   const nativeResult = Sodium.crypto_aead_xchacha20poly1305_ietf_decrypt(...Array.from(args, mapArgs))
-  if (nativeResult === 'FAILURE') throw new Error('crypto_aead_xchacha20poly1305_ietf_decrypt execeution failed.')
+  if (typeof nativeResult === 'string') throw new Error('crypto_aead_xchacha20poly1305_ietf_decrypt execeution failed: ' + nativeResult + '.')
   const res = new Uint8Array(nativeResult)
   args[0].set(res)
   return res.byteLength
@@ -98,56 +98,56 @@ function crypto_core_ed25519_scalar_random (r) {
 
 function crypto_core_ed25519_add (...args) {
   const nativeResult = Sodium.crypto_core_ed25519_add(...Array.from(args, mapArgs))
-  if (nativeResult === 'FAILURE') throw new Error('crypto_core_ed25519_add execution failed')
+  if (typeof nativeResult === 'string') throw new Error('crypto_core_ed25519_add execution faile: ' + nativeResult + 'd')
 
   args[0].set(new Uint8Array(nativeResult))
 }
 
 function crypto_core_ed25519_sub (...args) {
   const nativeResult = Sodium.crypto_core_ed25519_sub(...Array.from(args, mapArgs))
-  if (nativeResult === 'FAILURE') throw new Error('crypto_core_ed25519_sub execution failed')
+  if (typeof nativeResult === 'string') throw new Error('crypto_core_ed25519_sub execution faile: ' + nativeResult + 'd')
 
   args[0].set(new Uint8Array(nativeResult))
 }
 
 function crypto_core_ed25519_from_uniform (...args) {
   const nativeResult = Sodium.crypto_core_ed25519_from_uniform(...Array.from(args, mapArgs))
-  if (nativeResult === 'FAILURE') throw new Error('crypto_core_ed25519_from_uniform execution failed')
+  if (typeof nativeResult === 'string') throw new Error('crypto_core_ed25519_from_uniform execution faile: ' + nativeResult + 'd')
 
   args[0].set(new Uint8Array(nativeResult))
 }
 
 function crypto_pwhash (...args) {
   const nativeResult = Sodium.crypto_pwhash(...Array.from(args.slice(0, 3), mapArgs), ...args.slice(3))
-  if (nativeResult === 'FAILURE') throw new Error('crypto_pwhash execution failed.')
+  if (typeof nativeResult === 'string') throw new Error('crypto_pwhash execution failed: ' + nativeResult + '.')
 
   args[0].set(new Uint8Array(nativeResult))
 }
 
 function crypto_scalarmult_ed25519 (...args) {
   const nativeResult = Sodium.crypto_scalarmult_ed25519(...Array.from(args, mapArgs))
-  if (nativeResult === 'FAILURE') throw new Error('crypto_scalarmult_ed25519 execution failed.')
+  if (typeof nativeResult === 'string') throw new Error('crypto_scalarmult_ed25519 execution failed: ' + nativeResult + '.')
 
   args[0].set(new Uint8Array(nativeResult))
 }
 
 function crypto_scalarmult_ed25519_noclamp (...args) {
   const nativeResult = Sodium.crypto_scalarmult_ed25519_noclamp(...Array.from(args, mapArgs))
-  if (nativeResult === 'FAILURE') throw new Error('crypto_scalarmult_ed25519_noclamp execution failed.')
+  if (typeof nativeResult === 'string') throw new Error('crypto_scalarmult_ed25519_noclamp execution failed: ' + nativeResult + '.')
 
   args[0].set(new Uint8Array(nativeResult))
 }
 
 function crypto_scalarmult_ed25519_base (...args) {
   const nativeResult = Sodium.crypto_scalarmult_ed25519_base(...Array.from(args, mapArgs))
-  if (nativeResult === 'FAILURE') throw new Error('crypto_scalarmult_ed25519_base execution failed.')
+  if (typeof nativeResult === 'string') throw new Error('crypto_scalarmult_ed25519_base execution failed: ' + nativeResult + '.')
 
   args[0].set(new Uint8Array(nativeResult))
 }
 
 function crypto_scalarmult_ed25519_base_noclamp (...args) {
   const nativeResult = Sodium.crypto_scalarmult_ed25519_base_noclamp(...Array.from(args, mapArgs))
-  if (nativeResult === 'FAILURE') throw new Error('crypto_scalarmult_ed25519_base_noclamp execution failed.')
+  if (typeof nativeResult === 'string') throw new Error('crypto_scalarmult_ed25519_base_noclamp execution failed: ' + nativeResult + '.')
 
   args[0].set(new Uint8Array(nativeResult))
 }
@@ -158,7 +158,7 @@ function crypto_secretstream_xchacha20poly1305_keygen (...args) {
 
 function crypto_secretstream_xchacha20poly1305_init_push (...args) {
   const nativeResult = Sodium.crypto_secretstream_xchacha20poly1305_init_push(...Array.from(args, mapArgs))
-  if (nativeResult === 'FAILURE') throw new Error('crypto_secretstream_xchacha20poly1305_init_push execution failed.')
+  if (typeof nativeResult === 'string') throw new Error('crypto_secretstream_xchacha20poly1305_init_push execution failed: ' + nativeResult + '.')
 
   const resultBuf = new Uint8Array(nativeResult)
   args[0].set(resultBuf.subarray(0, constants.crypto_secretstream_xchacha20poly1305_STATEBYTES))
@@ -167,7 +167,7 @@ function crypto_secretstream_xchacha20poly1305_init_push (...args) {
 
 function crypto_secretstream_xchacha20poly1305_push (...args) {
   const nativeResult = Sodium.crypto_secretstream_xchacha20poly1305_push(...Array.from(args, mapArgs))
-  if (nativeResult === 'FAILURE') throw new Error('crypto_secretstream_xchacha20poly1305_push execution failed.')
+  if (typeof nativeResult === 'string') throw new Error('crypto_secretstream_xchacha20poly1305_push execution failed: ' + nativeResult + '.')
 
   const resultBuf = new Uint8Array(nativeResult)
   args[0].set(resultBuf.subarray(0, constants.crypto_secretstream_xchacha20poly1305_STATEBYTES))
@@ -176,17 +176,16 @@ function crypto_secretstream_xchacha20poly1305_push (...args) {
 
 function crypto_secretstream_xchacha20poly1305_init_pull (...args) {
   const nativeResult = Sodium.crypto_secretstream_xchacha20poly1305_init_pull(...Array.from(args, mapArgs))
-  if (nativeResult === 'FAILURE') throw new Error('crypto_secretstream_xchacha20poly1305_init_pull execution failed.')
+  if (typeof nativeResult === 'string') throw new Error('crypto_secretstream_xchacha20poly1305_init_pull execution failed: ' + nativeResult + '.')
 
   args[0].set(new Uint8Array(nativeResult))
 }
 
 function crypto_secretstream_xchacha20poly1305_pull (...args) {
   const nativeResult = Sodium.crypto_secretstream_xchacha20poly1305_pull(...Array.from(args, mapArgs))
-  if (nativeResult === 'FAILURE') throw new Error('crypto_secretstream_xchacha20poly1305_pull execution failed.')
+  if (typeof nativeResult === 'string') throw new Error('crypto_secretstream_xchacha20poly1305_pull execution failed: ' + nativeResult + '.')
 
   const resultBuf = new Uint8Array(nativeResult)
-
   args[0].set(resultBuf.subarray(0, constants.crypto_secretstream_xchacha20poly1305_STATEBYTES))    // state
   args[2] = resultBuf[constants.crypto_secretstream_xchacha20poly1305_STATEBYTES]                   // tag
   args[1].set(resultBuf.subarray(constants.crypto_secretstream_xchacha20poly1305_STATEBYTES + 1))   // message
@@ -194,21 +193,21 @@ function crypto_secretstream_xchacha20poly1305_pull (...args) {
 
 function crypto_generichash_init (...args) {
   const nativeResult = Sodium.crypto_generichash_init(...Array.from(args.slice(0, 2), mapArgs), args[2])
-  if (nativeResult === 'FAILURE') throw new Error('crypto_generichash_init execution failed.')
+  if (typeof nativeResult === 'string') throw new Error('crypto_generichash_init execution failed: ' + nativeResult + '.')
 
   args[0].set(new Uint8Array(nativeResult))
 }
 
 function crypto_generichash_update (...args) {
   const nativeResult = Sodium.crypto_generichash_update(...Array.from(args, mapArgs))
-  if (nativeResult === 'FAILURE') throw new Error('crypto_generichash_update execution failed.')
+  if (typeof nativeResult === 'string') throw new Error('crypto_generichash_update execution failed: ' + nativeResult + '.')
 
   args[0].set(new Uint8Array(nativeResult))
 }
 
 function crypto_generichash_final (...args) {
   const nativeResult = Sodium.crypto_generichash_final(...Array.from(args, mapArgs))
-  if (nativeResult === 'FAILURE') throw new Error('crypto_generichash_final execution failed.')
+  if (typeof nativeResult === 'string') throw new Error('crypto_generichash_final execution failed: ' + nativeResult + '.')
 
   args[1].set(new Uint8Array(nativeResult))
 }
@@ -219,7 +218,7 @@ function crypto_kdf_keygen (...args) {
 
 function crypto_kdf_derive_from_key (...args) {
   const nativeResult = Sodium.crypto_kdf_derive_from_key(mapArgs(args[0]), args[1], ...Array.from(args.slice(2), mapArgs))
-  if (nativeResult === 'FAILURE') throw new Error('crypto_kdf_derive_from_key execution failed.')
+  if (typeof nativeResult === 'string') throw new Error('crypto_kdf_derive_from_key execution failed: ' + nativeResult + '.')
 
   args[0].set(new Uint8Array(nativeResult))
 }
