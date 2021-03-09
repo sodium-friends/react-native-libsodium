@@ -11,6 +11,10 @@
   RN_ARG_BUFFER_NO_CHECK(arg) \
   if (arg##len != len_check) return error;
 
+#define RN_ARG_BUFFER(arg, len_check, error) \
+  RN_ARG_BUFFER_NO_CHECK(arg) \
+  if (arg##len != len_check) return error;
+
 #define RN_ARG_BUFFER_MIN_MAX(arg, min, max, error) \
   RN_ARG_BUFFER_NO_CHECK(arg) \
   if (arg##len < min || arg##len > max) return error;
@@ -35,6 +39,15 @@
 
 #define RN_ARG_CONST_BUFFER(arg, len_check, error) \
   RN_ARG_CONST_BUFFER_NO_CHECK(arg) \
+  if (arg##len != len_check) return error;
+
+#define RN_ARG_UCONST_BUFFER_NO_CHECK(arg) \
+  const NSData *arg##_ns = [ self to_bytes: arg ]; \
+  const unsigned char *arg##_data = (const unsigned char *) [ arg##_ns bytes ]; \
+  unsigned long arg##len = arg##_ns.length; \
+
+#define RN_ARG_UCONST_BUFFER(arg, len_check, error) \
+  RN_ARG_UCONST_BUFFER_NO_CHECK(arg) \
   if (arg##len != len_check) return error;
 
 #define RN_ARG_CONST_BUFFER_MIN_MAX(arg, min, max, error) \
@@ -84,26 +97,26 @@
 
 #define RN_RETURN_BUFFER(arg) \
   NSMutableArray *res = [[NSMutableArray alloc] initWithCapacity: arg##len]; \
-  RN_COPY_DATA(res, arg##_data, arg##len) \
+  RN_COPY_DATA(res, arg, arg##len) \
   return [res copy];
 
 #define RN_RETURN_BUFFERS_2(buf1, buf2, b2len) \
   unsigned long long len = buf1##len + b2len; \
   NSMutableArray *res = [[NSMutableArray alloc] initWithCapacity: len]; \
-  RN_COPY_DATA(res, buf1##_data, bu1##len) \
-  RN_COPY_DATA(res, buf2##_data, b2len) \
+  RN_COPY_DATA(res, buf1, buf1##len) \
+  RN_COPY_DATA(res, buf2, b2len) \
   return [res copy];
 
 #define RN_RETURN_BUFFERS_3(buf1, buf2, buf3, b3len) \
   unsigned long long len = buf1##len + buf2##len + b3len; \
   NSMutableArray *res = [[NSMutableArray alloc] initWithCapacity: len]; \
-  RN_COPY_DATA(res, buf1##_data, bu1##len) \
-  RN_COPY_DATA(res, buf2##_data, buf2##len) \
-  RN_COPY_DATA(res, buf3##_data, b3len) \
+  RN_COPY_DATA(res, buf1, buf1##len) \
+  RN_COPY_DATA(res, buf2, buf2##len) \
+  RN_COPY_DATA(res, buf3, b3len) \
   return [res copy];
 
-#define RN_COPY_DATA (res, buf, len) \
-  for (i = 0; i < len; i++) \
+#define RN_COPY_DATA(res, buf, len) \
+  for (int i = 0; i < len; i++) \
   { \
       [res addObject: [NSNumber numberWithUnsignedChar:buf##_data[i]]]; \
   }

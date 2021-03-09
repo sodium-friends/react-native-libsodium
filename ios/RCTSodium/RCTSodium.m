@@ -15,6 +15,8 @@ NSString * const ERR_BAD_MAC = @"BAD_MAC";
 NSString * const ERR_BAD_MSG = @"BAD_MSG";
 NSString * const ERR_BAD_NONCE = @"BAD_NONCE";
 NSString * const ERR_BAD_CIPHERTEXT = @"BAD_CIPHERTEXT";
+NSString * const ERR_BAD_CIPHERTEXT_LENGTH = @"BAD_CIPHERTEXT_LENGTH";
+NSString * const ERR_BAD_MESSAGE_LENGTH = @"BAD_MESSAGE_LENGTH";
 NSString * const ERR_BAD_NSEC = @"BAD_NSEC";
 NSString * const ERR_BAD_NPUB = @"BAD_NPUB";
 NSString * const ERR_BAD_SEED = @"BAD_SEED";
@@ -31,7 +33,6 @@ NSString * const ERR_BAD_SALT = @"BAD_SALT";
 NSString * const ERR_BAD_OPS = @"BAD_OPS";
 NSString * const ERR_BAD_MEM = @"BAD_MEM";
 NSString * const ERR_BAD_ALG = @"BAD_ALG";
-NSString * const ERR_BAD_ASSOC_DATA = @"BAD_ASSOC_DATA";
 
 RCT_EXPORT_MODULE()
 
@@ -68,14 +69,42 @@ RCT_EXPORT_MODULE()
     @"crypto_pwhash_ALG_DEFAULT": @ crypto_pwhash_ALG_DEFAULT,
     @"crypto_pwhash_ALG_ARGON2I13": @ crypto_pwhash_ALG_ARGON2I13,
     @"crypto_pwhash_ALG_ARGON2ID13": @ crypto_pwhash_ALG_ARGON2ID13,
+    @"crypto_pwhash_BYTES_MIN": @ crypto_pwhash_BYTES_MIN,
+    @"crypto_pwhash_BYTES_MAX": @ crypto_pwhash_BYTES_MAX,
+    @"crypto_pwhash_PASSWD_MIN": @ crypto_pwhash_PASSWD_MIN,
+    @"crypto_pwhash_PASSWD_MAX": @ crypto_pwhash_PASSWD_MAX,
+    @"crypto_pwhash_SALTBYTES": @ crypto_pwhash_SALTBYTES,
+    @"crypto_pwhash_STRBYTES": @ crypto_pwhash_STRBYTES,
+    @"crypto_pwhash_OPSLIMIT_MIN": @ crypto_pwhash_OPSLIMIT_MIN,
+    @"crypto_pwhash_OPSLIMIT_MAX": @ crypto_pwhash_OPSLIMIT_MAX,
+    @"crypto_pwhash_MEMLIMIT_MIN": @ crypto_pwhash_MEMLIMIT_MIN,
+    @"crypto_pwhash_MEMLIMIT_MAX": @ crypto_pwhash_MEMLIMIT_MAX,
+    @"crypto_pwhash_OPSLIMIT_INTERACTIVE": @ crypto_pwhash_OPSLIMIT_INTERACTIVE,
+    @"crypto_pwhash_MEMLIMIT_INTERACTIVE": @ crypto_pwhash_MEMLIMIT_INTERACTIVE,
+    @"crypto_pwhash_OPSLIMIT_MODERATE": @ crypto_pwhash_OPSLIMIT_MODERATE,
+    @"crypto_pwhash_MEMLIMIT_MODERATE": @ crypto_pwhash_MEMLIMIT_MODERATE,
+    @"crypto_pwhash_OPSLIMIT_SENSITIVE": @ crypto_pwhash_OPSLIMIT_SENSITIVE,
+    @"crypto_pwhash_MEMLIMIT_SENSITIVE": @ crypto_pwhash_MEMLIMIT_SENSITIVE,
     @"crypto_scalarmult_ed25519_BYTES": @ crypto_scalarmult_ed25519_BYTES,
     @"crypto_scalarmult_ed25519_SCALARBYTES": @ crypto_scalarmult_ed25519_SCALARBYTES,
+    @"crypto_generichash_STATEBYTES": @ 384,
     @"crypto_generichash_KEYBYTES_MIN": @ crypto_generichash_KEYBYTES_MIN,
     @"crypto_generichash_KEYBYTES_MAX": @ crypto_generichash_KEYBYTES_MAX,
     @"crypto_kdf_KEYBYTES": @ crypto_kdf_KEYBYTES,
     @"crypto_kdf_BYTES_MIN": @ crypto_kdf_BYTES_MIN,
     @"crypto_kdf_BYTES_MAX": @ crypto_kdf_BYTES_MAX,
-    @"crypto_kdf_CONTEXTBYTES": @ crypto_kdf_CONTEXTBYTES
+    @"crypto_kdf_CONTEXTBYTES": @ crypto_kdf_CONTEXTBYTES,
+    @"crypto_secretstream_xchacha20poly1305_STATEBYTES":@ 52,
+    @"crypto_secretstream_xchacha20poly1305_ABYTES": @ crypto_secretstream_xchacha20poly1305_ABYTES,
+    @"crypto_secretstream_xchacha20poly1305_HEADERBYTES": @ crypto_secretstream_xchacha20poly1305_HEADERBYTES,
+    @"crypto_secretstream_xchacha20poly1305_KEYBYTES": @ crypto_secretstream_xchacha20poly1305_KEYBYTES,
+    @"crypto_secretstream_xchacha20poly1305_TAGBYTES": @ 1,
+    @"crypto_secretstream_xchacha20poly1305_MESSAGEBYTES_MAX": @ crypto_secretstream_xchacha20poly1305_MESSAGEBYTES_MAX,
+    @"_crypto_secretstream_xchacha20poly1305_TAG_MESSAGE": @ crypto_secretstream_xchacha20poly1305_TAG_MESSAGE,
+    @"_crypto_secretstream_xchacha20poly1305_TAG_PUSH": @ crypto_secretstream_xchacha20poly1305_TAG_PUSH,
+    @"_crypto_secretstream_xchacha20poly1305_TAG_REKEY": @ crypto_secretstream_xchacha20poly1305_TAG_REKEY,
+    @"_crypto_secretstream_xchacha20poly1305_TAG_FINAL": @ crypto_secretstream_xchacha20poly1305_TAG_FINAL,
+
   };
 }
 
@@ -378,11 +407,12 @@ RCT_EXPORT_BLOCKING_SYNCHRONOUS_METHOD(
                                                   header:(NSArray *) header
                                                   k:(NSArray *) k)
 {
-  RN_RESULT_BUFFER(state, crypto_secretstream_xchacha20poly1305_STATEBYTES, ERR_BAD_STATE)
+  RN_RESULT_BUFFER(state, crypto_secretstream_xchacha20poly1305_statebytes(), ERR_BAD_STATE)
   RN_ARG_BUFFER(header, crypto_secretstream_xchacha20poly1305_HEADERBYTES, ERR_BAD_HEADER)
-  RN_ARG_BUFFER(key, crypto_secretstream_xchacha20poly1305_HEADERBYTES, ERR_BAD_KEY)
+  RN_ARG_BUFFER(k, crypto_secretstream_xchacha20poly1305_KEYBYTES, ERR_BAD_KEY)
 
-  RN_CHECK_FAILURE(crypto_secretstream_xchacha20poly1305_init_push(state_data,
+  crypto_secretstream_xchacha20poly1305_state *c_state = (crypto_secretstream_xchacha20poly1305_state *) state_data;
+  RN_CHECK_FAILURE(crypto_secretstream_xchacha20poly1305_init_push(c_state,
                                                                    header_data,
                                                                    k_data))
 
@@ -390,27 +420,30 @@ RCT_EXPORT_BLOCKING_SYNCHRONOUS_METHOD(
 }
 
 RCT_EXPORT_BLOCKING_SYNCHRONOUS_METHOD(
-  crypto_secretstream_xchacha20poly1305_push:(NSArray *) state,
-                                             c: (NSArray *) c,
-                                             m: (NSArray *) m,
-                                             ad: (NSArray *) ad,
-                                             tag: (nonnull NSNumber *) tag)
+  crypto_secretstream_xchacha20poly1305_push:(NSArray *) state
+                                             c: (NSArray *) c
+                                             m: (NSArray *) m
+                                             ad: (NSArray *) ad
+                                             tag: (NSArray *) tag)
 {
-  RN_RESULT_BUFFER(state, crypto_secretstream_xchacha20poly1305_STATEBYTES, ERR_BAD_STATE)
-  RN_ARG_BUFFER_NO_CHECK(c)
-  RN_ARG_CONST_BUFFER(ad, crypto_secretstream_xchacha20poly1305_HEADERBYTES, ERR_BAD_ASSOC_DATA)
+  RN_ARG_BUFFER(state, crypto_secretstream_xchacha20poly1305_statebytes(), ERR_BAD_STATE)
+  RN_RESULT_BUFFER_NO_CHECK(c)
+  RN_ARG_UCONST_BUFFER_NO_CHECK(ad)
+
+  unsigned char _tag = [tag[0] unsignedCharValue];
 
   unsigned long long mlen_check = clen - crypto_secretstream_xchacha20poly1305_ABYTES;
   RN_ARG_BUFFER(m, mlen_check, ERR_BAD_CIPHERTEXT_LENGTH)
 
-  RN_CHECK_FAILURE(crypto_secretstream_xchacha20poly1305_push(state_data,
+  crypto_secretstream_xchacha20poly1305_state *c_state = (crypto_secretstream_xchacha20poly1305_state *) state_data;
+  RN_CHECK_FAILURE(crypto_secretstream_xchacha20poly1305_push(c_state,
                                                               c_data,
-                                                              &clen_p,
+                                                              &clen,
                                                               m_data,
                                                               mlen,
                                                               ad_data,
                                                               adlen,
-                                                              tag))
+                                                              _tag))
 
   RN_RETURN_BUFFERS_2(state, c, clen)
 }
@@ -420,11 +453,12 @@ RCT_EXPORT_BLOCKING_SYNCHRONOUS_METHOD(
                                                   header:(NSArray *) header
                                                   k:(NSArray *) k)
 {
-  RN_RESULT_BUFFER(state, crypto_secretstream_xchacha20poly1305_STATEBYTES, ERR_BAD_STATE)
-  RN_ARG_CONST_BUFFER(header, crypto_secretstream_xchacha20poly1305_HEADERBYTES, ERR_BAD_HEADER)
-  RN_ARG_CONST_BUFFER(key, crypto_secretstream_xchacha20poly1305_HEADERBYTES, ERR_BAD_KEY)
+  RN_RESULT_BUFFER(state, crypto_secretstream_xchacha20poly1305_statebytes(), ERR_BAD_STATE)
+  RN_ARG_UCONST_BUFFER(header, crypto_secretstream_xchacha20poly1305_HEADERBYTES, ERR_BAD_HEADER)
+  RN_ARG_UCONST_BUFFER(k, crypto_secretstream_xchacha20poly1305_KEYBYTES, ERR_BAD_KEY)
 
-  RN_CHECK_FAILURE(crypto_secretstream_xchacha20poly1305_init_pull(state_data,
+  crypto_secretstream_xchacha20poly1305_state *c_state = (crypto_secretstream_xchacha20poly1305_state *) state_data;
+  RN_CHECK_FAILURE(crypto_secretstream_xchacha20poly1305_init_pull(c_state,
                                                                    header_data,
                                                                    k_data))
 
@@ -432,24 +466,26 @@ RCT_EXPORT_BLOCKING_SYNCHRONOUS_METHOD(
 }
 
 RCT_EXPORT_BLOCKING_SYNCHRONOUS_METHOD(
-  crypto_secretstream_xchacha20poly1305_push:(NSArray *) state,
-                                             c: (NSArray *) c,
-                                             m: (NSArray *) m,
-                                             ad: (NSArray *) ad,
-                                             tag: (nonnull NSNumber *) tag)
+  crypto_secretstream_xchacha20poly1305_pull:(NSArray *) state
+                                             m: (NSArray *) m
+                                             tag: (NSArray *) tag
+                                             c: (NSArray *) c
+                                             ad: (NSArray *) ad)
 {
-  RN_RESULT_BUFFER(state, crypto_secretstream_xchacha20poly1305_STATEBYTES, ERR_BAD_STATE)
-  RN_ARG_CONST_BUFFER_NO_CHECK(c)
-  RN_RESULT_BUFFER(ad, crypto_secretstream_xchacha20poly1305_HEADERBYTES, ERR_BAD_ASSOC_DATA)
+  RN_ARG_BUFFER(state, crypto_secretstream_xchacha20poly1305_statebytes(), ERR_BAD_STATE)
+  RN_ARG_UCONST_BUFFER_NO_CHECK(c)
+  RN_RESULT_BUFFER_NO_CHECK(ad)
 
   unsigned long long mlen_check = clen - crypto_secretstream_xchacha20poly1305_ABYTES;
   RN_RESULT_BUFFER(m, mlen_check, ERR_BAD_CIPHERTEXT_LENGTH)
-  unsigned char[] tag_p[1];
+  unsigned char tag_p_data[1];
+  size_t tag_plen = 1;
 
-  RN_CHECK_FAILURE(crypto_secretstream_xchacha20poly1305_push(state_data,
+  crypto_secretstream_xchacha20poly1305_state *c_state = (crypto_secretstream_xchacha20poly1305_state *) state_data;
+  RN_CHECK_FAILURE(crypto_secretstream_xchacha20poly1305_pull(c_state,
                                                               m_data,
                                                               &mlen,
-                                                              &tag_p,
+                                                              &tag_p_data[0],
                                                               c_data,
                                                               clen,
                                                               ad_data,
