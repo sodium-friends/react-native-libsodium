@@ -83,7 +83,7 @@ Since the underlying language is in C, Obj-C bindings are chosen over Swift bind
 
 ### Objective-C
 
-Unlike the Java bindings, these have to be witten by hand. [Macros](./ios/RCTSodium/RCTSodium.m) are provided to make this as easy as possible. The libsodium [docs]([Libsodium](https://libsodium.gitbook.io/doc/) should be referred to for the relevant function signatures. Consult the macro definitions to find the relevant one for each argument and be sure the bounds are checked where necessary!
+Unlike the Java bindings, these have to be witten by hand. [Macros](./ios/RCTSodium/RCTSodium.m) are provided to make this as easy as possible. The libsodium [docs](https://libsodium.gitbook.io/doc/) should be referred to for the relevant function signatures. Consult the macro definitions to find the relevant one for each argument and be sure the bounds are checked where necessary!
 
 The existing methods should provide a good reference, however, if you encounter any troubles feel free to open and issue or comment in the discussions.
 
@@ -99,7 +99,7 @@ Constants should be exported to React Native at the top of the module file. You 
 
 ## JavaScript
 
-Now that we have native bindings to our C functions exposed in React Native, we can update our JavaScript wrapper found in (index.js)[./index.js].
+Now that we have native bindings to our C functions exposed in React Native, we can update our JavaScript wrapper found in [index.js](./index.js).
 
 Most of the work is done in our native code, so these are quite simple: use the provided map function to format arguments and pass them to the native function. The return result should be checked for errors (errors always return a `String`).
 
