@@ -35,6 +35,15 @@ import android.util.Log;
 // Arguments class
 public class ArgumentsEx {
 
+    public static void check(byte[] arg, int len, String msg) throws Exception {
+        if (arg.length != len) throw new Exception(msg)
+    }
+
+    public static void check(byte[] arg, int minLen, String maxLen) throws Exception {
+        if (arg.length < minLen) throw new Exception(msg)
+        if (arg.length > maxLen) throw new Exception(msg)
+    }
+
     public static double[] toDoubleArray(@NonNull ReadableArray readableArray) {
         int arraySize = readableArray.size();
         double[] result = new double[arraySize];

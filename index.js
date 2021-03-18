@@ -118,7 +118,7 @@ function crypto_core_ed25519_from_uniform (...args) {
 }
 
 function crypto_pwhash (...args) {
-  const nativeResult = Sodium.crypto_pwhash(...Array.from(args.slice(0, 3), mapArgs), ...args.slice(3))
+  const nativeResult = Sodium.crypto_pwhash(...Array.from(args, mapArgs))
   if (typeof nativeResult === 'string') throw new Error('crypto_pwhash execution failed: ' + nativeResult + '.')
 
   args[0].set(new Uint8Array(nativeResult))
@@ -192,7 +192,7 @@ function crypto_secretstream_xchacha20poly1305_pull (...args) {
 }
 
 function crypto_generichash_init (...args) {
-  const nativeResult = Sodium.crypto_generichash_init(...Array.from(args.slice(0, 2), mapArgs), args[2])
+  const nativeResult = Sodium.crypto_generichash_init(...Array.from(args, mapArgs))
   if (typeof nativeResult === 'string') throw new Error('crypto_generichash_init execution failed: ' + nativeResult + '.')
 
   args[0].set(new Uint8Array(nativeResult))
@@ -217,7 +217,7 @@ function crypto_kdf_keygen (...args) {
 }
 
 function crypto_kdf_derive_from_key (...args) {
-  const nativeResult = Sodium.crypto_kdf_derive_from_key(mapArgs(args[0]), args[1], ...Array.from(args.slice(2), mapArgs))
+  const nativeResult = Sodium.crypto_kdf_derive_from_key(...Array.from(args, mapArgs))
   if (typeof nativeResult === 'string') throw new Error('crypto_kdf_derive_from_key execution failed: ' + nativeResult + '.')
 
   args[0].set(new Uint8Array(nativeResult))
@@ -253,4 +253,3 @@ function vn (x, xi, y, yi, n) {
   for (let i = 0; i < n; i++) d |= x[xi + i] ^ y[yi + i]
   return (1 & ((d - 1) >>> 8)) - 1
 }
-

@@ -477,7 +477,7 @@ RCT_EXPORT_BLOCKING_SYNCHRONOUS_METHOD(
   RN_RESULT_BUFFER_NO_CHECK(ad)
 
   unsigned long long mlen_check = clen - crypto_secretstream_xchacha20poly1305_ABYTES;
-  RN_RESULT_BUFFER(m, mlen_check, ERR_BAD_CIPHERTEXT_LENGTH)
+  RN_RESULT_BUFFER(m, mlen_check, ERR_BAD_MESSAGE_LENGTH)
   unsigned char tag_p_data[1];
   size_t tag_plen = 1;
 
