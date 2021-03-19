@@ -29,7 +29,6 @@ import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.bridge.WritableNativeArray;
 import com.facebook.react.bridge.WritableNativeMap;
 import com.reactnativelibsodium.jni.Sodium;
-import com.reactnativelibsodium.jni.NaCl;
 import com.reactnativelibsodium.helpers.*;
 
 public class SodiumModule extends ReactContextBaseJavaModule {
