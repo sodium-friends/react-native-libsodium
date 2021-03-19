@@ -169,7 +169,11 @@ public class SodiumModule extends ReactContextBaseJavaModule {
   public WritableArray crypto_aead_xchacha20poly1305_ietf_keygen(ReadableArray k) {
     byte[] key = ArgumentsEx.toByteArray(k);
 
-    ArgumentsEx.check(key, Sodium.crypto_aead_xchacha20poly1305_ietf_keybytes(), "ERR_BAD_KEY");
+    try {
+      ArgumentsEx.check(key, Sodium.crypto_aead_xchacha20poly1305_ietf_keybytes(), "ERR_BAD_KEY");
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
 
     Sodium.crypto_aead_xchacha20poly1305_ietf_keygen(key);
 
@@ -195,9 +199,13 @@ public class SodiumModule extends ReactContextBaseJavaModule {
     byte[] _k = ArgumentsEx.toByteArray(k);
     int[] clen_p = new int[1];
 
-    ArgumentsEx.check(_npub, Sodium.crypto_aead_xchacha20poly1305_ietf_npubbytes(), "ERR_BAD_NPUB");
-    ArgumentsEx.check(_k, Sodium.crypto_secretbox_keybytes(), "ERR_BAD_KEY");
-    ArgumentsEx.check(_c, _m.length + Sodium.crypto_aead_xchacha20poly1305_ietf_abytes(), "ERR_BAD_CIPHERTEXT");
+    try {
+      ArgumentsEx.check(_npub, Sodium.crypto_aead_xchacha20poly1305_ietf_npubbytes(), "ERR_BAD_NPUB");
+      ArgumentsEx.check(_k, Sodium.crypto_secretbox_keybytes(), "ERR_BAD_KEY");
+      ArgumentsEx.check(_c, _m.length + Sodium.crypto_aead_xchacha20poly1305_ietf_abytes(), "ERR_BAD_CIPHERTEXT");
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
 
     Sodium.crypto_aead_xchacha20poly1305_ietf_encrypt(
       _c, clen_p,
@@ -218,9 +226,13 @@ public class SodiumModule extends ReactContextBaseJavaModule {
     byte[] _k = ArgumentsEx.toByteArray(k);
     int[] mlen_p = new int[1];
 
-    ArgumentsEx.check(_npub, Sodium.crypto_aead_xchacha20poly1305_ietf_npubbytes(), "ERR_BAD_NPUB");
-    ArgumentsEx.check(_k, Sodium.crypto_secretbox_keybytes(), "ERR_BAD_KEY");
-    ArgumentsEx.check(_m, _c.length - Sodium.crypto_aead_xchacha20poly1305_ietf_abytes(), "ERR_BAD_MSG");
+    try {
+      ArgumentsEx.check(_npub, Sodium.crypto_aead_xchacha20poly1305_ietf_npubbytes(), "ERR_BAD_NPUB");
+      ArgumentsEx.check(_k, Sodium.crypto_secretbox_keybytes(), "ERR_BAD_KEY");
+      ArgumentsEx.check(_m, _c.length - Sodium.crypto_aead_xchacha20poly1305_ietf_abytes(), "ERR_BAD_MSG");
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
 
     Sodium.crypto_aead_xchacha20poly1305_ietf_decrypt(
       _m, mlen_p,
@@ -236,7 +248,11 @@ public class SodiumModule extends ReactContextBaseJavaModule {
   public WritableArray crypto_secretstream_xchacha20poly1305_keygen(ReadableArray k) {
     byte[] key = ArgumentsEx.toByteArray(k);
 
-    ArgumentsEx.check(key, Sodium.crypto_secretstream_xchacha20poly1305_keybytes(), "ERR_BAD_KEY");
+    try {
+      ArgumentsEx.check(key, Sodium.crypto_secretstream_xchacha20poly1305_keybytes(), "ERR_BAD_KEY");
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
 
     Sodium.crypto_secretstream_xchacha20poly1305_keygen(key);
 
@@ -249,9 +265,13 @@ public class SodiumModule extends ReactContextBaseJavaModule {
     byte[] _header = ArgumentsEx.toByteArray(header);
     byte[] _k = ArgumentsEx.toByteArray(k);
 
-    ArgumentsEx.check(_state, Sodium.crypto_secretstream_xchacha20poly1305_statebytes(), "ERR_BAD_STATE");
-    ArgumentsEx.check(_header, Sodium.crypto_secretstream_xchacha20poly1305_headerbytes(), "ERR_BAD_HEADER");
-    ArgumentsEx.check(_k, Sodium.crypto_secretstream_xchacha20poly1305_keybytes(), "ERR_BAD_KEY");
+    try {
+      ArgumentsEx.check(_state, Sodium.crypto_secretstream_xchacha20poly1305_statebytes(), "ERR_BAD_STATE");
+      ArgumentsEx.check(_header, Sodium.crypto_secretstream_xchacha20poly1305_headerbytes(), "ERR_BAD_HEADER");
+      ArgumentsEx.check(_k, Sodium.crypto_secretstream_xchacha20poly1305_keybytes(), "ERR_BAD_KEY");
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
 
     Sodium.crypto_secretstream_xchacha20poly1305_init_push(_state, _header, _k);
 
@@ -278,8 +298,12 @@ public class SodiumModule extends ReactContextBaseJavaModule {
     byte[] _tag = ArgumentsEx.toByteArray(tag);
     int[] clen_p = new int[1];
 
-    ArgumentsEx.check(_state, Sodium.crypto_secretstream_xchacha20poly1305_statebytes(), "ERR_BAD_STATE");
-    ArgumentsEx.check(_m, _c.length - Sodium.crypto_secretstream_xchacha20poly1305_abytes(), "ERR_BAD_CIPHERTEXT_LENGTH");
+    try {
+      ArgumentsEx.check(_state, Sodium.crypto_secretstream_xchacha20poly1305_statebytes(), "ERR_BAD_STATE");
+      ArgumentsEx.check(_m, _c.length - Sodium.crypto_secretstream_xchacha20poly1305_abytes(), "ERR_BAD_CIPHERTEXT_LENGTH");
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
 
     Sodium.crypto_secretstream_xchacha20poly1305_push(_state, _c, clen_p, _m, _m.length, _ad, _ad.length, (short) _tag[0]);
 
@@ -303,9 +327,13 @@ public class SodiumModule extends ReactContextBaseJavaModule {
     byte[] _header = ArgumentsEx.toByteArray(header);
     byte[] _k = ArgumentsEx.toByteArray(k);
 
-    ArgumentsEx.check(_state, Sodium.crypto_secretstream_xchacha20poly1305_statebytes(), "ERR_BAD_STATE");
-    ArgumentsEx.check(_header, Sodium.crypto_secretstream_xchacha20poly1305_headerbytes(), "ERR_BAD_HEADER");
-    ArgumentsEx.check(_k, Sodium.crypto_secretstream_xchacha20poly1305_keybytes(), "ERR_BAD_KEY");
+    try {
+      ArgumentsEx.check(_state, Sodium.crypto_secretstream_xchacha20poly1305_statebytes(), "ERR_BAD_STATE");
+      ArgumentsEx.check(_header, Sodium.crypto_secretstream_xchacha20poly1305_headerbytes(), "ERR_BAD_HEADER");
+      ArgumentsEx.check(_k, Sodium.crypto_secretstream_xchacha20poly1305_keybytes(), "ERR_BAD_KEY");
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
 
     Sodium.crypto_secretstream_xchacha20poly1305_init_pull(_state, _header, _k);
     
@@ -321,8 +349,12 @@ public class SodiumModule extends ReactContextBaseJavaModule {
     byte[] _tag = ArgumentsEx.toByteArray(tag);
     int[] mlen_p = new int[1];
 
-    ArgumentsEx.check(_state, Sodium.crypto_secretstream_xchacha20poly1305_statebytes(), "ERR_BAD_STATE");
-    ArgumentsEx.check(_m, _c.length - Sodium.crypto_secretstream_xchacha20poly1305_abytes(), "ERR_BAD_MESSAGE_LENGTH");
+    try {
+      ArgumentsEx.check(_state, Sodium.crypto_secretstream_xchacha20poly1305_statebytes(), "ERR_BAD_STATE");
+      ArgumentsEx.check(_m, _c.length - Sodium.crypto_secretstream_xchacha20poly1305_abytes(), "ERR_BAD_MESSAGE_LENGTH");
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
 
     Sodium.crypto_secretstream_xchacha20poly1305_pull(_state, _m, mlen_p, _tag, _c, _c.length, _ad, _ad.length);
 
@@ -344,8 +376,12 @@ public class SodiumModule extends ReactContextBaseJavaModule {
   @ReactMethod(isBlockingSynchronousMethod = true)
   public WritableArray crypto_core_ed25519_scalar_random (ReadableArray r) {
     byte[] _r = ArgumentsEx.toByteArray(r);
-  
-    ArgumentsEx.check(_r, Sodium.crypto_core_ed25519_scalarbytes(), "ERR_BAD_SCALAR");
+
+    try {
+      ArgumentsEx.check(_r, Sodium.crypto_core_ed25519_scalarbytes(), "ERR_BAD_SCALAR");
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
 
     Sodium.crypto_core_ed25519_scalar_random(_r);
 
@@ -358,9 +394,13 @@ public class SodiumModule extends ReactContextBaseJavaModule {
     byte[] _p = ArgumentsEx.toByteArray(p);
     byte[] _q = ArgumentsEx.toByteArray(q);
 
-    ArgumentsEx.check(_r, Sodium.crypto_core_ed25519_bytes(), "ERR_BAD_EC_POINT");
-    ArgumentsEx.check(_p, Sodium.crypto_core_ed25519_bytes(), "ERR_BAD_EC_POINT");
-    ArgumentsEx.check(_q, Sodium.crypto_core_ed25519_bytes(), "ERR_BAD_EC_POINT");
+    try {
+      ArgumentsEx.check(_r, Sodium.crypto_core_ed25519_bytes(), "ERR_BAD_EC_POINT");
+      ArgumentsEx.check(_p, Sodium.crypto_core_ed25519_bytes(), "ERR_BAD_EC_POINT");
+      ArgumentsEx.check(_q, Sodium.crypto_core_ed25519_bytes(), "ERR_BAD_EC_POINT");
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
 
     Sodium.crypto_core_ed25519_add(_r, _p, _q);
 
@@ -373,9 +413,13 @@ public class SodiumModule extends ReactContextBaseJavaModule {
     byte[] _p = ArgumentsEx.toByteArray(p);
     byte[] _q = ArgumentsEx.toByteArray(q);
 
-    ArgumentsEx.check(_r, Sodium.crypto_core_ed25519_bytes(), "ERR_BAD_EC_POINT");
-    ArgumentsEx.check(_p, Sodium.crypto_core_ed25519_bytes(), "ERR_BAD_EC_POINT");
-    ArgumentsEx.check(_q, Sodium.crypto_core_ed25519_bytes(), "ERR_BAD_EC_POINT");
+    try {
+      ArgumentsEx.check(_r, Sodium.crypto_core_ed25519_bytes(), "ERR_BAD_EC_POINT");
+      ArgumentsEx.check(_p, Sodium.crypto_core_ed25519_bytes(), "ERR_BAD_EC_POINT");
+      ArgumentsEx.check(_q, Sodium.crypto_core_ed25519_bytes(), "ERR_BAD_EC_POINT");
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
 
     Sodium.crypto_core_ed25519_sub(_r, _p, _q);
 
@@ -387,8 +431,12 @@ public class SodiumModule extends ReactContextBaseJavaModule {
     byte[] _p = ArgumentsEx.toByteArray(p);
     byte[] _r = ArgumentsEx.toByteArray(r);
 
-    ArgumentsEx.check(_p, Sodium.crypto_core_ed25519_bytes(), "ERR_BAD_EC_POINT");
-    ArgumentsEx.check(_r, Sodium.crypto_core_ed25519_uniformbytes(), "ERR_BAD_SEED");
+    try {
+      ArgumentsEx.check(_p, Sodium.crypto_core_ed25519_bytes(), "ERR_BAD_EC_POINT");
+      ArgumentsEx.check(_r, Sodium.crypto_core_ed25519_uniformbytes(), "ERR_BAD_SEED");
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
   
     Sodium.crypto_core_ed25519_from_uniform(_p, _r);
 
@@ -400,12 +448,16 @@ public class SodiumModule extends ReactContextBaseJavaModule {
     byte[] _out = ArgumentsEx.toByteArray(out);
     byte[] _passwd = ArgumentsEx.toByteArray(passwd);
     byte[] _salt = ArgumentsEx.toByteArray(salt);
-  
-    ArgumentsEx.check(_out, Sodium.crypto_pwhash_bytes_min(), Sodium.crypto_pwhash_bytes_max(), "ERR_BAD_OUTPUT");
-    ArgumentsEx.check(_passwd, Sodium.crypto_pwhash_passwd_min(), Sodium.crypto_pwhash_passwd_max(), "ERR_BAD_PWD");
-    ArgumentsEx.check(_salt, Sodium.crypto_pwhash_saltbytes(), "ERR_BAD_SALT");
-    ArgumentsEx.check(opslimit, Sodium.crypto_pwhash_opslimit_min(), Sodium.crypto_pwhash_opslimit_max(), "ERR_BAD_OPS");
-    ArgumentsEx.check(memlimit, Sodium.crypto_pwhash_memlimit_min(), Sodium.crypto_pwhash_memlimit_max(), "ERR_BAD_MEM");
+
+    try {
+      ArgumentsEx.check(_out, Sodium.crypto_pwhash_bytes_min(), Sodium.crypto_pwhash_bytes_max(), "ERR_BAD_OUTPUT");
+      ArgumentsEx.check(_passwd, Sodium.crypto_pwhash_passwd_min(), Sodium.crypto_pwhash_passwd_max(), "ERR_BAD_PWD");
+      ArgumentsEx.check(_salt, Sodium.crypto_pwhash_saltbytes(), "ERR_BAD_SALT");
+      ArgumentsEx.check(opslimit, Sodium.crypto_pwhash_opslimit_min(), Sodium.crypto_pwhash_opslimit_max(), "ERR_BAD_OPS");
+      ArgumentsEx.check(memlimit, Sodium.crypto_pwhash_memlimit_min(), Sodium.crypto_pwhash_memlimit_max(), "ERR_BAD_MEM");
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
 
     int ret = Sodium.crypto_pwhash(_out, _out.length, _passwd, _passwd.length, _salt, opslimit, memlimit, alg);
 
@@ -418,9 +470,13 @@ public class SodiumModule extends ReactContextBaseJavaModule {
     byte[] _n = ArgumentsEx.toByteArray(n);
     byte[] _p = ArgumentsEx.toByteArray(p);
 
-    ArgumentsEx.check(_q, Sodium.crypto_scalarmult_ed25519_bytes(), "ERR_BAD_EC_POINT");
-    ArgumentsEx.check(_n, Sodium.crypto_scalarmult_ed25519_scalarbytes(), "ERR_BAD_SCALAR");
-    ArgumentsEx.check(_p, Sodium.crypto_scalarmult_ed25519_bytes(), "ERR_BAD_EC_POINT");
+    try {
+      ArgumentsEx.check(_q, Sodium.crypto_scalarmult_ed25519_bytes(), "ERR_BAD_EC_POINT");
+      ArgumentsEx.check(_n, Sodium.crypto_scalarmult_ed25519_scalarbytes(), "ERR_BAD_SCALAR");
+      ArgumentsEx.check(_p, Sodium.crypto_scalarmult_ed25519_bytes(), "ERR_BAD_EC_POINT");
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
 
     Sodium.crypto_scalarmult_ed25519(_q, _n, _p);
 
@@ -433,9 +489,13 @@ public class SodiumModule extends ReactContextBaseJavaModule {
     byte[] _n = ArgumentsEx.toByteArray(n);
     byte[] _p = ArgumentsEx.toByteArray(p);
 
-    ArgumentsEx.check(_q, Sodium.crypto_scalarmult_ed25519_bytes(), "ERR_BAD_EC_POINT");
-    ArgumentsEx.check(_n, Sodium.crypto_scalarmult_ed25519_scalarbytes(), "ERR_BAD_SCALAR");
-    ArgumentsEx.check(_p, Sodium.crypto_scalarmult_ed25519_bytes(), "ERR_BAD_EC_POINT");
+    try {
+      ArgumentsEx.check(_q, Sodium.crypto_scalarmult_ed25519_bytes(), "ERR_BAD_EC_POINT");
+      ArgumentsEx.check(_n, Sodium.crypto_scalarmult_ed25519_scalarbytes(), "ERR_BAD_SCALAR");
+      ArgumentsEx.check(_p, Sodium.crypto_scalarmult_ed25519_bytes(), "ERR_BAD_EC_POINT");
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
   
     Sodium.crypto_scalarmult_ed25519_noclamp(_q, _n, _p);
 
@@ -447,8 +507,12 @@ public class SodiumModule extends ReactContextBaseJavaModule {
     byte[] _q = ArgumentsEx.toByteArray(q);
     byte[] _n = ArgumentsEx.toByteArray(n);
 
-    ArgumentsEx.check(_q, Sodium.crypto_scalarmult_ed25519_bytes(), "ERR_BAD_EC_POINT");
-    ArgumentsEx.check(_n, Sodium.crypto_scalarmult_ed25519_scalarbytes(), "ERR_BAD_SCALAR");
+    try {
+      ArgumentsEx.check(_q, Sodium.crypto_scalarmult_ed25519_bytes(), "ERR_BAD_EC_POINT");
+      ArgumentsEx.check(_n, Sodium.crypto_scalarmult_ed25519_scalarbytes(), "ERR_BAD_SCALAR");
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
   
     Sodium.crypto_scalarmult_ed25519_base(_q, _n);
 
@@ -460,8 +524,12 @@ public class SodiumModule extends ReactContextBaseJavaModule {
     byte[] _q = ArgumentsEx.toByteArray(q);
     byte[] _n = ArgumentsEx.toByteArray(n);
 
-    ArgumentsEx.check(_q, Sodium.crypto_scalarmult_ed25519_bytes(), "ERR_BAD_EC_POINT");
-    ArgumentsEx.check(_n, Sodium.crypto_scalarmult_ed25519_scalarbytes(), "ERR_BAD_SCALAR");
+    try {
+      ArgumentsEx.check(_q, Sodium.crypto_scalarmult_ed25519_bytes(), "ERR_BAD_EC_POINT");
+      ArgumentsEx.check(_n, Sodium.crypto_scalarmult_ed25519_scalarbytes(), "ERR_BAD_SCALAR");
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
 
     Sodium.crypto_scalarmult_ed25519_base_noclamp(_q, _n);
 
@@ -473,9 +541,13 @@ public class SodiumModule extends ReactContextBaseJavaModule {
     byte[] _state = ArgumentsEx.toByteArray(state);
     byte[] _key = ArgumentsEx.toByteArray(key);
 
-    ArgumentsEx.check(_state, Sodium.crypto_generichash_statebytes(), "ERR_BAD_STATE");
-    ArgumentsEx.check(_key, Sodium.crypto_generichash_keybytes_min(),
-                            Sodium.crypto_generichash_keybytes_max(), "ERR_BAD_KEY");
+    try {
+      ArgumentsEx.check(_state, Sodium.crypto_generichash_statebytes(), "ERR_BAD_STATE");
+      ArgumentsEx.check(_key, Sodium.crypto_generichash_keybytes_min(),
+                              Sodium.crypto_generichash_keybytes_max(), "ERR_BAD_KEY");
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
 
     Sodium.crypto_generichash_init(_state, _key, _key.length, (int) outlen);
 
@@ -486,8 +558,12 @@ public class SodiumModule extends ReactContextBaseJavaModule {
   public WritableArray crypto_generichash_update (ReadableArray state, ReadableArray in) {
     byte[] _state = ArgumentsEx.toByteArray(state);
     byte[] _in = ArgumentsEx.toByteArray(in);
-  
-    ArgumentsEx.check(_state, Sodium.crypto_generichash_statebytes(), "ERR_BAD_STATE");
+
+    try {
+      ArgumentsEx.check(_state, Sodium.crypto_generichash_statebytes(), "ERR_BAD_STATE");
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
 
     Sodium.crypto_generichash_update(_state, _in, _in.length);
 
@@ -499,7 +575,11 @@ public class SodiumModule extends ReactContextBaseJavaModule {
     byte[] _state = ArgumentsEx.toByteArray(state);
     byte[] _out = ArgumentsEx.toByteArray(out);
 
-    ArgumentsEx.check(_state, Sodium.crypto_generichash_statebytes(), "ERR_BAD_STATE");
+    try {
+      ArgumentsEx.check(_state, Sodium.crypto_generichash_statebytes(), "ERR_BAD_STATE");
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
 
     Sodium.crypto_generichash_final(_state, _out, _out.length);
 
@@ -510,7 +590,11 @@ public class SodiumModule extends ReactContextBaseJavaModule {
   public WritableArray crypto_kdf_keygen (ReadableArray key) {
     byte[] _key = ArgumentsEx.toByteArray(key);
 
-    ArgumentsEx.check(_key, Sodium.crypto_kdf_keybytes(), "ERR_BAD_KEY");
+    try {
+      ArgumentsEx.check(_key, Sodium.crypto_kdf_keybytes(), "ERR_BAD_KEY");
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
 
     Sodium.crypto_kdf_keygen(_key);
 
@@ -522,10 +606,14 @@ public class SodiumModule extends ReactContextBaseJavaModule {
     byte[] _subkey = ArgumentsEx.toByteArray(subkey);
     byte[] _ctx = ArgumentsEx.toByteArray(ctx);
     byte[] _key = ArgumentsEx.toByteArray(key);
-  
-    ArgumentsEx.check(_subkey, Sodium.crypto_kdf_bytes_min(), Sodium.crypto_kdf_bytes_max(), "ERR_BAD_SUBKEY");
-    ArgumentsEx.check(_ctx, Sodium.crypto_kdf_contextbytes(), "ERR_BAD_CONTEXT");
-    ArgumentsEx.check(_key, Sodium.crypto_kdf_keybytes(), "ERR_BAD_KEY");
+
+    try {
+      ArgumentsEx.check(_subkey, Sodium.crypto_kdf_bytes_min(), Sodium.crypto_kdf_bytes_max(), "ERR_BAD_SUBKEY");
+      ArgumentsEx.check(_ctx, Sodium.crypto_kdf_contextbytes(), "ERR_BAD_CONTEXT");
+      ArgumentsEx.check(_key, Sodium.crypto_kdf_keybytes(), "ERR_BAD_KEY");
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
 
     Sodium.crypto_kdf_derive_from_key(_subkey, _subkey.length, subkey_id, _ctx, _key);
 
