@@ -387,7 +387,8 @@ RCT_EXPORT_BLOCKING_SYNCHRONOUS_METHOD(
   RN_ARG_CONST_BUFFER(ctx, crypto_kdf_CONTEXTBYTES, ERR_BAD_CONTEXT)
   RN_ARG_BUFFER(key, crypto_kdf_KEYBYTES, ERR_BAD_KEY)
 
-  RN_CHECK_FAILURE(crypto_kdf_derive_from_key(subkey_data, subkeylen,
+  RN_CHECK_FAILURE(crypto_kdf_derive_from_key(subkey_data,
+                                              subkeylen,
                                               [subkey_id unsignedLongLongValue],
                                               ctx_data,
                                               key_data))
