@@ -130,17 +130,17 @@ tasks.withType(Test) { task ->
   task.dependsOn('sodiumjniSharedLibrary')
 }
 
-task('generateSWIGsource') {
-  inputs.dir   fileTree(dir: "${projectDir}/jni")
-  outputs.dir("${projectDir}/src/main/java/org/libsodium/jni")
-  outputs.file "${projectDir}/jni/sodium_wrap.c"
-  doFirst {
-    exec {
-      workingDir "${projectDir}/jni"
-      commandLine 'swig','-java','-package','com.reactnativelibsodium.jni','-outdir','../src/main/java/com/reactnativelibsodium/jni','sodium.i'
-    }
-  }
-}
+// task('generateSWIGsource') {
+//   inputs.dir   fileTree(dir: "${projectDir}/jni")
+//   outputs.dir("${projectDir}/src/main/java/org/libsodium/jni")
+//   outputs.file "${projectDir}/jni/sodium_wrap.c"
+//   doFirst {
+//     exec {
+//       workingDir "${projectDir}/jni"
+//       commandLine 'swig','-java','-package','com.reactnativelibsodium.jni','-outdir','../src/main/java/com/reactnativelibsodium/jni','sodium.i'
+//     }
+//   }
+// }
 
 gradle.projectsEvaluated {
   generateJsonModelDebug.dependsOn   'generateSWIGsource'
