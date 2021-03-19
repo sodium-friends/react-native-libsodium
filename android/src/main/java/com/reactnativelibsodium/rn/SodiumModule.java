@@ -246,7 +246,7 @@ public class SodiumModule extends ReactContextBaseJavaModule {
     byte[] _header = ArgumentsEx.toByteArray(header);
     byte[] _k = ArgumentsEx.toByteArray(k);
 
-    ArgumentsEx.check(_state, Sodium.crypto_secretstream_xchacha20poly1305_statebytes()(), "ERR_BAD_STATE");
+    ArgumentsEx.check(_state, Sodium.crypto_secretstream_xchacha20poly1305_statebytes(), "ERR_BAD_STATE");
     ArgumentsEx.check(_header, Sodium.crypto_secretstream_xchacha20poly1305_headerbytes(), "ERR_BAD_HEADER");
     ArgumentsEx.check(_k, Sodium.crypto_secretstream_xchacha20poly1305_keybytes(), "ERR_BAD_KEY");
 
@@ -300,7 +300,7 @@ public class SodiumModule extends ReactContextBaseJavaModule {
     byte[] _header = ArgumentsEx.toByteArray(header);
     byte[] _k = ArgumentsEx.toByteArray(k);
 
-    ArgumentsEx.check(_state, Sodium.crypto_secretstream_xchacha20poly1305_statebytes()(), "ERR_BAD_STATE");
+    ArgumentsEx.check(_state, Sodium.crypto_secretstream_xchacha20poly1305_statebytes(), "ERR_BAD_STATE");
     ArgumentsEx.check(_header, Sodium.crypto_secretstream_xchacha20poly1305_headerbytes(), "ERR_BAD_HEADER");
     ArgumentsEx.check(_k, Sodium.crypto_secretstream_xchacha20poly1305_keybytes(), "ERR_BAD_KEY");
 
