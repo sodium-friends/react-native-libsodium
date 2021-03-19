@@ -163,35 +163,6 @@ public class SodiumModule extends ReactContextBaseJavaModule {
     return constants;
   }
 
-  @ReactMethod
-  public WritableArray noop(ReadableArray in) {
-
-    byte[] key = ArgumentsEx.toByteArray(in);
-
-    return ArrayUtil.toWritableArray(key);
-  }
-
-  @ReactMethod(isBlockingSynchronousMethod = true)
-  public WritableArray crypto_generichash_batch(ReadableArray output, ReadableMap batch, ReadableArray key) {
-    byte[] state = new byte[(int) this.sodium.crypto_generichash_statebytes()];
-    byte[] _key = ArgumentsEx.toByteArray(key);
-    sodium.crypto_generichash_init(state, _key, _key.length, output.size());
-
-    int i = 1;
-    ReadableMapKeySetIterator ite = batch.keySetIterator();
-    while (ite.hasNextKey()) {
-      String nextKey = Integer.toString(i++);
-      byte[] toHash = ArgumentsEx.toByteArray(batch.getArray(nextKey));
-      this.sodium.crypto_generichash_update(state, toHash, toHash.length);
-    }
-
-    byte[] result = new byte[(int) this.sodium.crypto_generichash_bytes()];
-    byte[] resultBuf = result;
-    this.sodium.crypto_generichash_final(state, resultBuf, resultBuf.length);
-
-    return ArrayUtil.toWritableArray(result);
-  }
-
   @ReactMethod(isBlockingSynchronousMethod = true)
   public WritableArray crypto_aead_xchacha20poly1305_ietf_keygen(ReadableArray k) {
     byte[] key = ArgumentsEx.toByteArray(k);
