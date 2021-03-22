@@ -187,7 +187,7 @@ function crypto_secretstream_xchacha20poly1305_pull (...args) {
 
   const resultBuf = new Uint8Array(nativeResult)
   args[0].set(resultBuf.subarray(0, constants.crypto_secretstream_xchacha20poly1305_STATEBYTES))    // state
-  args[2] = resultBuf[constants.crypto_secretstream_xchacha20poly1305_STATEBYTES]                   // tag
+  args[2][0] = resultBuf[constants.crypto_secretstream_xchacha20poly1305_STATEBYTES]                // tag
   args[1].set(resultBuf.subarray(constants.crypto_secretstream_xchacha20poly1305_STATEBYTES + 1))   // message
 }
 
