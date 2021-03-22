@@ -8,9 +8,6 @@ import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.Callback;
 
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-
 import java.nio.*;
 import java.io.*;
 import java.util.Collections;
@@ -35,12 +32,6 @@ import com.reactnativelibsodium.jni.Sodium;
 import com.reactnativelibsodium.helpers.*;
 
 public class SodiumModule extends ReactContextBaseJavaModule {
-
-  private static final ExecutorService executor = Executors.newSingleThreadExecutor();
-
-  private void runOnExecutor(Runnable runnable) {
-    executor.execute(runnable);
-  }
 
   public SodiumModule(ReactApplicationContext reactContext) {
     super(reactContext);
