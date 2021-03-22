@@ -761,10 +761,10 @@ Java_com_reactnativelibsodium_jni_SodiumJNI_sodium_1base642bin(JNIEnv *jenv, jcl
 
     unsigned char *bin = (unsigned char *) (*jenv)->GetByteArrayElements(jenv, j_bin, 0);
     jint *len = (*jenv)->GetIntArrayElements(jenv, j_bin_len, 0);
-    unsigned char *b64 = as_unsigned_char_array(jenv, j_b64);
-    unsigned char *ignore = as_unsigned_char_array(jenv, j_ignore);
-    void *memory = malloc(sizeof(int));
-    int *ptr = (int *)memory;
+    const char *b64 = as_const_char_array(jenv, j_b64);
+    const char *ignore = as_const_char_array(jenv, j_ignore);
+    void *memory = malloc(sizeof(size_t));
+    size_t *ptr = (size_t *)memory;
 
     int result = sodium_base642bin(bin, j_bin_maxlen, b64, j_b64_len, ignore,
                                    ptr, j_b64_end, j_variant);
@@ -775,16 +775,15 @@ Java_com_reactnativelibsodium_jni_SodiumJNI_sodium_1base642bin(JNIEnv *jenv, jcl
     return (jint)result;
 }
 
-JNIEXPORT jchar JNICALL
+JNIEXPORT void JNICALL
 Java_com_reactnativelibsodium_jni_SodiumJNI_sodium_1bin2hex(JNIEnv *jenv, jclass clazz, jbyteArray j_hex,
                                                  jint j_hex_maxlen, jbyteArray j_bin, jint j_bin_len) {
 
-    unsigned char *hex = (unsigned char *) (*jenv)->GetByteArrayElements(jenv, j_hex, 0);
+    char *hex = (char *) (*jenv)->GetByteArrayElements(jenv, j_hex, 0);
     unsigned char *bin = as_unsigned_char_array(jenv, j_bin);
 
-    int result = sodium_bin2hex(hex, j_hex_maxlen, bin, j_bin_len);
+    sodium_bin2hex(hex, j_hex_maxlen, bin, j_bin_len);
     (*jenv)->ReleaseByteArrayElements(jenv, j_hex, (jbyte *) hex, 0);
-    return (jint)result;
 }
 
 JNIEXPORT jint JNICALL
@@ -795,10 +794,10 @@ Java_com_reactnativelibsodium_jni_SodiumJNI_sodium_1hex2bin(JNIEnv *jenv, jclass
 
     unsigned char *bin = (unsigned char *) (*jenv)->GetByteArrayElements(jenv, j_bin, 0);
     jint *len = (*jenv)->GetIntArrayElements(jenv, j_bin_len, 0);
-    unsigned char *hex = as_unsigned_char_array(jenv, j_hex);
-    unsigned char *ignore = as_unsigned_char_array(jenv, j_ignore);
-    void *memory = malloc(sizeof(int));
-    int *ptr = (int *)memory;
+    const char *hex = as_const_char_array(jenv, j_hex);
+    const char *ignore = as_const_char_array(jenv, j_ignore);
+    void *memory = malloc(sizeof(size_t));
+    size_t *ptr = (size_t *)memory;
 
     int result = sodium_hex2bin(bin, j_bin_maxlen, hex, j_hex_len, ignore, ptr, j_hex_end);
     (*jenv)->ReleaseByteArrayElements(jenv, j_bin, (jbyte *) bin, 0);
@@ -808,17 +807,16 @@ Java_com_reactnativelibsodium_jni_SodiumJNI_sodium_1hex2bin(JNIEnv *jenv, jclass
     return (jint)result;
 }
 
-JNIEXPORT jchar JNICALL
+JNIEXPORT void JNICALL
 Java_com_reactnativelibsodium_jni_SodiumJNI_sodium_1bin2base64(JNIEnv *jenv, jclass clazz, jbyteArray j_b64,
                                                     jint j_b64_maxlen, jbyteArray j_bin, jint j_bin_len,
                                                     jint j_variant) {
 
-    unsigned char *b64 = (unsigned char *) (*jenv)->GetByteArrayElements(jenv, j_b64, 0);
+    char *b64 = (char *) (*jenv)->GetByteArrayElements(jenv, j_b64, 0);
     unsigned char *bin = as_unsigned_char_array(jenv, j_bin);
 
-    int result = sodium_bin2base64(b64, j_b64_maxlen, bin, j_bin_len, j_variant);
+    sodium_bin2base64(b64, j_b64_maxlen, bin, j_bin_len, j_variant);
     (*jenv)->ReleaseByteArrayElements(jenv, j_b64, (jbyte *) b64, 0);
-    return (jint)result;
 }
 
 JNIEXPORT jint JNICALL
