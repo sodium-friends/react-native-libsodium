@@ -17,6 +17,36 @@ unsigned char* as_unsigned_char_array(JNIEnv *jenv, jbyteArray array) {
     return buf;
 }
 
+char* as_char_array(JNIEnv *jenv, jbyteArray array) {
+    if (array == NULL) {
+        return NULL;
+    }
+    int len = (*jenv)->GetArrayLength (jenv, array);
+    char* buf = malloc(len);
+    (*jenv)->GetByteArrayRegion (jenv, array, 0, len, (jbyte*)(buf));
+    return buf;
+}
+
+const unsigned char* as_const_unsigned_char_array(JNIEnv *jenv, jbyteArray array) {
+    if (array == NULL) {
+        return NULL;
+    }
+    int len = (*jenv)->GetArrayLength (jenv, array);
+    const unsigned char* buf = malloc(len);
+    (*jenv)->GetByteArrayRegion (jenv, array, 0, len, (jbyte*)(buf));
+    return buf;
+}
+
+const char* as_const_char_array(JNIEnv *jenv, jbyteArray array) {
+    if (array == NULL) {
+        return NULL;
+    }
+    int len = (*jenv)->GetArrayLength (jenv, array);
+    const char* buf = malloc(len);
+    (*jenv)->GetByteArrayRegion (jenv, array, 0, len, (jbyte*)(buf));
+    return buf;
+}
+
 /* *****************************************************************************
  * Sodium-specific functions
  * *****************************************************************************
@@ -83,7 +113,7 @@ JNIEXPORT jint JNICALL Java_com_reactnativelibsodium_jni_SodiumJNI_crypto_1gener
                                                                                   jint  j_klen,
                                                                                   jint j_outlen) {
 
-    unsigned char *state = (crypto_generichash_state *) (*jenv)->GetByteArrayElements(jenv, j_state, 0);
+    crypto_generichash_state *state = (crypto_generichash_state *) (*jenv)->GetByteArrayElements(jenv, j_state, 0);
     unsigned char *k = (unsigned char *) (*jenv)->GetByteArrayElements(jenv, j_k, 0);
 
     int result = crypto_generichash_init(state, k, j_klen, j_outlen);
@@ -97,7 +127,7 @@ JNIEXPORT jint JNICALL Java_com_reactnativelibsodium_jni_SodiumJNI_crypto_1gener
                                                                                     jbyteArray  j_in,
                                                                                     jint  j_inlen) {
 
-    unsigned char *state = (crypto_generichash_state *) (*jenv)->GetByteArrayElements(jenv, j_state, 0);
+    crypto_generichash_state *state = (crypto_generichash_state *) (*jenv)->GetByteArrayElements(jenv, j_state, 0);
     unsigned char *in = (unsigned char *) (*jenv)->GetByteArrayElements(jenv, j_in, 0);
 
     int result = crypto_generichash_update(state, in, j_inlen);
@@ -112,7 +142,7 @@ JNIEXPORT jint JNICALL Java_com_reactnativelibsodium_jni_SodiumJNI_crypto_1gener
                                                                                     jbyteArray  j_out,
                                                                                     jint  j_outlen) {
 
-    unsigned char *state = (crypto_generichash_state *) as_unsigned_char_array(jenv, j_state);
+    crypto_generichash_state *state = (crypto_generichash_state *) as_unsigned_char_array(jenv, j_state);
     unsigned char *out = (unsigned char *) (*jenv)->GetByteArrayElements(jenv, j_out, 0);
 
     int result = crypto_generichash_final(state, out, j_outlen);
@@ -232,7 +262,7 @@ JNIEXPORT jint JNICALL Java_com_reactnativelibsodium_jni_SodiumJNI_crypto_1pwhas
 JNIEXPORT jint JNICALL Java_com_reactnativelibsodium_jni_SodiumJNI_crypto_1aead_1xchacha20poly1305_1ietf_1encrypt(JNIEnv *jenv,
                                                                                 jclass clazz,
                                                                                 jbyteArray j_c,
-                                                                                jintArray  j_clen,
+                                                                                jintArray  j_clen_p,
                                                                                 jbyteArray j_m,
                                                                                 jint j_mlen,
                                                                                 jbyteArray j_ad,
@@ -242,14 +272,16 @@ JNIEXPORT jint JNICALL Java_com_reactnativelibsodium_jni_SodiumJNI_crypto_1aead_
                                                                                 jbyteArray j_k) {
 
     unsigned char *c = (unsigned char *) (*jenv)->GetByteArrayElements(jenv, j_c, 0);
+    unsigned long long *clen_p = (unsigned long long *) (*jenv)->GetIntArrayElements(jenv, j_clen_p, 0);
     unsigned char *m = as_unsigned_char_array(jenv, j_m);
     unsigned char *npub = as_unsigned_char_array(jenv, j_npub);
     unsigned char *ad = as_unsigned_char_array(jenv, j_ad);
     unsigned char *nsec = as_unsigned_char_array(jenv, j_nsec);
     unsigned char *k = as_unsigned_char_array(jenv, j_k);
 
-    int result = crypto_aead_xchacha20poly1305_ietf_encrypt(c, j_clen, m, j_mlen, ad, j_adlen, nsec, npub, k);
+    int result = crypto_aead_xchacha20poly1305_ietf_encrypt(c, clen_p, m, j_mlen, ad, j_adlen, nsec, npub, k);
     (*jenv)->ReleaseByteArrayElements(jenv, j_c, (jbyte *) c, 0);
+    (*jenv)->ReleaseIntArrayElements(jenv, j_clen_p, (jint *) clen_p, 0);
     return (jint)result;
 }
 
@@ -267,6 +299,7 @@ Java_com_reactnativelibsodium_jni_SodiumJNI_crypto_1aead_1xchacha20poly1305_1iet
                                                                                 jbyteArray j_k) {
     unsigned char *c = as_unsigned_char_array(jenv, j_c);
     unsigned char *m = (unsigned char *) (*jenv)->GetByteArrayElements(jenv, j_m, 0);
+    unsigned long long *mlen_p = (unsigned long long *) (*jenv)->GetIntArrayElements(jenv, j_mlen_p, 0);
     unsigned char *npub = as_unsigned_char_array(jenv, j_npub);
     unsigned char *ad = as_unsigned_char_array(jenv, j_ad);
     unsigned char *nsec = as_unsigned_char_array(jenv, j_nsec);
@@ -274,17 +307,17 @@ Java_com_reactnativelibsodium_jni_SodiumJNI_crypto_1aead_1xchacha20poly1305_1iet
 
     int result = crypto_aead_xchacha20poly1305_ietf_decrypt(m, j_mlen_p, nsec, c, j_clen, ad, j_adlen, npub, k);
     (*jenv)->ReleaseByteArrayElements(jenv, j_m, (jbyte *) m, 0);
+    (*jenv)->ReleaseIntArrayElements(jenv, j_mlen_p, (jint *) mlen_p, 0);
     return (jint)result;
 }
 
-JNIEXPORT jchar JNICALL
+JNIEXPORT void JNICALL
 Java_com_reactnativelibsodium_jni_SodiumJNI_crypto_1aead_1xchacha20poly1305_1ietf_1keygen(JNIEnv *jenv,
                                                                                jclass clazz,
                                                                                jbyteArray j_k) {
   unsigned char *k = (unsigned char *) (*jenv)->GetByteArrayElements(jenv, j_k, 0);
   crypto_aead_xchacha20poly1305_ietf_keygen(k);
   (*jenv)->ReleaseByteArrayElements(jenv, j_k, (jbyte *) k, 0);
-  return k;
 }
 
 JNIEXPORT jint JNICALL
@@ -350,7 +383,7 @@ JNIEXPORT jint JNICALL Java_com_reactnativelibsodium_jni_SodiumJNI_crypto_1secre
                                                                                   jbyteArray  j_m,
                                                                                   jint  j_mlen,
                                                                                   jbyteArray  j_n,
-                                                                                  jint  j_k) {
+                                                                                  jbyteArray j_k) {
 
     unsigned char *c = (unsigned char *) (*jenv)->GetByteArrayElements(jenv, j_c, 0);
     unsigned char *m = as_unsigned_char_array(jenv, j_m);
@@ -421,14 +454,13 @@ Java_com_reactnativelibsodium_jni_SodiumJNI_crypto_1secretstream_1xchacha20poly1
     return (jint)crypto_secretstream_xchacha20poly1305_TAG_FINAL;
 }
 
-JNIEXPORT jchar JNICALL
+JNIEXPORT void JNICALL
 Java_com_reactnativelibsodium_jni_SodiumJNI_crypto_1secretstream_1xchacha20poly1305_1keygen(JNIEnv *jenv,
                                                                                  jclass clazz,
                                                                                  jbyteArray j_k) {
   unsigned char *k = (unsigned char *) (*jenv)->GetByteArrayElements(jenv, j_k, 0);
   crypto_secretstream_xchacha20poly1305_keygen(k);
   (*jenv)->ReleaseByteArrayElements(jenv, j_k, (jbyte *) k, 0);
-  return k;
 }
 
 JNIEXPORT jint JNICALL Java_com_reactnativelibsodium_jni_SodiumJNI_crypto_1secretstream_1xchacha20poly1305_1init_1pull(JNIEnv *jenv,
@@ -437,7 +469,7 @@ JNIEXPORT jint JNICALL Java_com_reactnativelibsodium_jni_SodiumJNI_crypto_1secre
                                                                                                             jbyteArray  j_header,
                                                                                                             jbyteArray j_k) {
 
-    unsigned char *state = (crypto_secretstream_xchacha20poly1305_state *) (*jenv)->GetByteArrayElements(jenv, j_state, 0);
+    crypto_secretstream_xchacha20poly1305_state *state = (crypto_secretstream_xchacha20poly1305_state *) (*jenv)->GetByteArrayElements(jenv, j_state, 0);
     unsigned char *header = as_unsigned_char_array(jenv, j_header);
     unsigned char *k = as_unsigned_char_array(jenv, j_k);
 
@@ -534,7 +566,7 @@ JNIEXPORT jint JNICALL Java_com_reactnativelibsodium_jni_SodiumJNI_crypto_1kdf_1
   return (jint)crypto_kdf_CONTEXTBYTES;
 }
 
-JNIEXPORT jchar JNICALL
+JNIEXPORT void JNICALL
 Java_com_reactnativelibsodium_jni_SodiumJNI_crypto_1kdf_1keygen(JNIEnv *jenv,
                                                      jclass clazz,
                                                      jbyteArray j_k) {
@@ -542,7 +574,6 @@ Java_com_reactnativelibsodium_jni_SodiumJNI_crypto_1kdf_1keygen(JNIEnv *jenv,
   unsigned char *k = (unsigned char *) (*jenv)->GetByteArrayElements(jenv, j_k, 0);
   crypto_kdf_keygen(k);
   (*jenv)->ReleaseByteArrayElements(jenv, j_k, (jbyte *) k, 0);
-  return k;
 }
 
 
@@ -556,7 +587,7 @@ Java_com_reactnativelibsodium_jni_SodiumJNI_crypto_1kdf_1derive_1from_1key(JNIEn
                                                      jbyteArray j_k) {
 
   unsigned char *subkey = (unsigned char *) (*jenv)->GetByteArrayElements(jenv, j_subkey, 0);
-  unsigned char *ctx = as_unsigned_char_array(jenv, j_ctx);
+  const char *ctx = as_const_char_array(jenv, j_ctx);
   unsigned char *k = as_unsigned_char_array(jenv, j_k);
   int result = crypto_kdf_derive_from_key(subkey, j_subkeylen, j_subkey_id, ctx, k);
   (*jenv)->ReleaseByteArrayElements(jenv, j_subkey, (jbyte *) subkey, 0);
@@ -584,14 +615,13 @@ JNIEXPORT jint JNICALL Java_com_reactnativelibsodium_jni_SodiumJNI_crypto_1core_
   return (jint)crypto_core_ed25519_NONREDUCEDSCALARBYTES;
 }
 
-JNIEXPORT jchar JNICALL Java_com_reactnativelibsodium_jni_SodiumJNI_crypto_1core_1ed25519_1scalar_1random(JNIEnv *jenv,
+JNIEXPORT void JNICALL Java_com_reactnativelibsodium_jni_SodiumJNI_crypto_1core_1ed25519_1scalar_1random(JNIEnv *jenv,
                                                                                               jclass jcls,
                                                                                               jbyteArray j_r) {
 
   unsigned char *r = (unsigned char *) (*jenv)->GetByteArrayElements(jenv, j_r, 0);
   crypto_core_ed25519_scalar_random(r);
   (*jenv)->ReleaseByteArrayElements(jenv, j_r, (jbyte *) r, 0);
-  return r;
 }
 
 JNIEXPORT jint JNICALL Java_com_reactnativelibsodium_jni_SodiumJNI_crypto_1core_1ed25519_1add(JNIEnv *jenv,
