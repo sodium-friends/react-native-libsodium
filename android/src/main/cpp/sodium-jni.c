@@ -452,13 +452,13 @@ JNIEXPORT jint JNICALL Java_com_reactnativelibsodium_jni_SodiumJNI_crypto_1secre
                                                                                                             jbyteArray  j_header,
                                                                                                             jbyteArray j_k) {
 
-    unsigned char *state = (crypto_secretstream_xchacha20poly1305_state *) (*jenv)->GetByteArrayElements(jenv, j_state, 0);
+    crypto_secretstream_xchacha20poly1305_state *state = (crypto_secretstream_xchacha20poly1305_state *) (*jenv)->GetByteArrayElements(jenv, j_state, 0);
     unsigned char *header = (unsigned char *) (*jenv)->GetByteArrayElements(jenv, j_header, 0);
     unsigned char *k = as_unsigned_char_array(jenv, j_k);
 
     int result = crypto_secretstream_xchacha20poly1305_init_push(state, header, k);
     (*jenv)->ReleaseByteArrayElements(jenv, j_state, (jbyte *) state, 0);
-    (*jenv)->ReleaseByteArrayElements(jenv, j_header, (jbyte *) state, 0);
+    (*jenv)->ReleaseByteArrayElements(jenv, j_header, (jbyte *) header, 0);
     return (jint)result;
 }
 
@@ -471,16 +471,19 @@ JNIEXPORT jint JNICALL Java_com_reactnativelibsodium_jni_SodiumJNI_crypto_1secre
                                                                                                       jint  j_mlen,
                                                                                                       jbyteArray  j_ad,
                                                                                                       jint  j_adlen,
-                                                                                                      jint j_tag) {
+                                                                                                      jbyteArray j_tag) {
 
-    unsigned char *state = (crypto_secretstream_xchacha20poly1305_state *) (*jenv)->GetByteArrayElements(jenv, j_state, 0);
+    crypto_secretstream_xchacha20poly1305_state *state = (crypto_secretstream_xchacha20poly1305_state *) (*jenv)->GetByteArrayElements(jenv, j_state, 0);
     unsigned char *c = (unsigned char *) (*jenv)->GetByteArrayElements(jenv, j_c, 0);
+    unsigned long long *clen_p = (unsigned long long *) (*jenv)->GetIntArrayElements(jenv, j_clen_p, 0);
     unsigned char *m = as_unsigned_char_array(jenv, j_m);
     unsigned char *ad = as_unsigned_char_array(jenv, j_ad);
+    unsigned char *tag = as_unsigned_char_array(jenv, j_tag);
 
-    int result = crypto_secretstream_xchacha20poly1305_push(state, c, j_clen_p, m, j_mlen, ad, j_adlen, j_tag);
+    int result = crypto_secretstream_xchacha20poly1305_push(state, c, clen_p, m, j_mlen, ad, j_adlen, tag[0]);
     (*jenv)->ReleaseByteArrayElements(jenv, j_state, (jbyte *) state, 0);
     (*jenv)->ReleaseByteArrayElements(jenv, j_c, (jbyte *) c, 0);
+    (*jenv)->ReleaseIntArrayElements(jenv, j_clen_p, (jint *) clen_p, 0);
     return (jint)result;
 }
 
@@ -495,15 +498,17 @@ JNIEXPORT jint JNICALL Java_com_reactnativelibsodium_jni_SodiumJNI_crypto_1secre
                                                                                                       jbyteArray  j_ad,
                                                                                                       jint  j_adlen) {
 
-    unsigned char *state = (crypto_secretstream_xchacha20poly1305_state *) (*jenv)->GetByteArrayElements(jenv, j_state, 0);
+    crypto_secretstream_xchacha20poly1305_state *state = (crypto_secretstream_xchacha20poly1305_state *) (*jenv)->GetByteArrayElements(jenv, j_state, 0);
     unsigned char *m = (unsigned char *) (*jenv)->GetByteArrayElements(jenv, j_m, 0);
+    unsigned long long *mlen_p = (unsigned long long *) (*jenv)->GetIntArrayElements(jenv, j_mlen_p, 0);
     unsigned char *tag = (unsigned char *) (*jenv)->GetByteArrayElements(jenv, j_tag_p, 0);
     unsigned char *c = as_unsigned_char_array(jenv, j_c);
     unsigned char *ad = as_unsigned_char_array(jenv, j_ad);
 
-    int result = crypto_secretstream_xchacha20poly1305_push(state, m, j_mlen_p, tag, c, j_clen, ad, j_adlen);
+    int result = crypto_secretstream_xchacha20poly1305_pull(state, m, mlen_p, tag, c, j_clen, ad, j_adlen);
     (*jenv)->ReleaseByteArrayElements(jenv, j_state, (jbyte *) state, 0);
     (*jenv)->ReleaseByteArrayElements(jenv, j_m, (jbyte *) m, 0);
+    (*jenv)->ReleaseIntArrayElements(jenv, j_mlen_p, (jint *) mlen_p, 0);
     (*jenv)->ReleaseByteArrayElements(jenv, j_tag_p, (jbyte *) tag, 0);
     return (jint)result;
 }

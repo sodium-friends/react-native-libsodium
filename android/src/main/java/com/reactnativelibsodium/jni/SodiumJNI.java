@@ -321,7 +321,7 @@ public class SodiumJNI {
   public final static native int crypto_secretstream_xchacha20poly1305_messagebytes_max();
   public final static native void crypto_secretstream_xchacha20poly1305_keygen(byte[] jarg1);
   public final static native int crypto_secretstream_xchacha20poly1305_init_push(byte[] jarg1, byte[] jarg2, byte[] jarg3);
-  public final static native int crypto_secretstream_xchacha20poly1305_push(byte[] jarg1, byte[] jarg2, int[] jarg3, byte[] jarg4, int jarg5, byte[] jarg6, int jarg7, short jarg8);
+  public final static native int crypto_secretstream_xchacha20poly1305_push(byte[] jarg1, byte[] jarg2, int[] jarg3, byte[] jarg4, int jarg5, byte[] jarg6, int jarg7, byte[] jarg8);
   public final static native int crypto_secretstream_xchacha20poly1305_init_pull(byte[] jarg1, byte[] jarg2, byte[] jarg3);
   public final static native int crypto_secretstream_xchacha20poly1305_pull(byte[] jarg1, byte[] jarg2, int[] jarg3, byte[] jarg4, byte[] jarg5, int jarg6, byte[] jarg7, int jarg8);
   public final static native void crypto_secretstream_xchacha20poly1305_rekey(byte[] jarg1);

@@ -305,7 +305,7 @@ public class SodiumModule extends ReactContextBaseJavaModule {
       e.printStackTrace();
     }
 
-    Sodium.crypto_secretstream_xchacha20poly1305_push(_state, _c, clen_p, _m, _m.length, _ad, _ad.length, (short) _tag[0]);
+    Sodium.crypto_secretstream_xchacha20poly1305_push(_state, _c, clen_p, _m, _m.length, _ad, _ad.length, _tag);
 
     ByteArrayOutputStream outputStream = new ByteArrayOutputStream( );
 
