@@ -130,7 +130,7 @@ RCT_EXPORT_BLOCKING_SYNCHRONOUS_METHOD(
   crypto_secretbox_easy:(NSArray*)c m:(NSArray*)m n:(NSArray*)n k:(NSArray*)k)
 {
   RN_ARG_BUFFER(k, crypto_secretbox_KEYBYTES, ERR_BAD_KEY)
-  RN_ARG_BUFFER(n, crypto_secretbox_NONCEBYTES, ERR_BAD_KEY)
+  RN_ARG_BUFFER(n, crypto_secretbox_NONCEBYTES, ERR_BAD_NONCE)
   RN_ARG_BUFFER_NO_CHECK(m)
 
   unsigned long long clen_check = mlen + crypto_secretbox_MACBYTES;
@@ -387,7 +387,8 @@ RCT_EXPORT_BLOCKING_SYNCHRONOUS_METHOD(
   RN_ARG_CONST_BUFFER(ctx, crypto_kdf_CONTEXTBYTES, ERR_BAD_CONTEXT)
   RN_ARG_BUFFER(key, crypto_kdf_KEYBYTES, ERR_BAD_KEY)
 
-  RN_CHECK_FAILURE(crypto_kdf_derive_from_key(subkey_data, subkeylen,
+  RN_CHECK_FAILURE(crypto_kdf_derive_from_key(subkey_data,
+                                              subkeylen,
                                               [subkey_id unsignedLongLongValue],
                                               ctx_data,
                                               key_data))
