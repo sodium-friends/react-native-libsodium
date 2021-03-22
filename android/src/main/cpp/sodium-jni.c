@@ -305,7 +305,7 @@ Java_com_reactnativelibsodium_jni_SodiumJNI_crypto_1aead_1xchacha20poly1305_1iet
     unsigned char *nsec = as_unsigned_char_array(jenv, j_nsec);
     unsigned char *k = as_unsigned_char_array(jenv, j_k);
 
-    int result = crypto_aead_xchacha20poly1305_ietf_decrypt(m, j_mlen_p, nsec, c, j_clen, ad, j_adlen, npub, k);
+    int result = crypto_aead_xchacha20poly1305_ietf_decrypt(m, mlen_p, nsec, c, j_clen, ad, j_adlen, npub, k);
     (*jenv)->ReleaseByteArrayElements(jenv, j_m, (jbyte *) m, 0);
     (*jenv)->ReleaseIntArrayElements(jenv, j_mlen_p, (jint *) mlen_p, 0);
     return (jint)result;
