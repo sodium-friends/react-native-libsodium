@@ -31,29 +31,61 @@ If you encounter a libsodium error that doesn't have a corresponding error type 
 
 In order to be able to call functions from the native C library in React-Native, we must make bindings from the Native language of our target platforms, Java on Android and Objective-C/Swift on iOS, to the prebuilt dynamic library compiled from the C library.
 
-These bindings may be found here for [iOS](./ios/RCTSodium/RCTSodium.m) and [Android](./android/src/main/java/com/reactnativelibsodium/jni/SodiumJNI.java).
+These bindings may be found [here for [iOS](./ios/RCTSodium/RCTSodium.m) and .
 
 ### JNI
 
-For Java we use [SWIG](http://www.swig.org/) to generate [Java Native Interface](https://developer.android.com/training/articles/perf-jni) (JNI) bindings.
+Our JNI [bindings](./android/src/main/cpp/sodium-jni.c) are written in C++ and accessed via the interface defined in [SodiumJNI.java](./android/src/main/java/com/reactnativelibsodium/jni/SodiumJNI.java).
 
-In practice, this makes generating native bindings as easy as editing [sodium.i](./andoird/jni/sodium.i), uncommenting the exports you are interested in. Gradle shall take care of the rest when building the library.
+For most methods, the process of writing these bindings is straightforward. Inputs are typically received from Java as either `jbyteArray`, `jintArray` or `jint`.
 
-If you would rather manually generate the bindings, the full procedure is as follows:
+#### Buffers
 
-1. Go to the JNI folder:
-```cd ./android/jni```
-2. Install SWIG :
-```./installswig.sh```
-3. SWIG shall read the file `sodium.i` to find which bindings should be generated. All libsodium header files have been copied to `sodium.i`, so find the functions/constants you are interested in and uncomment those lines.
-4. Generate the bindings:
-```./compile.sh```
+Libsodium mostly operates on memory so buffers are the most common argument type. Buffers will be passed as `jbyteAray` and are handled in one of two ways, depending on if the memory is returned or not.
 
-If you encounter errors, it shall likely be due to wrong paths for `SODIUM_LIB_DIR`. Read the errors carefully and make sure the environment variable `TARGET_HOST` has been set
+For memory that is only consumed and not returned to java, helpers are provided: `as_[const_][unsigned_]char_array`, eg.:
 
-5. Done! You can verify the bindings are there by checking the [output file](./android/src/main/java/com/reactnativelibsodium/jni/SodiumJNI.java)
+```c
+unsigned char *m = as_unsigned_char_array(jenv, j_m);
+```
 
-nb. The shell scripts will have to be made executable with `chmod +x {compile,installswig}.sh`
+Returned memory must be handled differently so that Java may access the returned data:
+
+```c
+// accepting memory, the correct types may be found from the libsodium headers
+unsigned char *c = (unsigned char *) (*jenv)->GetByteArrayElements(jenv, j_c, 0);
+
+/*
+  rest of function
+*/
+
+// returning memory
+(*jenv)->ReleaseByteArrayElements(jenv, j_c, (jbyte *) c, 0);
+```
+
+#### Lengths
+
+For variable length results, libsodium takes a pointer argument to which it writes the number of bytes written to the return buffer. These arguments should be accepted to the function as `jintArray j_arglen_p` and handled like so:
+
+```c
+// accepting memory, the type should alwasy be unsigned long long *
+unsigned long long *clen_p = (unsigned long long *) (*jenv)->GetIntArrayElements(jenv, j_clen_p, 0); 
+
+/*
+  rest of function
+*/
+
+// returning memory
+(*jenv)->ReleaseIntArrayElements(jenv, j_clen_p, (jint *) clen_p, 0);
+```
+
+#### Numbers
+
+Numbers may simply be passed as `jint`s and passed directly to the libsodium function.
+
+#### Compiler warnings
+
+`npx react-native run-android` shall output any compiler warnings or errors, usually due to incompatible pointer types. You should go through and make sure each has been address so that there are no compiler warnings. Note, this __does not__ guarantee the function shall run correctly.
 
 ### React-Native
 
