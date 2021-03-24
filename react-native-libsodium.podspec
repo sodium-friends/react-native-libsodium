@@ -12,11 +12,11 @@ Pod::Spec.new do |s|
   s.homepage     = package['homepage']
   s.platform     = :ios, "9.0"
 
-  s.source       = { :git => "https://github.com/chm-diederichs/rn-libsodium.git", :tag => "v#{s.version}" }
-  s.source_files = ["ios/**/*.{h,m,mm,swift}","libsodium/libsodium-ios/**/*.{h,m}"]
+  s.source       = { :git => "https://github.com/synonymdev/react-native-libsodium.git", :tag => "v#{s.version}" }
+  s.source_files = ["ios/**/*.{h,m,mm,swift}"]
 
-  s.vendored_libraries = 'libsodium/libsodium-ios/lib/libsodium.a'
-  s.xcconfig = { 'HEADER_SEARCH_PATHS' => ['${PODS_ROOT}/Headers/Public/#{s.name}/**', 'libsodium/libsodium-ios/**/*.{h,m}']}
+  s.vendored_frameworks = "libsodium/libsodium-apple/Clibsodium.xcframework"
+  s.xcconfig = { 'HEADER_SEARCH_PATHS' => '${PODS_ROOT}/Headers/Public/#{s.name}/**'}
 
   s.dependency 'React-Core'
 end
