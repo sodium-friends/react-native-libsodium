@@ -9,10 +9,8 @@
 /* Begin PBXBuildFile section */
 		3828040D1D980AC000DD9014 /* RCTSodium.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 3828040C1D980AC000DD9014 /* RCTSodium.h */; };
 		3828040F1D980AC000DD9014 /* RCTSodium.m in Sources */ = {isa = PBXBuildFile; fileRef = 3828040E1D980AC000DD9014 /* RCTSodium.m */; };
-		387375C91D9ED0C300AE562A /* libsodium.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 387375C81D9ED0C300AE562A /* libsodium.a */; };
 		387375CB1D9ED0D600AE562A /* sodium.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 387375CA1D9ED0D600AE562A /* sodium.h */; };
 		387375CD1D9ED0E200AE562A /* sodium in CopyFiles */ = {isa = PBXBuildFile; fileRef = 387375CC1D9ED0E200AE562A /* sodium */; };
-		387375CF1D9ED48500AE562A /* libsodium.a in CopyFiles */ = {isa = PBXBuildFile; fileRef = 387375C81D9ED0C300AE562A /* libsodium.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -34,7 +32,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 16;
 			files = (
-				387375CF1D9ED48500AE562A /* libsodium.a in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -44,9 +41,8 @@
 		382804091D980AC000DD9014 /* libRCTSodium.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libRCTSodium.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		3828040C1D980AC000DD9014 /* RCTSodium.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCTSodium.h; sourceTree = "<group>"; };
 		3828040E1D980AC000DD9014 /* RCTSodium.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCTSodium.m; sourceTree = "<group>"; };
-		387375C81D9ED0C300AE562A /* libsodium.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libsodium.a; path = "../libsodium/libsodium-ios/lib/libsodium.a"; sourceTree = "<group>"; };
-		387375CA1D9ED0D600AE562A /* sodium.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = sodium.h; path = "../libsodium/libsodium-ios/include/sodium.h"; sourceTree = "<group>"; };
-		387375CC1D9ED0E200AE562A /* sodium */ = {isa = PBXFileReference; lastKnownFileType = folder; name = sodium; path = "../libsodium/libsodium-ios/include/sodium"; sourceTree = "<group>"; };
+		387375CA1D9ED0D600AE562A /* sodium.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = sodium.h; path = "../libsodium/libsodium-apple/ios/include/sodium.h"; sourceTree = "<group>"; };
+		387375CC1D9ED0E200AE562A /* sodium */ = {isa = PBXFileReference; lastKnownFileType = folder; name = sodium; path = "../libsodium/libsodium-apple/ios/include/sodium"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -54,7 +50,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				387375C91D9ED0C300AE562A /* libsodium.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -66,7 +61,6 @@
 			children = (
 				387375CC1D9ED0E200AE562A /* sodium */,
 				387375CA1D9ED0D600AE562A /* sodium.h */,
-				387375C81D9ED0C300AE562A /* libsodium.a */,
 				3828040B1D980AC000DD9014 /* RCTSodium */,
 				3828040A1D980AC000DD9014 /* Products */,
 			);
@@ -126,11 +120,11 @@
 			};
 			buildConfigurationList = 382804041D980AC000DD9014 /* Build configuration list for PBXProject "RCTSodium" */;
 			compatibilityVersion = "Xcode 3.2";
-			developmentRegion = English;
+			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
-				English,
 				en,
+				Base,
 			);
 			mainGroup = 382804001D980AC000DD9014;
 			productRefGroup = 3828040A1D980AC000DD9014 /* Products */;
