@@ -13,7 +13,7 @@ Pod::Spec.new do |s|
   s.platform     = :ios, "9.0"
 
   s.source       = { :git => "https://github.com/synonymdev/react-native-libsodium.git", :tag => "v#{s.version}" }
-  s.source_files = ["ios/**/*.{h,m,mm,swift}","libsodium/libsodium-ios/**/*.{h,m}"]
+  s.source_files = ["ios/**/*.{h,m,mm,swift}"]
 
   s.vendored_frameworks = "libsodium/libsodium-apple/Clibsodium.xcframework"
   s.xcconfig = { 'HEADER_SEARCH_PATHS' => '${PODS_ROOT}/Headers/Public/#{s.name}/**'}
