@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 46;
+	objectVersion = 52;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -11,6 +11,7 @@
 		3828040F1D980AC000DD9014 /* RCTSodium.m in Sources */ = {isa = PBXBuildFile; fileRef = 3828040E1D980AC000DD9014 /* RCTSodium.m */; };
 		387375CB1D9ED0D600AE562A /* sodium.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 387375CA1D9ED0D600AE562A /* sodium.h */; };
 		387375CD1D9ED0E200AE562A /* sodium in CopyFiles */ = {isa = PBXBuildFile; fileRef = 387375CC1D9ED0E200AE562A /* sodium */; };
+		CE8B5B60260C9C9100F00942 /* Clibsodium.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE8B5B5F260C9C9100F00942 /* Clibsodium.xcframework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -43,6 +44,7 @@
 		3828040E1D980AC000DD9014 /* RCTSodium.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCTSodium.m; sourceTree = "<group>"; };
 		387375CA1D9ED0D600AE562A /* sodium.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = sodium.h; path = "../libsodium/libsodium-apple/ios/include/sodium.h"; sourceTree = "<group>"; };
 		387375CC1D9ED0E200AE562A /* sodium */ = {isa = PBXFileReference; lastKnownFileType = folder; name = sodium; path = "../libsodium/libsodium-apple/ios/include/sodium"; sourceTree = "<group>"; };
+		CE8B5B5F260C9C9100F00942 /* Clibsodium.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = Clibsodium.xcframework; path = "../libsodium/libsodium-apple/Clibsodium.xcframework"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -50,6 +52,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CE8B5B60260C9C9100F00942 /* Clibsodium.xcframework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -63,6 +66,7 @@
 				387375CA1D9ED0D600AE562A /* sodium.h */,
 				3828040B1D980AC000DD9014 /* RCTSodium */,
 				3828040A1D980AC000DD9014 /* Products */,
+				CE8B5B5E260C9C9100F00942 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -81,6 +85,14 @@
 				3828040E1D980AC000DD9014 /* RCTSodium.m */,
 			);
 			path = RCTSodium;
+			sourceTree = "<group>";
+		};
+		CE8B5B5E260C9C9100F00942 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				CE8B5B5F260C9C9100F00942 /* Clibsodium.xcframework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -243,6 +255,7 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = arm64;
 				FRAMEWORK_SEARCH_PATHS = "";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -269,16 +282,13 @@
 			buildSettings = {
 				EXCLUDED_ARCHS = "";
 				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = arm64;
-				FRAMEWORK_SEARCH_PATHS = "";
+				FRAMEWORK_SEARCH_PATHS = "$(BUILT_PRODUCTS_DIR)/Clibsodium.xcframework";
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
 					"$(SRCROOT)/../../react-native/React/**",
 				);
-				LIBRARY_SEARCH_PATHS = (
-					"$(PROJECT_DIR)",
-					"../libsodium/libsodium-ios/lib",
-				);
+				LIBRARY_SEARCH_PATHS = "";
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -290,16 +300,13 @@
 			buildSettings = {
 				EXCLUDED_ARCHS = "";
 				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = arm64;
-				FRAMEWORK_SEARCH_PATHS = "";
+				FRAMEWORK_SEARCH_PATHS = "$(BUILT_PRODUCTS_DIR)/Clibsodium.xcframework";
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
 					"$(SRCROOT)/../../react-native/React/**",
 				);
-				LIBRARY_SEARCH_PATHS = (
-					"$(PROJECT_DIR)",
-					"../libsodium/libsodium-ios/lib",
-				);
+				LIBRARY_SEARCH_PATHS = "";
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
