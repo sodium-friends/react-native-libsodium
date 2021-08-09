@@ -258,32 +258,47 @@ RCT_EXPORT_BLOCKING_SYNCHRONOUS_METHOD(
   RN_RETURN_BUFFER(p)
 }
 
-RCT_EXPORT_BLOCKING_SYNCHRONOUS_METHOD(
+RCT_EXPORT_METHOD(
   crypto_pwhash:(NSArray *)out
                 passwd:(NSArray *) passwd
                 salt:(NSArray *) salt
                 opslimit:(nonnull NSNumber *)
                 opslimit memlimit:(nonnull NSNumber *)
-                memlimit alg:(nonnull NSNumber *) alg)
+                memlimit alg:(nonnull NSNumber *) alg
+                resolver:(RCTPromiseResolveBlock) resolve
+                rejecter:(RCTPromiseRejectBlock) reject)
 {
-  RN_RESULT_BUFFER_MIN_MAX(out, crypto_pwhash_BYTES_MIN, crypto_pwhash_BYTES_MAX, ERR_BAD_OUTPUT)
-  RN_ARG_CONST_BUFFER_MIN_MAX(passwd, crypto_pwhash_PASSWD_MIN, crypto_pwhash_PASSWD_MAX, ERR_BAD_PWD)
-  RN_ARG_BUFFER(salt, crypto_pwhash_SALTBYTES, ERR_BAD_SALT)
-  RN_ULL_MIN_MAX(opslimit, crypto_pwhash_OPSLIMIT_MIN, crypto_pwhash_OPSLIMIT_MAX, ERR_BAD_OPS)
-  RN_INT_MIN_MAX(memlimit, crypto_pwhash_MEMLIMIT_MIN, crypto_pwhash_MEMLIMIT_MAX, ERR_BAD_MEM)
+  RN_RESULT_BUFFER_NO_CHECK(out)
+  if (outlen < crypto_pwhash_BYTES_MIN || outlen > crypto_pwhash_BYTES_MAX) reject(ERR_BAD_OUTPUT, nil);
+
+  RN_ARG_CONST_BUFFER_NO_CHECK(passwd)
+  if (passwdlen < crypto_pwhash_PASSWD_MIN || passwdlen > crypto_pwhash_PASSWD_MAX) reject(ERR_BAD_PWD, nil);
+
+  RN_ARG_BUFFER_NO_CHECK(salt)
+  if (saltlen != crypto_pwhash_SALTBYTES) reject(ERR_BAD_SALT, nil);
+
+  RN_ULL(opslimit)
+  if (opslimit < crypto_pwhash_OPSLIMIT_MIN || opslimit > crypto_pwhash_OPSLIMIT_MAX) reject(ERR_BAD_OPS, nil);
+
+  RN_INT(memlimit)
+  if (memlimit < crypto_pwhash_MEMLIMIT_MIN || memlimit > crypto_pwhash_MEMLIMIT_MAX) reject(ERR_BAD_MEM, nil);
 
   int alg_val = [alg intValue];
   if (alg_val != crypto_pwhash_ALG_DEFAULT
       && alg_val != crypto_pwhash_ALG_ARGON2I13
       && alg_val != crypto_pwhash_ALG_ARGON2ID13)
-    return ERR_BAD_ALG;
+    reject(ERR_BAD_ALG, nil);
 
-  RN_CHECK_FAILURE(crypto_pwhash(out_data, outlen,
+  int check = crypto_pwhash(out_data, outlen,
                                  passwd_data, passwdlen,
                                  salt_data, opslimit_val,
-                                 memlimit_val, alg_val))
+                                 memlimit_val, alg_val);
 
-  RN_RETURN_BUFFER(out)
+  if (check != 0) reject(ERR_FAILURE, nil);
+
+  NSMutableArray *res = [[NSMutableArray alloc] initWithCapacity: outlen];
+  RN_COPY_DATA(res, out, outlen)
+  resolve([res copy])
 }
 
 RCT_EXPORT_BLOCKING_SYNCHRONOUS_METHOD(

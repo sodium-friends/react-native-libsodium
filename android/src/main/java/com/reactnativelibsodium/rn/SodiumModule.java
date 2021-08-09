@@ -479,15 +479,16 @@ public class SodiumModule extends ReactContextBaseJavaModule {
     return ArrayUtil.toWritableArray(_p);
   }
 
-  @ReactMethod(isBlockingSynchronousMethod = true)
+  @ReactMethod
   public WritableArray crypto_pwhash (
       ReadableArray out,
       ReadableArray passwd,
       ReadableArray salt,
       int opslimit,
       int memlimit,
-      int alg
-  ) throws Exception {
+      int alg,
+      Promise promise
+  ) {
     byte[] _out = ArgumentsEx.toByteArray(out);
     byte[] _passwd = ArgumentsEx.toByteArray(passwd);
     byte[] _salt = ArgumentsEx.toByteArray(salt);
@@ -499,12 +500,13 @@ public class SodiumModule extends ReactContextBaseJavaModule {
       ArgumentsEx.check(opslimit, Sodium.crypto_pwhash_opslimit_min(), Sodium.crypto_pwhash_opslimit_max(), "ERR_BAD_OPS");
       ArgumentsEx.check(memlimit, Sodium.crypto_pwhash_memlimit_min(), Sodium.crypto_pwhash_memlimit_max(), "ERR_BAD_MEM");
     } catch (Exception e) {
-      throw e;
+      promise.reject("crypto_pwhash bad arguments:", e);
     }
 
     int ret = Sodium.crypto_pwhash(_out, _out.length, _passwd, _passwd.length, _salt, opslimit, memlimit, alg);
 
-    return ArrayUtil.toWritableArray(_out);
+    WritableArray ret = ArrayUtil.toWritableArray(_out);
+    promise.resolve(ret);
   }
 
   @ReactMethod(isBlockingSynchronousMethod = true)

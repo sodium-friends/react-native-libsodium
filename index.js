@@ -117,9 +117,13 @@ function crypto_core_ed25519_from_uniform (...args) {
   args[0].set(new Uint8Array(nativeResult))
 }
 
-function crypto_pwhash (...args) {
-  const nativeResult = Sodium.crypto_pwhash(...Array.from(args, mapArgs))
-  if (typeof nativeResult === 'string') throw new Error('crypto_pwhash execution failed: ' + nativeResult + '.')
+async function crypto_pwhash (...args) {
+  let nativeResult
+  try {
+    nativeResult = await Sodium.crypto_pwhash(...Array.from(args, mapArgs))
+  } catch (e) {
+    throw new Error('crypto_pwhash execution failed: ' + e.message + '.')
+  }
 
   args[0].set(new Uint8Array(nativeResult))
 }

@@ -96,13 +96,21 @@
   NUMBERS
 */
 
-// Takes NSNUmber and returns unsigned long long,
+// Takes NSNumber and returns unsigned long long
+#define RN_ULL(arg, min, max, error) \
+  unsigned long long arg##_val = [arg unsignedLongLongValue];
+
+// Takes NSNumber and returns int
+#define RN_INT(arg, min, max, error) \
+  int arg##_val = [arg intValue];
+
+// Takes NSNumber and returns unsigned long long,
 // with the result being bound checked.
 #define RN_ULL_MIN_MAX(arg, min, max, error) \
   unsigned long long arg##_val = [arg unsignedLongLongValue]; \
   if (arg##_val < min || arg##_val > max) return error;
 
-// Takes NSNUmber and returns int,
+// Takes NSNumber and returns int,
 // with the result being bound checked.
 #define RN_INT_MIN_MAX(arg, min, max, error) \
   int arg##_val = [arg intValue]; \
