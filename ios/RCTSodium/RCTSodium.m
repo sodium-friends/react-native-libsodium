@@ -269,32 +269,52 @@ RCT_EXPORT_METHOD(
                 rejecter:(RCTPromiseRejectBlock) reject)
 {
   RN_RESULT_BUFFER_NO_CHECK_PROMISE(out, ERR_BAD_OUTPUT)
-  if (outlen < crypto_pwhash_BYTES_MIN || outlen > crypto_pwhash_BYTES_MAX) reject(ERR_BAD_OUTPUT, ERR_BAD_OUTPUT, nil);
+  if (outlen < crypto_pwhash_BYTES_MIN || outlen > crypto_pwhash_BYTES_MAX) {
+    reject(ERR_BAD_OUTPUT, ERR_BAD_OUTPUT, nil);
+    return;
+  }
 
   RN_ARG_CONST_BUFFER_NO_CHECK(passwd)
-  if (passwdlen < crypto_pwhash_PASSWD_MIN || passwdlen > crypto_pwhash_PASSWD_MAX) reject(ERR_BAD_PWD, ERR_BAD_PWD, nil);
+  if (passwdlen < crypto_pwhash_PASSWD_MIN || passwdlen > crypto_pwhash_PASSWD_MAX) {
+    reject(ERR_BAD_PWD, ERR_BAD_PWD, nil);
+    return;
+  }
 
   RN_ARG_BUFFER_NO_CHECK(salt)
-  if (saltlen != crypto_pwhash_SALTBYTES) reject(ERR_BAD_SALT, ERR_BAD_SALT, nil);
+  if (saltlen != crypto_pwhash_SALTBYTES) {
+    reject(ERR_BAD_SALT, ERR_BAD_SALT, nil);
+    return;
+  }
 
   RN_ULL(opslimit)
-  if (opslimit < crypto_pwhash_OPSLIMIT_MIN || opslimit > crypto_pwhash_OPSLIMIT_MAX) reject(ERR_BAD_OPS, ERR_BAD_OPS, nil);
+  if (opslimit < crypto_pwhash_OPSLIMIT_MIN || opslimit > crypto_pwhash_OPSLIMIT_MAX) {
+    reject(ERR_BAD_OPS, ERR_BAD_OPS, nil);
+    return;
+  }
 
   RN_INT(memlimit)
-  if (memlimit < crypto_pwhash_MEMLIMIT_MIN || memlimit > crypto_pwhash_MEMLIMIT_MAX) reject(ERR_BAD_MEM, ERR_BAD_MEM, nil);
+  if (memlimit < crypto_pwhash_MEMLIMIT_MIN || memlimit > crypto_pwhash_MEMLIMIT_MAX) {
+    reject(ERR_BAD_MEM, ERR_BAD_MEM, nil);
+    return;
+  }
 
   int alg_val = [alg intValue];
   if (alg_val != crypto_pwhash_ALG_DEFAULT
       && alg_val != crypto_pwhash_ALG_ARGON2I13
-      && alg_val != crypto_pwhash_ALG_ARGON2ID13)
+      && alg_val != crypto_pwhash_ALG_ARGON2ID13) {
     reject(ERR_BAD_ALG, ERR_BAD_ALG, nil);
+    return;
+  }
 
   int check = crypto_pwhash(out_data, outlen,
                                  passwd_data, passwdlen,
                                  salt_data, opslimit_val,
                                  memlimit_val, alg_val);
 
-  if (check != 0) reject(ERR_FAILURE, @"crypto_pwhash execution failed.", nil);
+  if (check != 0) {
+    reject(ERR_FAILURE, @"crypto_pwhash execution failed.", nil);
+    return;
+  }
 
   NSMutableArray *res = [[NSMutableArray alloc] initWithCapacity: outlen];
   RN_COPY_DATA(res, out, outlen)
