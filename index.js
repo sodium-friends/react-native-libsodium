@@ -122,7 +122,7 @@ async function crypto_pwhash (...args) {
   try {
     nativeResult = await Sodium.crypto_pwhash(...Array.from(args, mapArgs))
   } catch (e) {
-    throw new Error('crypto_pwhash execution failed: ' + e.message + '.')
+    throw e
   }
 
   args[0].set(new Uint8Array(nativeResult))

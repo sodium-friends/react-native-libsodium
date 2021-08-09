@@ -286,14 +286,14 @@ RCT_EXPORT_METHOD(
     return;
   }
 
-  RN_ULL(opslimit)
-  if (opslimit < crypto_pwhash_OPSLIMIT_MIN || opslimit > crypto_pwhash_OPSLIMIT_MAX) {
+  unsigned long long opslimit_val = [opslimit unsignedLongLongValue];
+  if (opslimit_val < crypto_pwhash_OPSLIMIT_MIN || opslimit_val > crypto_pwhash_OPSLIMIT_MAX) {
     reject(ERR_BAD_OPS, ERR_BAD_OPS, nil);
     return;
   }
 
-  RN_INT(memlimit)
-  if (memlimit < crypto_pwhash_MEMLIMIT_MIN || memlimit > crypto_pwhash_MEMLIMIT_MAX) {
+  int memlimit_val = [memlimit intValue];
+  if (memlimit_val < crypto_pwhash_MEMLIMIT_MIN || memlimit_val > crypto_pwhash_MEMLIMIT_MAX) {
     reject(ERR_BAD_MEM, ERR_BAD_MEM, nil);
     return;
   }

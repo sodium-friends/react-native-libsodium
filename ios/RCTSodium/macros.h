@@ -106,14 +106,6 @@
   NUMBERS
 */
 
-// Takes NSNumber and returns unsigned long long
-#define RN_ULL(arg) \
-  unsigned long long arg##_val = [arg unsignedLongLongValue];
-
-// Takes NSNumber and returns int
-#define RN_INT(arg) \
-  int arg##_val = [arg intValue];
-
 // Takes NSNumber and returns unsigned long long,
 // with the result being bound checked.
 #define RN_ULL_MIN_MAX(arg, min, max, error) \
