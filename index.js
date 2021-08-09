@@ -32,6 +32,8 @@ let SodiumAPI = {
   crypto_core_ed25519_from_uniform,
   crypto_pwhash,
   crypto_pwhash_async,
+  crypto_scalarmult,
+  crypto_scalarmult_base,
   crypto_scalarmult_ed25519,
   crypto_scalarmult_ed25519_noclamp,
   crypto_scalarmult_ed25519_base,
@@ -155,6 +157,20 @@ async function crypto_pwhash_async (...args) {
   } catch (e) {
     throw e
   }
+
+  args[0].set(new Uint8Array(nativeResult))
+}
+
+function crypto_scalarmult (...args) {
+  const nativeResult = Sodium.crypto_scalarmult(...Array.from(args, mapArgs))
+  if (typeof nativeResult === 'string') throw new Error('crypto_scalarmult execution failed: ' + nativeResult + '.')
+
+  args[0].set(new Uint8Array(nativeResult))
+}
+
+function crypto_scalarmult_base (...args) {
+  const nativeResult = Sodium.crypto_scalarmult_base(...Array.from(args, mapArgs))
+  if (typeof nativeResult === 'string') throw new Error('crypto_scalarmult_base execution failed: ' + nativeResult + '.')
 
   args[0].set(new Uint8Array(nativeResult))
 }

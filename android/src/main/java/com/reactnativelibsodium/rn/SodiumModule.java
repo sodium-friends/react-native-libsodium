@@ -83,6 +83,8 @@ public class SodiumModule extends ReactContextBaseJavaModule {
     constants.put("crypto_core_ed25519_NONREDUCEDSCALARBYTES", Sodium.crypto_core_ed25519_nonreducedscalarbytes());
     constants.put("crypto_scalarmult_ed25519_BYTES", Sodium.crypto_scalarmult_ed25519_bytes());
     constants.put("crypto_scalarmult_ed25519_SCALARBYTES", Sodium.crypto_scalarmult_ed25519_scalarbytes());
+    constants.put("crypto_scalarmult_BYTES", Sodium.crypto_scalarmult_bytes());
+    constants.put("crypto_scalarmult_SCALARBYTES", Sodium.crypto_scalarmult_scalarbytes());
     constants.put("crypto_aead_xchacha20poly1305_ietf_ABYTES", Sodium.crypto_aead_xchacha20poly1305_ietf_abytes());
     constants.put("crypto_aead_xchacha20poly1305_ietf_KEYBYTES", Sodium.crypto_aead_xchacha20poly1305_ietf_keybytes());
     constants.put("crypto_aead_xchacha20poly1305_ietf_NPUBBYTES", Sodium.crypto_aead_xchacha20poly1305_ietf_npubbytes());
@@ -642,6 +644,49 @@ public class SodiumModule extends ReactContextBaseJavaModule {
 
     WritableArray buf = ArrayUtil.toWritableArray(_out);
     promise.resolve(buf);
+  }
+
+  @ReactMethod(isBlockingSynchronousMethod = true)
+  public WritableArray crypto_scalarmult (
+      ReadableArray q,
+      ReadableArray n,
+      ReadableArray p
+  ) throws Exception {
+    byte[] _q = ArgumentsEx.toByteArray(q);
+    byte[] _n = ArgumentsEx.toByteArray(n);
+    byte[] _p = ArgumentsEx.toByteArray(p);
+
+    try {
+      ArgumentsEx.check(_q, Sodium.crypto_scalarmult_bytes(), "ERR_BAD_EC_POINT");
+      ArgumentsEx.check(_n, Sodium.crypto_scalarmult_scalarbytes(), "ERR_BAD_SCALAR");
+      ArgumentsEx.check(_p, Sodium.crypto_scalarmult_bytes(), "ERR_BAD_EC_POINT");
+    } catch (Exception e) {
+      throw e;
+    }
+
+    Sodium.crypto_scalarmult(_q, _n, _p);
+
+    return ArrayUtil.toWritableArray(_q);
+  }
+
+  @ReactMethod(isBlockingSynchronousMethod = true)
+  public WritableArray crypto_scalarmult_base (
+      ReadableArray q,
+      ReadableArray n
+  ) throws Exception {
+    byte[] _q = ArgumentsEx.toByteArray(q);
+    byte[] _n = ArgumentsEx.toByteArray(n);
+
+    try {
+      ArgumentsEx.check(_q, Sodium.crypto_scalarmult_bytes(), "ERR_BAD_EC_POINT");
+      ArgumentsEx.check(_n, Sodium.crypto_scalarmult_scalarbytes(), "ERR_BAD_SCALAR");
+    } catch (Exception e) {
+      throw e;
+    }
+
+    Sodium.crypto_scalarmult_base(_q, _n);
+
+    return ArrayUtil.toWritableArray(_q);
   }
 
   @ReactMethod(isBlockingSynchronousMethod = true)

@@ -94,6 +94,8 @@ RCT_EXPORT_MODULE()
     @"crypto_pwhash_MEMLIMIT_SENSITIVE": @ crypto_pwhash_MEMLIMIT_SENSITIVE,
     @"crypto_scalarmult_ed25519_BYTES": @ crypto_scalarmult_ed25519_BYTES,
     @"crypto_scalarmult_ed25519_SCALARBYTES": @ crypto_scalarmult_ed25519_SCALARBYTES,
+    @"crypto_scalarmult_BYTES": @ crypto_scalarmult_BYTES,
+    @"crypto_scalarmult_SCALARBYTES": @ crypto_scalarmult_SCALARBYTES,
     @"crypto_generichash_STATEBYTES": @ 384,
     @"crypto_generichash_KEYBYTES_MIN": @ crypto_generichash_KEYBYTES_MIN,
     @"crypto_generichash_KEYBYTES_MAX": @ crypto_generichash_KEYBYTES_MAX,
@@ -430,6 +432,29 @@ RCT_EXPORT_METHOD(
   NSMutableArray *res = [[NSMutableArray alloc] initWithCapacity: outlen];
   RN_COPY_DATA(res, out, outlen)
   resolve([res copy]);
+}
+
+RCT_EXPORT_BLOCKING_SYNCHRONOUS_METHOD(
+  crypto_scalarmult:(NSArray *)q n:(NSArray *) n p:(NSArray *) p)
+{
+  RN_RESULT_BUFFER(q, crypto_scalarmult_BYTES, ERR_BAD_EC_POINT)
+  RN_ARG_BUFFER(n, crypto_scalarmult_SCALARBYTES, ERR_BAD_SCALAR)
+  RN_ARG_BUFFER(p, crypto_scalarmult_BYTES, ERR_BAD_EC_POINT)
+
+  RN_CHECK_FAILURE(crypto_scalarmult(q_data, n_data, p_data))
+
+  RN_RETURN_BUFFER(q)
+}
+
+RCT_EXPORT_BLOCKING_SYNCHRONOUS_METHOD(
+  crypto_scalarmult_base:(NSArray *)q n:(NSArray *) n)
+{
+  RN_RESULT_BUFFER(q, crypto_scalarmult_BYTES, ERR_BAD_EC_POINT)
+  RN_ARG_BUFFER(n, crypto_scalarmult_SCALARBYTES, ERR_BAD_SCALAR)
+
+  RN_CHECK_FAILURE(crypto_scalarmult_base(q_data, n_data))
+
+  RN_RETURN_BUFFER(q)
 }
 
 RCT_EXPORT_BLOCKING_SYNCHRONOUS_METHOD(
