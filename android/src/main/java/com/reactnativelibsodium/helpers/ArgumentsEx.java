@@ -41,12 +41,12 @@ public class ArgumentsEx {
 
     public static void check(byte[] arg, int minLen, int maxLen, String msg) throws Exception {
         if (arg.length < minLen) throw new Exception(msg);
-        if (arg.length > maxLen) throw new Exception(msg);
+        if (maxLen > -1 && arg.length > maxLen) throw new Exception(msg);
     }
 
     public static void check(int arg, int minLen, int maxLen, String msg) throws Exception {
         if (arg < minLen) throw new Exception(msg);
-        if (arg > maxLen) throw new Exception(msg);
+        if (maxLen > -1 && arg > maxLen) throw new Exception(msg);
     }
 
     public static double[] toDoubleArray(@NonNull ReadableArray readableArray) {
