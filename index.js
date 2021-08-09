@@ -23,6 +23,9 @@ let SodiumAPI = {
   crypto_aead_xchacha20poly1305_ietf_keygen,
   crypto_aead_xchacha20poly1305_ietf_encrypt,
   crypto_aead_xchacha20poly1305_ietf_decrypt,
+  crypto_aead_chacha20poly1305_ietf_keygen,
+  crypto_aead_chacha20poly1305_ietf_encrypt,
+  crypto_aead_chacha20poly1305_ietf_decrypt,
   crypto_core_ed25519_scalar_random,
   crypto_core_ed25519_add,
   crypto_core_ed25519_sub,
@@ -69,12 +72,12 @@ function crypto_generichash_batch(out, batch, key) {
   crypto_generichash_final(state, out)
 }
 
-function crypto_aead_xchacha20poly1305_ietf_keygen(k) {
-  k.set(new Uint8Array(Sodium.crypto_aead_xchacha20poly1305_ietf_keygen(Array.from(k))))
-}
-
 function randombytes_buf(buf) {
   buf.set(new Uint8Array(Sodium.randombytes_buf(Array.from(buf))))
+}
+
+function crypto_aead_xchacha20poly1305_ietf_keygen(k) {
+  k.set(new Uint8Array(Sodium.crypto_aead_xchacha20poly1305_ietf_keygen(Array.from(k))))
 }
 
 function crypto_aead_xchacha20poly1305_ietf_encrypt(...args) {
@@ -88,6 +91,26 @@ function crypto_aead_xchacha20poly1305_ietf_encrypt(...args) {
 function crypto_aead_xchacha20poly1305_ietf_decrypt(...args) {
   const nativeResult = Sodium.crypto_aead_xchacha20poly1305_ietf_decrypt(...Array.from(args, mapArgs))
   if (typeof nativeResult === 'string') throw new Error('crypto_aead_xchacha20poly1305_ietf_decrypt execeution failed: ' + nativeResult + '.')
+  const res = new Uint8Array(nativeResult)
+  args[0].set(res)
+  return res.byteLength
+}
+
+function crypto_aead_chacha20poly1305_ietf_keygen(k) {
+  k.set(new Uint8Array(Sodium.crypto_aead_chacha20poly1305_ietf_keygen(Array.from(k))))
+}
+
+function crypto_aead_chacha20poly1305_ietf_encrypt(...args) {
+  const nativeResult = Sodium.crypto_aead_chacha20poly1305_ietf_encrypt(...Array.from(args, mapArgs))
+  if (typeof nativeResult === 'string') throw new Error('crypto_aead_chacha20poly1305_ietf_encrypt execeution failed: ' + nativeResult + '.')
+  const res = new Uint8Array(nativeResult)
+  args[0].set(res)
+  return res.byteLength
+}
+
+function crypto_aead_chacha20poly1305_ietf_decrypt(...args) {
+  const nativeResult = Sodium.crypto_aead_chacha20poly1305_ietf_decrypt(...Array.from(args, mapArgs))
+  if (typeof nativeResult === 'string') throw new Error('crypto_aead_chacha20poly1305_ietf_decrypt execeution failed: ' + nativeResult + '.')
   const res = new Uint8Array(nativeResult)
   args[0].set(res)
   return res.byteLength

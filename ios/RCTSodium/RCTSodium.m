@@ -51,9 +51,16 @@ RCT_EXPORT_MODULE()
 - (NSDictionary *)constantsToExport
 {
   return @{
+    @"crypto_aead_xchacha20poly1305_ietf_ABYTES": @ crypto_aead_xchacha20poly1305_ietf_ABYTES,
     @"crypto_aead_xchacha20poly1305_ietf_KEYBYTES": @ crypto_aead_xchacha20poly1305_ietf_KEYBYTES,
     @"crypto_aead_xchacha20poly1305_ietf_NPUBBYTES": @ crypto_aead_xchacha20poly1305_ietf_NPUBBYTES,
-    @"crypto_aead_xchacha20poly1305_ietf_ABYTES": @ crypto_aead_xchacha20poly1305_ietf_ABYTES,
+    @"crypto_aead_xchacha20poly1305_ietf_NSECBYTES": @ crypto_aead_xchacha20poly1305_ietf_NSECBYTES,
+    @"crypto_aead_xchacha20poly1305_ietf_MESSAGEBYTES_MAX": @ crypto_aead_xchacha20poly1305_ietf_MESSAGEBYTES_MAX,
+    @"crypto_aead_chacha20poly1305_ietf_ABYTES": @ crypto_aead_chacha20poly1305_ietf_ABYTES,
+    @"crypto_aead_chacha20poly1305_ietf_KEYBYTES": @ crypto_aead_chacha20poly1305_ietf_KEYBYTES,
+    @"crypto_aead_chacha20poly1305_ietf_NPUBBYTES": @ crypto_aead_chacha20poly1305_ietf_NPUBBYTES,
+    @"crypto_aead_chacha20poly1305_ietf_NSECBYTES": @ crypto_aead_chacha20poly1305_ietf_NSECBYTES,
+    @"crypto_aead_chacha20poly1305_ietf_MESSAGEBYTES_MAX": @ crypto_aead_chacha20poly1305_ietf_MESSAGEBYTES_MAX,
     @"crypto_core_ed25519_SCALARBYTES": @ crypto_core_ed25519_SCALARBYTES,
     @"crypto_core_ed25519_BYTES": @ crypto_core_ed25519_BYTES,
     @"crypto_core_ed25519_UNIFORMBYTES": @ crypto_core_ed25519_UNIFORMBYTES,
@@ -142,16 +149,6 @@ RCT_EXPORT_BLOCKING_SYNCHRONOUS_METHOD(
 }
 
 RCT_EXPORT_BLOCKING_SYNCHRONOUS_METHOD(
-  crypto_aead_xchacha20poly1305_ietf_keygen:(NSArray*)k)
-{
-  RN_RESULT_BUFFER(k, crypto_aead_xchacha20poly1305_ietf_KEYBYTES, ERR_BAD_KEY)
-
-  crypto_aead_xchacha20poly1305_ietf_keygen(k_data);
-
-  RN_RETURN_BUFFER(k)
-}
-
-RCT_EXPORT_BLOCKING_SYNCHRONOUS_METHOD(
   randombytes_buf:(NSArray*)buf)
 {
   RN_RESULT_BUFFER_NO_CHECK(buf)
@@ -159,6 +156,16 @@ RCT_EXPORT_BLOCKING_SYNCHRONOUS_METHOD(
   randombytes_buf(buf_data, buflen);
 
   RN_RETURN_BUFFER(buf)
+}
+
+RCT_EXPORT_BLOCKING_SYNCHRONOUS_METHOD(
+  crypto_aead_xchacha20poly1305_ietf_keygen:(NSArray*)k)
+{
+  RN_RESULT_BUFFER(k, crypto_aead_xchacha20poly1305_ietf_KEYBYTES, ERR_BAD_KEY)
+
+  crypto_aead_xchacha20poly1305_ietf_keygen(k_data);
+
+  RN_RETURN_BUFFER(k)
 }
 
 RCT_EXPORT_BLOCKING_SYNCHRONOUS_METHOD(
@@ -204,6 +211,68 @@ RCT_EXPORT_BLOCKING_SYNCHRONOUS_METHOD(
   RN_RESULT_BUFFER(m, mlen_check, ERR_BAD_MSG)
 
   RN_CHECK_FAILURE(crypto_aead_xchacha20poly1305_ietf_decrypt(m_data, &mlen,
+                                                              NULL,
+                                                              c_data, clen,
+                                                              ad_data, adlen,
+                                                              npub_data,
+                                                              k_data))
+
+  RN_RETURN_BUFFER(m)
+}
+
+RCT_EXPORT_BLOCKING_SYNCHRONOUS_METHOD(
+  crypto_aead_chacha20poly1305_ietf_keygen:(NSArray*)k)
+{
+  RN_RESULT_BUFFER(k, crypto_aead_chacha20poly1305_ietf_KEYBYTES, ERR_BAD_KEY)
+
+  crypto_aead_chacha20poly1305_ietf_keygen(k_data);
+
+  RN_RETURN_BUFFER(k)
+}
+
+RCT_EXPORT_BLOCKING_SYNCHRONOUS_METHOD(
+  crypto_aead_chacha20poly1305_ietf_encrypt:(NSArray *) c
+                                              m:(NSArray *) m
+                                              ad:(NSArray *) ad
+                                              nsec:(NSArray *) nsec
+                                              npub:(NSArray *) npub
+                                              k:(NSArray *) k)
+{
+  RN_ARG_BUFFER_NO_CHECK(m)
+  RN_ARG_BUFFER_OR_NULL(ad)
+  RN_ARG_BUFFER(npub, crypto_aead_chacha20poly1305_ietf_NPUBBYTES, ERR_BAD_NPUB)
+  RN_ARG_BUFFER(k, crypto_secretbox_KEYBYTES, ERR_BAD_KEY)
+
+  unsigned long long clen_check = mlen + crypto_aead_chacha20poly1305_ietf_ABYTES;
+  RN_RESULT_BUFFER(c, clen_check, ERR_BAD_CIPHERTEXT)
+
+  RN_CHECK_FAILURE(crypto_aead_chacha20poly1305_ietf_encrypt(c_data, &clen,
+                                                              m_data, mlen,
+                                                              ad_data, adlen,
+                                                              NULL,
+                                                              npub_data,
+                                                              k_data))
+
+  RN_RETURN_BUFFER(c)
+}
+
+RCT_EXPORT_BLOCKING_SYNCHRONOUS_METHOD(
+  crypto_aead_chacha20poly1305_ietf_decrypt:(NSArray *)m
+                                              nsec:(NSArray *) nsec
+                                              c:(NSArray *) c
+                                              ad:(NSArray *) ad
+                                              npub:(NSArray *) npub
+                                              k:(NSArray *) k)
+{
+  RN_ARG_BUFFER_NO_CHECK(c)
+  RN_ARG_BUFFER_OR_NULL(ad)
+  RN_ARG_BUFFER(npub, crypto_aead_chacha20poly1305_ietf_NPUBBYTES, ERR_BAD_NPUB)
+  RN_ARG_BUFFER(k, crypto_secretbox_KEYBYTES, ERR_BAD_KEY)
+
+  unsigned long long mlen_check = clen - crypto_aead_chacha20poly1305_ietf_ABYTES;
+  RN_RESULT_BUFFER(m, mlen_check, ERR_BAD_MSG)
+
+  RN_CHECK_FAILURE(crypto_aead_chacha20poly1305_ietf_decrypt(m_data, &mlen,
                                                               NULL,
                                                               c_data, clen,
                                                               ad_data, adlen,
