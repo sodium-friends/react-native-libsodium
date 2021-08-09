@@ -274,6 +274,14 @@ function crypto_kdf_derive_from_key (...args) {
   args[0].set(new Uint8Array(nativeResult))
 }
 
+function crypto_kx_keypair (...args) {
+  const nativeResult = Sodium.crypto_kx_keypair(...Array.from(args, mapArgs))
+  if (typeof nativeResult === 'string') throw new Error('crypto_kx_keypair execution failed: ' + nativeResult + '.')
+
+  args[0].set(new Uint8Array(nativeResult.subarray(0, sodium.crypto_kx_PUBLICKEYBYTES)))
+  args[1].set(new Uint8Array(nativeResult.subarray(sodium.crypto_kx_PUBLICKEYBYTES)))
+}
+
 function sodium_memcmp (a, b) {
   return vn(a, 0, b, 0, a.byteLength) === 0 && a.byteLength === b.byteLength
 }

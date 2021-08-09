@@ -105,6 +105,8 @@ public class SodiumModule extends ReactContextBaseJavaModule {
     constants.put("_crypto_secretstream_xchacha20poly1305_TAG_PUSH", Sodium.crypto_secretstream_xchacha20poly1305_tag_push());
     constants.put("_crypto_secretstream_xchacha20poly1305_TAG_REKEY", Sodium.crypto_secretstream_xchacha20poly1305_tag_rekey());
     constants.put("_crypto_secretstream_xchacha20poly1305_TAG_FINAL", Sodium.crypto_secretstream_xchacha20poly1305_tag_final());
+    constants.put("crypto_kx_PUBLICKEYBYTES", Sodium.crypto_kx_publickeybytes());
+    constants.put("crypto_kx_SECRETKEYBYTES", Sodium.crypto_kx_secretkeybytes());
 
     // These may be useful for future extensions
 
@@ -155,8 +157,6 @@ public class SodiumModule extends ReactContextBaseJavaModule {
     // constants.put("crypto_shorthash_KEYBYTES", Sodium.crypto_shorthash_keybytes());
     // constants.put("crypto_hash_sha256_BYTES", Sodium.crypto_hash_sha256_bytes());
     // constants.put("crypto_hash_sha512_BYTES", Sodium.crypto_hash_sha512_bytes());
-    // constants.put("crypto_kx_PUBLICKEYBYTES", Sodium.crypto_kx_publickeybytes());
-    // constants.put("crypto_kx_SECRETKEYBYTES", Sodium.crypto_kx_secretkeybytes());
     // constants.put("crypto_kx_SEEDBYTES", Sodium.crypto_kx_seedbytes());
     // constants.put("crypto_kx_SESSIONKEYBYTES", Sodium.crypto_kx_sessionkeybytes());
 

@@ -116,6 +116,8 @@ RCT_EXPORT_MODULE()
     @"_crypto_secretstream_xchacha20poly1305_TAG_PUSH": @ crypto_secretstream_xchacha20poly1305_TAG_PUSH,
     @"_crypto_secretstream_xchacha20poly1305_TAG_REKEY": @ crypto_secretstream_xchacha20poly1305_TAG_REKEY,
     @"_crypto_secretstream_xchacha20poly1305_TAG_FINAL": @ crypto_secretstream_xchacha20poly1305_TAG_FINAL,
+    @"crypto_kx_PUBLICKEYBYTES": @ crypto_kx_PUBLICKEYBYTES,
+    @"crypto_kx_SECRETKEYBYTES": @ crypto_kx_SECRETKEYBYTES,
 
   };
 }
@@ -667,6 +669,18 @@ RCT_EXPORT_BLOCKING_SYNCHRONOUS_METHOD(
                                                               adlen))
 
   RN_RETURN_BUFFERS_3(state, tag_p, m, mlen)
+}
+
+RCT_EXPORT_BLOCKING_SYNCHRONOUS_METHOD(
+  crypto_kx_keypair:(NSArray *) pk
+                    sk: (NSArray *) sk)
+{
+  RN_RESULT_BUFFER(pk, crypto_secretstream_xchacha20poly1305_KEYBYTES, ERR_BAD_KEY)
+  RN_RESULT_BUFFER(sk, crypto_secretstream_xchacha20poly1305_KEYBYTES, ERR_BAD_KEY)
+
+  crypto_kx_keypair(pk_data, sk_data);
+
+  RN_RETURN_BUFFERS_2(pk, sk, sklen)
 }
 
 @end
