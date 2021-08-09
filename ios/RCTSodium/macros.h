@@ -93,15 +93,25 @@
 
 
 /*
+  PROMISES
+*/
+
+#define RN_RESULT_BUFFER_NO_CHECK_PROMISE(arg, msg) \
+  unsigned long long arg##len = [arg count]; \
+  unsigned char *arg##_data = (unsigned char *) sodium_malloc([ arg count ]); \
+  if (arg##_data == NULL) reject(ERR_FAILURE, msg, nil);
+
+
+/*
   NUMBERS
 */
 
 // Takes NSNumber and returns unsigned long long
-#define RN_ULL(arg, min, max, error) \
+#define RN_ULL(arg) \
   unsigned long long arg##_val = [arg unsignedLongLongValue];
 
 // Takes NSNumber and returns int
-#define RN_INT(arg, min, max, error) \
+#define RN_INT(arg) \
   int arg##_val = [arg intValue];
 
 // Takes NSNumber and returns unsigned long long,
