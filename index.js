@@ -19,7 +19,6 @@ const constants = Object.fromEntries(Object.entries(Sodium.getConstants()).map(
 
 let SodiumAPI = {
   ...constants,
-  crypto_generichash_batch,
   crypto_aead_xchacha20poly1305_ietf_keygen,
   crypto_aead_xchacha20poly1305_ietf_encrypt,
   crypto_aead_xchacha20poly1305_ietf_decrypt,
@@ -41,6 +40,8 @@ let SodiumAPI = {
   crypto_generichash_init,
   crypto_generichash_update,
   crypto_generichash_final,
+  crypto_generichash_batch,
+  crypto_generichash,
   crypto_kdf_keygen,
   crypto_kdf_derive_from_key,
   crypto_secretstream_xchacha20poly1305_keygen,
@@ -59,6 +60,15 @@ let SodiumAPI = {
 function crypto_secretbox_easy(...args) {
   const res = new Uint8Array(Sodium.crypto_secretbox_easy(...Array.from(args, mapArgs)))
   args[0].set(res)
+}
+
+function crypto_generichash(out, input, key) {
+  if (!key) key = new Uint8Array(0)
+
+  const state = new Uint8Array(384)
+  crypto_generichash_init(state, key, out.byteLength)
+  crypto_generichash_update(state, input)
+  crypto_generichash_final(state, out)
 }
 
 function crypto_generichash_batch(out, batch, key) {
