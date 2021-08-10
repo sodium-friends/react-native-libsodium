@@ -286,17 +286,31 @@ RCT_EXPORT_METHOD(
     return;
   }
 
-  unsigned long long opslimit_val = [opslimit unsignedLongLongValue];
-  if (opslimit_val < crypto_pwhash_OPSLIMIT_MIN || opslimit_val > crypto_pwhash_OPSLIMIT_MAX) {
+  NSNumber *OPS_MIN;
+  NSNumber *OPS_MAX;
+
+  OPS_MIN = [NSNumber numberWithUnsignedLongLong:crypto_pwhash_OPSLIMIT_MIN];
+  OPS_MAX = [NSNumber numberWithUnsignedLongLong:crypto_pwhash_OPSLIMIT_MAX];
+
+  if ([opslimit compare:OPS_MIN] == NSOrderedAscending
+    || [opslimit compare:OPS_MAX] == NSOrderedDescending) {
     reject(ERR_BAD_OPS, ERR_BAD_OPS, nil);
     return;
   }
+  unsigned long long opslimit_val = [opslimit unsignedLongLongValue];
 
-  int memlimit_val = [memlimit intValue];
-  if (memlimit_val < crypto_pwhash_MEMLIMIT_MIN || memlimit_val > crypto_pwhash_MEMLIMIT_MAX) {
+  NSNumber *MEM_MIN;
+  NSNumber *MEM_MAX;
+
+  MEM_MIN = [NSNumber numberWithUnsignedInt:crypto_pwhash_MEMLIMIT_MIN];
+  MEM_MAX = [NSNumber numberWithUnsignedInt:crypto_pwhash_MEMLIMIT_MAX];
+
+  if ([memlimit compare:MEM_MIN] == NSOrderedAscending
+    || [memlimit compare:MEM_MAX] == NSOrderedDescending) {
     reject(ERR_BAD_MEM, ERR_BAD_MEM, nil);
     return;
   }
+  int memlimit_val = [memlimit intValue];
 
   int alg_val = [alg intValue];
   if (alg_val != crypto_pwhash_ALG_DEFAULT
