@@ -128,7 +128,7 @@ function crypto_pwhash (...args) {
 async function crypto_pwhash_async (...args) {
   let nativeResult
   try {
-    nativeResult = await Sodium.crypto_pwhash(...Array.from(args, mapArgs))
+    nativeResult = await Sodium.crypto_pwhash_async(...Array.from(args, mapArgs))
   } catch (e) {
     throw e
   }
