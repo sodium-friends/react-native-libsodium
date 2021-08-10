@@ -286,6 +286,83 @@ RCT_EXPORT_BLOCKING_SYNCHRONOUS_METHOD(
   RN_RETURN_BUFFER(out)
 }
 
+RCT_EXPORT_METHOD(
+  crypto_pwhash_async:(NSArray *)out
+                passwd:(NSArray *) passwd
+                salt:(NSArray *) salt
+                opslimit:(nonnull NSNumber *)
+                opslimit memlimit:(nonnull NSNumber *)
+                memlimit alg:(nonnull NSNumber *) alg
+                resolver:(RCTPromiseResolveBlock) resolve
+                rejecter:(RCTPromiseRejectBlock) reject)
+{
+  RN_RESULT_BUFFER_NO_CHECK_PROMISE(out, ERR_BAD_OUTPUT)
+  if (outlen < crypto_pwhash_BYTES_MIN || outlen > crypto_pwhash_BYTES_MAX) {
+    reject(ERR_BAD_OUTPUT, ERR_BAD_OUTPUT, nil);
+    return;
+  }
+
+  RN_ARG_CONST_BUFFER_NO_CHECK(passwd)
+  if (passwdlen < crypto_pwhash_PASSWD_MIN || passwdlen > crypto_pwhash_PASSWD_MAX) {
+    reject(ERR_BAD_PWD, ERR_BAD_PWD, nil);
+    return;
+  }
+
+  RN_ARG_BUFFER_NO_CHECK(salt)
+  if (saltlen != crypto_pwhash_SALTBYTES) {
+    reject(ERR_BAD_SALT, ERR_BAD_SALT, nil);
+    return;
+  }
+
+  NSNumber *OPS_MIN;
+  NSNumber *OPS_MAX;
+
+  OPS_MIN = [NSNumber numberWithUnsignedLongLong:crypto_pwhash_OPSLIMIT_MIN];
+  OPS_MAX = [NSNumber numberWithUnsignedLongLong:crypto_pwhash_OPSLIMIT_MAX];
+
+  if ([opslimit compare:OPS_MIN] == NSOrderedAscending
+    || [opslimit compare:OPS_MAX] == NSOrderedDescending) {
+    reject(ERR_BAD_OPS, ERR_BAD_OPS, nil);
+    return;
+  }
+  unsigned long long opslimit_val = [opslimit unsignedLongLongValue];
+
+  NSNumber *MEM_MIN;
+  NSNumber *MEM_MAX;
+
+  MEM_MIN = [NSNumber numberWithUnsignedInt:crypto_pwhash_MEMLIMIT_MIN];
+  MEM_MAX = [NSNumber numberWithUnsignedInt:crypto_pwhash_MEMLIMIT_MAX];
+
+  if ([memlimit compare:MEM_MIN] == NSOrderedAscending
+    || [memlimit compare:MEM_MAX] == NSOrderedDescending) {
+    reject(ERR_BAD_MEM, ERR_BAD_MEM, nil);
+    return;
+  }
+  int memlimit_val = [memlimit intValue];
+
+  int alg_val = [alg intValue];
+  if (alg_val != crypto_pwhash_ALG_DEFAULT
+      && alg_val != crypto_pwhash_ALG_ARGON2I13
+      && alg_val != crypto_pwhash_ALG_ARGON2ID13) {
+    reject(ERR_BAD_ALG, ERR_BAD_ALG, nil);
+    return;
+  }
+
+  int check = crypto_pwhash(out_data, outlen,
+                                 passwd_data, passwdlen,
+                                 salt_data, opslimit_val,
+                                 memlimit_val, alg_val);
+
+  if (check != 0) {
+    reject(ERR_FAILURE, @"crypto_pwhash execution failed.", nil);
+    return;
+  }
+
+  NSMutableArray *res = [[NSMutableArray alloc] initWithCapacity: outlen];
+  RN_COPY_DATA(res, out, outlen)
+  resolve([res copy]);
+}
+
 RCT_EXPORT_BLOCKING_SYNCHRONOUS_METHOD(
   crypto_scalarmult_ed25519:(NSArray *)q n:(NSArray *) n p:(NSArray *) p)
 {

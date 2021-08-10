@@ -507,6 +507,41 @@ public class SodiumModule extends ReactContextBaseJavaModule {
     return ArrayUtil.toWritableArray(_out);
   }
 
+  @ReactMethod
+  public void crypto_pwhash_async (
+      ReadableArray out,
+      ReadableArray passwd,
+      ReadableArray salt,
+      int opslimit,
+      int memlimit,
+      int alg,
+      Promise promise
+  ) {
+    byte[] _out = ArgumentsEx.toByteArray(out);
+    byte[] _passwd = ArgumentsEx.toByteArray(passwd);
+    byte[] _salt = ArgumentsEx.toByteArray(salt);
+
+    try {
+      ArgumentsEx.check(_out, Sodium.crypto_pwhash_bytes_min(), Sodium.crypto_pwhash_bytes_max(), "ERR_BAD_OUTPUT");
+      ArgumentsEx.check(_passwd, Sodium.crypto_pwhash_passwd_min(), Sodium.crypto_pwhash_passwd_max(), "ERR_BAD_PWD");
+      ArgumentsEx.check(_salt, Sodium.crypto_pwhash_saltbytes(), "ERR_BAD_SALT");
+      ArgumentsEx.check(opslimit, Sodium.crypto_pwhash_opslimit_min(), Sodium.crypto_pwhash_opslimit_max(), "ERR_BAD_OPS");
+      ArgumentsEx.check(memlimit, Sodium.crypto_pwhash_memlimit_min(), Sodium.crypto_pwhash_memlimit_max(), "ERR_BAD_MEM");
+    } catch (Exception e) {
+      promise.reject("crypto_pwhash bad arguments:", e);
+    }
+
+    int ret = Sodium.crypto_pwhash(_out, _out.length, _passwd, _passwd.length, _salt, opslimit, memlimit, alg);
+
+    if (ret != 0) {
+      Exception e = new Exception("crypto_pwhash execution failed");
+      promise.reject("crypto_pwhash execution failed", e);
+    }
+
+    WritableArray buf = ArrayUtil.toWritableArray(_out);
+    promise.resolve(buf);
+  }
+
   @ReactMethod(isBlockingSynchronousMethod = true)
   public WritableArray crypto_scalarmult_ed25519 (
       ReadableArray q,

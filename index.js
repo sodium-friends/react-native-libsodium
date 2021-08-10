@@ -28,6 +28,7 @@ let SodiumAPI = {
   crypto_core_ed25519_sub,
   crypto_core_ed25519_from_uniform,
   crypto_pwhash,
+  crypto_pwhash_async,
   crypto_scalarmult_ed25519,
   crypto_scalarmult_ed25519_noclamp,
   crypto_scalarmult_ed25519_base,
@@ -120,6 +121,17 @@ function crypto_core_ed25519_from_uniform (...args) {
 function crypto_pwhash (...args) {
   const nativeResult = Sodium.crypto_pwhash(...Array.from(args, mapArgs))
   if (typeof nativeResult === 'string') throw new Error('crypto_pwhash execution failed: ' + nativeResult + '.')
+
+  args[0].set(new Uint8Array(nativeResult))
+}
+
+async function crypto_pwhash_async (...args) {
+  let nativeResult
+  try {
+    nativeResult = await Sodium.crypto_pwhash(...Array.from(args, mapArgs))
+  } catch (e) {
+    throw e
+  }
 
   args[0].set(new Uint8Array(nativeResult))
 }
