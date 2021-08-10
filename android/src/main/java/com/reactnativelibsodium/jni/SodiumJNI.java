@@ -19,6 +19,8 @@ public class SodiumJNI {
   public final static native void randombytes_stir();
   public final static native void randombytes_buf_deterministic(byte[] jarg1, int jarg2, byte[] jarg3);
   public final static native int randombytes_seedbytes();
+  public final static native void sodium_pad(int[] jarg1, byte[] jarg2, int jarg3, int jarg4, int jarg5);
+  public final static native void sodium_unpad(int[] jarg1, byte[] jarg2, int jarg3, int jarg4);
   public final static native void sodium_increment(byte[] jarg1, int jarg2);
   public final static native int crypto_secretbox_keybytes();
   public final static native int crypto_secretbox_noncebytes();
@@ -105,6 +107,8 @@ public class SodiumJNI {
   public final static native int crypto_onetimeauth_init(byte[] jarg1, byte[] jarg2);
   public final static native int crypto_onetimeauth_update(byte[] jarg1, byte[] jarg2, int jarg3);
   public final static native int crypto_onetimeauth_final(byte[] jarg1, byte[] jarg2);
+  public final static native int crypto_kx_publickeybytes();
+  public final static native int crypto_kx_secretkeybytes();
   public final static native int crypto_kx_keypair(byte[] jarg1, byte[] jarg2);
   public final static native int crypto_kx_seed_keypair(byte[] jarg1, byte[] jarg2, byte[] jarg3);
   public final static native int crypto_kx_client_session_keys(byte[] jarg1, byte[] jarg2, byte[] jarg3, byte[] jarg4, byte[] jarg5);
