@@ -258,8 +258,36 @@ RCT_EXPORT_BLOCKING_SYNCHRONOUS_METHOD(
   RN_RETURN_BUFFER(p)
 }
 
-RCT_EXPORT_METHOD(
+RCT_EXPORT_BLOCKING_SYNCHRONOUS_METHOD(
   crypto_pwhash:(NSArray *)out
+                passwd:(NSArray *) passwd
+                salt:(NSArray *) salt
+                opslimit:(nonnull NSNumber *)
+                opslimit memlimit:(nonnull NSNumber *)
+                memlimit alg:(nonnull NSNumber *) alg)
+{
+  RN_RESULT_BUFFER_MIN_MAX(out, crypto_pwhash_BYTES_MIN, crypto_pwhash_BYTES_MAX, ERR_BAD_OUTPUT)
+  RN_ARG_CONST_BUFFER_MIN_MAX(passwd, crypto_pwhash_PASSWD_MIN, crypto_pwhash_PASSWD_MAX, ERR_BAD_PWD)
+  RN_ARG_BUFFER(salt, crypto_pwhash_SALTBYTES, ERR_BAD_SALT)
+  RN_ULL_MIN_MAX(opslimit, crypto_pwhash_OPSLIMIT_MIN, crypto_pwhash_OPSLIMIT_MAX, ERR_BAD_OPS)
+  RN_INT_MIN_MAX(memlimit, crypto_pwhash_MEMLIMIT_MIN, crypto_pwhash_MEMLIMIT_MAX, ERR_BAD_MEM)
+
+  int alg_val = [alg intValue];
+  if (alg_val != crypto_pwhash_ALG_DEFAULT
+      && alg_val != crypto_pwhash_ALG_ARGON2I13
+      && alg_val != crypto_pwhash_ALG_ARGON2ID13)
+    return ERR_BAD_ALG;
+
+  RN_CHECK_FAILURE(crypto_pwhash(out_data, outlen,
+                                 passwd_data, passwdlen,
+                                 salt_data, opslimit_val,
+                                 memlimit_val, alg_val))
+
+  RN_RETURN_BUFFER(out)
+}
+
+RCT_EXPORT_METHOD(
+  crypto_pwhash_async:(NSArray *)out
                 passwd:(NSArray *) passwd
                 salt:(NSArray *) salt
                 opslimit:(nonnull NSNumber *)
