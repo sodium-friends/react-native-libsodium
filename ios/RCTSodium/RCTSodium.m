@@ -139,8 +139,8 @@ RCT_EXPORT_MODULE()
 
 RCT_EXPORT_BLOCKING_SYNCHRONOUS_METHOD(
   sodium_pad:(NSArray *) buf
-             unpad_len: (NSNumber *) unpad_len
-             blksize: (NSNumber *) blksize)
+             unpad_len: (nonnull NSNumber *) unpad_len
+             blksize: (nonnull NSNumber *) blksize)
 {
   RN_RESULT_BUFFER_SIZE_T(buf)
   RN_INT_MIN_MAX(unpad_len, 0, buflen, @"Unpadded length cannot exceed buffer length")
@@ -155,8 +155,8 @@ RCT_EXPORT_BLOCKING_SYNCHRONOUS_METHOD(
 
 RCT_EXPORT_BLOCKING_SYNCHRONOUS_METHOD(
   sodium_unpad:(NSArray *) buf
-             pad_len: (NSNumber *) pad_len
-             blksize: (NSNumber *) blksize)
+             pad_len: (nonnull NSNumber *) pad_len
+             blksize: (nonnull NSNumber *) blksize)
 {
   RN_RESULT_BUFFER_SIZE_T(buf)
   RN_INT_MIN_MAX(pad_len, 0, buflen, @"Unpadded length cannot exceed buffer length")
