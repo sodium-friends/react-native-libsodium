@@ -480,7 +480,7 @@ public class SodiumModule extends ReactContextBaseJavaModule {
   }
 
   @ReactMethod
-  public WritableArray crypto_pwhash (
+  public void crypto_pwhash (
       ReadableArray out,
       ReadableArray passwd,
       ReadableArray salt,
@@ -505,8 +505,13 @@ public class SodiumModule extends ReactContextBaseJavaModule {
 
     int ret = Sodium.crypto_pwhash(_out, _out.length, _passwd, _passwd.length, _salt, opslimit, memlimit, alg);
 
-    WritableArray ret = ArrayUtil.toWritableArray(_out);
-    promise.resolve(ret);
+    if (ret != 0) {
+      Exception e = new Exception("crypto_pwhash execution failed");
+      promise.reject("crypto_pwhash execution failed", e);
+    }
+
+    WritableArray buf = ArrayUtil.toWritableArray(_out);
+    promise.resolve(buf);
   }
 
   @ReactMethod(isBlockingSynchronousMethod = true)
