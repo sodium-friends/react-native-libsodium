@@ -138,6 +138,36 @@ RCT_EXPORT_MODULE()
 }
 
 RCT_EXPORT_BLOCKING_SYNCHRONOUS_METHOD(
+  sodium_pad:(NSArray *) buf
+             unpad_len: (NSNumber *) unpad_len
+             blksize: (NSNumber *) blksize)
+{
+  RN_RESULT_BUFFER_SIZE_T(buf)
+  RN_INT_MIN_MAX(unpad_len, 0, buflen, @"Unpadded length cannot exceed buffer length")
+  RN_INT_MIN_MAX(blksize, 1, buflen, @"Blocksize must be at least 1 byte and cannot exceed buffer length")
+
+  if (buflen < unpad_len_val + (blksize_val - (unpad_len_val % blksize_val))) return @"buf not long enough";
+
+  sodium_pad(&buflen, buf_data, unpad_len_val, blksize_val, buflen);
+
+  RN_RETURN_BUFFER(buf)
+}
+
+RCT_EXPORT_BLOCKING_SYNCHRONOUS_METHOD(
+  sodium_unpad:(NSArray *) buf
+             pad_len: (NSNumber *) pad_len
+             blksize: (NSNumber *) blksize)
+{
+  RN_RESULT_BUFFER_SIZE_T(buf)
+  RN_INT_MIN_MAX(pad_len, 0, buflen, @"Unpadded length cannot exceed buffer length")
+  RN_INT_MIN_MAX(blksize, 1, buflen, @"Blocksize must be at least 1 byte and cannot exceed buffer length")
+
+  sodium_unpad(&buflen, buf_data, pad_len_val, blksize_val);
+
+  RN_RETURN_BUFFER(buf)
+}
+
+RCT_EXPORT_BLOCKING_SYNCHRONOUS_METHOD(
   crypto_secretbox_easy:(NSArray*)c m:(NSArray*)m n:(NSArray*)n k:(NSArray*)k)
 {
   RN_ARG_BUFFER(k, crypto_secretbox_KEYBYTES, ERR_BAD_KEY)

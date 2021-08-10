@@ -164,6 +164,35 @@ public class SodiumModule extends ReactContextBaseJavaModule {
   }
 
   @ReactMethod(isBlockingSynchronousMethod = true)
+  public WritableArray sodium_pad (ReadableArray buf, int unpadded_buflen, int blocksize) throws Exception {
+    byte[] _buf = ArgumentsEx.toByteArray(buf);
+    int[] padded_buflen = new int[1];
+
+    if (unpadded_buflen > _buf.length) throw new Exception("unpadded length cannot exceed buffer length");
+    if (blocksize > _buf.length) throw new Exception("block size cannot exceed buffer length");
+    if (blocksize < 1) throw new Exception("block sizemust be at least 1 byte");
+    if (_buf.length < unpadded_buflen + (blocksize - (unpadded_buflen % blocksize))) throw new Exception("buf not long enough");
+
+    Sodium.sodium_pad(padded_buflen, _buf, unpadded_buflen, blocksize, _buf.length);
+
+    return ArrayUtil.toWritableArray( Arrays.copyOfRange(_buf, 0, padded_buflen[0] ) );
+  }
+
+  @ReactMethod(isBlockingSynchronousMethod = true)
+  public WritableArray sodium_unpad (ReadableArray buf, int padded_buflen, int blocksize) throws Exception {
+    byte[] _buf = ArgumentsEx.toByteArray(buf);
+    int[] unpadded_buflen = new int[1];
+
+    if (padded_buflen > _buf.length) throw new Exception("padded length cannot exceed buffer length");
+    if (blocksize > _buf.length) throw new Exception("block size cannot exceed buffer length");
+    if (blocksize < 1) throw new Exception("block sizemust be at least 1 byte");
+
+    Sodium.sodium_unpad(unpadded_buflen, _buf, padded_buflen, blocksize);
+
+    return ArrayUtil.toWritableArray( Arrays.copyOfRange(_buf, 0, unpadded_buflen[0] ) );
+  }
+
+  @ReactMethod(isBlockingSynchronousMethod = true)
   public WritableArray crypto_aead_xchacha20poly1305_ietf_keygen (ReadableArray k) throws Exception {
     byte[] key = ArgumentsEx.toByteArray(k);
 

@@ -292,6 +292,22 @@ function crypto_kx_keypair (...args) {
   args[1].set(new Uint8Array(nativeResult.subarray(sodium.crypto_kx_PUBLICKEYBYTES)))
 }
 
+function sodium_pad (...args) {
+  const nativeResult = Sodium.sodium_pad(...Array.from(args, mapArgs))
+  if (typeof nativeResult === 'string') throw new Error('sodium_pad execution failed: ' + nativeResult + '.')
+
+  args[0].set(new Uint8Array(nativeResult))
+  return nativeResult.byteLength
+}
+
+function sodium_unpad (...args) {
+  const nativeResult = Sodium.sodium_pad(...Array.from(args, mapArgs))
+  if (typeof nativeResult === 'string') throw new Error('sodium_unpad execution failed: ' + nativeResult + '.')
+
+  args[0].set(new Uint8Array(nativeResult))
+  return nativeResult.byteLength
+}
+
 function sodium_memcmp (a, b) {
   return vn(a, 0, b, 0, a.byteLength) === 0 && a.byteLength === b.byteLength
 }

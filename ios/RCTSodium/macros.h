@@ -91,6 +91,12 @@
   if ([arg count] < min || [arg count] > max) return error; \
   RN_RESULT_BUFFER_NO_CHECK(arg)
 
+// Same as RESULT_BUFFER_NO_CHECK except size_t len
+#define RN_RESULT_BUFFER_SIZE_T(arg) \
+  size_t arg##len = [arg count]; \
+  unsigned char *arg##_data = (unsigned char *) sodium_malloc([ arg count ]); \
+  if (arg##_data == NULL) return ERR_FAILURE;
+
 
 /*
   PROMISES
