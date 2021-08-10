@@ -1,3 +1,3 @@
-import Libsodium from './sodium.js';
+import Libsodium from './sodium.js'
 
-export default Libsodium;
+export default Libsodium
