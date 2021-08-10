@@ -291,10 +291,11 @@ function crypto_kx_keypair (...args) {
 
 function sodium_pad (...args) {
   const nativeResult = Sodium.sodium_pad(...Array.from(args, mapArgs))
+  console.log(nativeResult)
   if (typeof nativeResult === 'string') throw new Error('sodium_pad execution failed: ' + nativeResult + '.')
 
   args[0].set(new Uint8Array(nativeResult))
-  return nativeResult.byteLength
+  return nativeResult.length
 }
 
 function sodium_unpad (...args) {
@@ -302,7 +303,7 @@ function sodium_unpad (...args) {
   if (typeof nativeResult === 'string') throw new Error('sodium_unpad execution failed: ' + nativeResult + '.')
 
   args[0].set(new Uint8Array(nativeResult))
-  return nativeResult.byteLength
+  return nativeResult.length
 }
 
 function sodium_memcmp (a, b) {
