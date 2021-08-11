@@ -3,10 +3,9 @@
  * @flow
  */
 
-import { NativeModules } from 'react-native';
-import bint from 'bint8array';
+import { NativeModules } from 'react-native'
 
-const { Sodium } = NativeModules;
+const { Sodium } = NativeModules
 // console.log(NativeModules)
 
 const constants = Object.fromEntries(Object.entries(Sodium.getConstants()).map(
@@ -17,18 +16,22 @@ const constants = Object.fromEntries(Object.entries(Sodium.getConstants()).map(
     return [k, v]
   }))
 
-let SodiumAPI = {
+const SodiumAPI = {
   ...constants,
-  crypto_generichash_batch,
   crypto_aead_xchacha20poly1305_ietf_keygen,
   crypto_aead_xchacha20poly1305_ietf_encrypt,
   crypto_aead_xchacha20poly1305_ietf_decrypt,
+  crypto_aead_chacha20poly1305_ietf_keygen,
+  crypto_aead_chacha20poly1305_ietf_encrypt,
+  crypto_aead_chacha20poly1305_ietf_decrypt,
   crypto_core_ed25519_scalar_random,
   crypto_core_ed25519_add,
   crypto_core_ed25519_sub,
   crypto_core_ed25519_from_uniform,
   crypto_pwhash,
   crypto_pwhash_async,
+  crypto_scalarmult,
+  crypto_scalarmult_base,
   crypto_scalarmult_ed25519,
   crypto_scalarmult_ed25519_noclamp,
   crypto_scalarmult_ed25519_base,
@@ -36,8 +39,11 @@ let SodiumAPI = {
   crypto_generichash_init,
   crypto_generichash_update,
   crypto_generichash_final,
+  crypto_generichash_batch,
+  crypto_generichash,
   crypto_kdf_keygen,
   crypto_kdf_derive_from_key,
+  crypto_kx_keypair,
   crypto_secretstream_xchacha20poly1305_keygen,
   crypto_secretstream_xchacha20poly1305_init_push,
   crypto_secretstream_xchacha20poly1305_push,
@@ -45,18 +51,29 @@ let SodiumAPI = {
   crypto_secretstream_xchacha20poly1305_pull,
   crypto_secretbox_easy,
   randombytes_buf,
+  sodium_pad,
+  sodium_unpad,
   sodium_memcmp,
   sodium_memzero,
   sodium_free,
   sodium_malloc
 }
 
-function crypto_secretbox_easy(...args) {
+function crypto_secretbox_easy (...args) {
   const res = new Uint8Array(Sodium.crypto_secretbox_easy(...Array.from(args, mapArgs)))
   args[0].set(res)
 }
 
-function crypto_generichash_batch(out, batch, key) {
+function crypto_generichash (out, input, key) {
+  if (!key) key = new Uint8Array(0)
+
+  const state = new Uint8Array(384)
+  crypto_generichash_init(state, key, out.byteLength)
+  crypto_generichash_update(state, input)
+  crypto_generichash_final(state, out)
+}
+
+function crypto_generichash_batch (out, batch, key) {
   if (!key) key = new Uint8Array(0)
 
   const state = new Uint8Array(384)
@@ -69,15 +86,15 @@ function crypto_generichash_batch(out, batch, key) {
   crypto_generichash_final(state, out)
 }
 
-function crypto_aead_xchacha20poly1305_ietf_keygen(k) {
-  k.set(new Uint8Array(Sodium.crypto_aead_xchacha20poly1305_ietf_keygen(Array.from(k))))
-}
-
-function randombytes_buf(buf) {
+function randombytes_buf (buf) {
   buf.set(new Uint8Array(Sodium.randombytes_buf(Array.from(buf))))
 }
 
-function crypto_aead_xchacha20poly1305_ietf_encrypt(...args) {
+function crypto_aead_xchacha20poly1305_ietf_keygen (k) {
+  k.set(new Uint8Array(Sodium.crypto_aead_xchacha20poly1305_ietf_keygen(Array.from(k))))
+}
+
+function crypto_aead_xchacha20poly1305_ietf_encrypt (...args) {
   const nativeResult = Sodium.crypto_aead_xchacha20poly1305_ietf_encrypt(...Array.from(args, mapArgs))
   if (typeof nativeResult === 'string') throw new Error('crypto_aead_xchacha20poly1305_ietf_encrypt execeution failed: ' + nativeResult + '.')
   const res = new Uint8Array(nativeResult)
@@ -85,9 +102,29 @@ function crypto_aead_xchacha20poly1305_ietf_encrypt(...args) {
   return res.byteLength
 }
 
-function crypto_aead_xchacha20poly1305_ietf_decrypt(...args) {
+function crypto_aead_xchacha20poly1305_ietf_decrypt (...args) {
   const nativeResult = Sodium.crypto_aead_xchacha20poly1305_ietf_decrypt(...Array.from(args, mapArgs))
   if (typeof nativeResult === 'string') throw new Error('crypto_aead_xchacha20poly1305_ietf_decrypt execeution failed: ' + nativeResult + '.')
+  const res = new Uint8Array(nativeResult)
+  args[0].set(res)
+  return res.byteLength
+}
+
+function crypto_aead_chacha20poly1305_ietf_keygen (k) {
+  k.set(new Uint8Array(Sodium.crypto_aead_chacha20poly1305_ietf_keygen(Array.from(k))))
+}
+
+function crypto_aead_chacha20poly1305_ietf_encrypt (...args) {
+  const nativeResult = Sodium.crypto_aead_chacha20poly1305_ietf_encrypt(...Array.from(args, mapArgs))
+  if (typeof nativeResult === 'string') throw new Error('crypto_aead_chacha20poly1305_ietf_encrypt execeution failed: ' + nativeResult + '.')
+  const res = new Uint8Array(nativeResult)
+  args[0].set(res)
+  return res.byteLength
+}
+
+function crypto_aead_chacha20poly1305_ietf_decrypt (...args) {
+  const nativeResult = Sodium.crypto_aead_chacha20poly1305_ietf_decrypt(...Array.from(args, mapArgs))
+  if (typeof nativeResult === 'string') throw new Error('crypto_aead_chacha20poly1305_ietf_decrypt execeution failed: ' + nativeResult + '.')
   const res = new Uint8Array(nativeResult)
   args[0].set(res)
   return res.byteLength
@@ -126,12 +163,30 @@ function crypto_pwhash (...args) {
 }
 
 async function crypto_pwhash_async (...args) {
+  const _args = args.slice(0, args.length - 1)
+  const cb = args[args.length - 1]
+
   let nativeResult
   try {
-    nativeResult = await Sodium.crypto_pwhash_async(...Array.from(args, mapArgs))
+    nativeResult = await Sodium.crypto_pwhash_async(...Array.from(_args, mapArgs))
   } catch (e) {
-    throw e
+    return cb(e)
   }
+
+  args[0].set(new Uint8Array(nativeResult))
+  cb()
+}
+
+function crypto_scalarmult (...args) {
+  const nativeResult = Sodium.crypto_scalarmult(...Array.from(args, mapArgs))
+  if (typeof nativeResult === 'string') throw new Error('crypto_scalarmult execution failed: ' + nativeResult + '.')
+
+  args[0].set(new Uint8Array(nativeResult))
+}
+
+function crypto_scalarmult_base (...args) {
+  const nativeResult = Sodium.crypto_scalarmult_base(...Array.from(args, mapArgs))
+  if (typeof nativeResult === 'string') throw new Error('crypto_scalarmult_base execution failed: ' + nativeResult + '.')
 
   args[0].set(new Uint8Array(nativeResult))
 }
@@ -198,9 +253,9 @@ function crypto_secretstream_xchacha20poly1305_pull (...args) {
   if (typeof nativeResult === 'string') throw new Error('crypto_secretstream_xchacha20poly1305_pull execution failed: ' + nativeResult + '.')
 
   const resultBuf = new Uint8Array(nativeResult)
-  args[0].set(resultBuf.subarray(0, constants.crypto_secretstream_xchacha20poly1305_STATEBYTES))    // state
-  args[2][0] = resultBuf[constants.crypto_secretstream_xchacha20poly1305_STATEBYTES]                // tag
-  args[1].set(resultBuf.subarray(constants.crypto_secretstream_xchacha20poly1305_STATEBYTES + 1))   // message
+  args[0].set(resultBuf.subarray(0, constants.crypto_secretstream_xchacha20poly1305_STATEBYTES)) // state
+  args[2][0] = resultBuf[constants.crypto_secretstream_xchacha20poly1305_STATEBYTES] // tag
+  args[1].set(resultBuf.subarray(constants.crypto_secretstream_xchacha20poly1305_STATEBYTES + 1)) // message
 }
 
 function crypto_generichash_init (...args) {
@@ -235,6 +290,31 @@ function crypto_kdf_derive_from_key (...args) {
   args[0].set(new Uint8Array(nativeResult))
 }
 
+function crypto_kx_keypair (...args) {
+  const nativeResult = Sodium.crypto_kx_keypair(...Array.from(args, mapArgs))
+  if (typeof nativeResult === 'string') throw new Error('crypto_kx_keypair execution failed: ' + nativeResult + '.')
+
+  const resultBuf = new Uint8Array(nativeResult)
+  args[0].set(resultBuf.subarray(0, constants.crypto_kx_PUBLICKEYBYTES))
+  args[1].set(resultBuf.subarray(constants.crypto_kx_PUBLICKEYBYTES))
+}
+
+function sodium_pad (...args) {
+  const nativeResult = Sodium.sodium_pad(...Array.from(args, mapArgs))
+  if (typeof nativeResult === 'string') throw new Error('sodium_pad execution failed: ' + nativeResult + '.')
+
+  args[0].set(new Uint8Array(nativeResult))
+  return nativeResult.length
+}
+
+function sodium_unpad (...args) {
+  const nativeResult = Sodium.sodium_unpad(...Array.from(args, mapArgs))
+  if (typeof nativeResult === 'string') throw new Error('sodium_unpad execution failed: ' + nativeResult + '.')
+
+  args[0].set(new Uint8Array(nativeResult))
+  return nativeResult.length
+}
+
 function sodium_memcmp (a, b) {
   return vn(a, 0, b, 0, a.byteLength) === 0 && a.byteLength === b.byteLength
 }
@@ -251,7 +331,7 @@ function sodium_memzero (arr) {
   arr.fill(0)
 }
 
-module.exports = SodiumAPI;
+module.exports = SodiumAPI
 
 function mapArgs (arg) {
   if (arg == null) return new Array(0)
@@ -261,7 +341,7 @@ function mapArgs (arg) {
 
 // constant time compare
 function vn (x, xi, y, yi, n) {
-  var d = 0
+  let d = 0
   for (let i = 0; i < n; i++) d |= x[xi + i] ^ y[yi + i]
   return (1 & ((d - 1) >>> 8)) - 1
 }

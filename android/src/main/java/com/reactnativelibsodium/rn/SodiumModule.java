@@ -83,11 +83,18 @@ public class SodiumModule extends ReactContextBaseJavaModule {
     constants.put("crypto_core_ed25519_NONREDUCEDSCALARBYTES", Sodium.crypto_core_ed25519_nonreducedscalarbytes());
     constants.put("crypto_scalarmult_ed25519_BYTES", Sodium.crypto_scalarmult_ed25519_bytes());
     constants.put("crypto_scalarmult_ed25519_SCALARBYTES", Sodium.crypto_scalarmult_ed25519_scalarbytes());
+    constants.put("crypto_scalarmult_BYTES", Sodium.crypto_scalarmult_bytes());
+    constants.put("crypto_scalarmult_SCALARBYTES", Sodium.crypto_scalarmult_scalarbytes());
     constants.put("crypto_aead_xchacha20poly1305_ietf_ABYTES", Sodium.crypto_aead_xchacha20poly1305_ietf_abytes());
     constants.put("crypto_aead_xchacha20poly1305_ietf_KEYBYTES", Sodium.crypto_aead_xchacha20poly1305_ietf_keybytes());
     constants.put("crypto_aead_xchacha20poly1305_ietf_NPUBBYTES", Sodium.crypto_aead_xchacha20poly1305_ietf_npubbytes());
     constants.put("crypto_aead_xchacha20poly1305_ietf_NSECBYTES", Sodium.crypto_aead_xchacha20poly1305_ietf_nsecbytes());
     constants.put("crypto_aead_xchacha20poly1305_ietf_MESSAGEBYTES_MAX", Sodium.crypto_aead_xchacha20poly1305_ietf_messagebytes_max());
+    constants.put("crypto_aead_chacha20poly1305_ietf_ABYTES", Sodium.crypto_aead_chacha20poly1305_ietf_abytes());
+    constants.put("crypto_aead_chacha20poly1305_ietf_KEYBYTES", Sodium.crypto_aead_chacha20poly1305_ietf_keybytes());
+    constants.put("crypto_aead_chacha20poly1305_ietf_NPUBBYTES", Sodium.crypto_aead_chacha20poly1305_ietf_npubbytes());
+    constants.put("crypto_aead_chacha20poly1305_ietf_NSECBYTES", Sodium.crypto_aead_chacha20poly1305_ietf_nsecbytes());
+    constants.put("crypto_aead_chacha20poly1305_ietf_MESSAGEBYTES_MAX", Sodium.crypto_aead_chacha20poly1305_ietf_messagebytes_max());
     constants.put("crypto_secretstream_xchacha20poly1305_STATEBYTES", Sodium.crypto_secretstream_xchacha20poly1305_statebytes());
     constants.put("crypto_secretstream_xchacha20poly1305_ABYTES", Sodium.crypto_secretstream_xchacha20poly1305_abytes());
     constants.put("crypto_secretstream_xchacha20poly1305_HEADERBYTES", Sodium.crypto_secretstream_xchacha20poly1305_headerbytes());
@@ -98,6 +105,8 @@ public class SodiumModule extends ReactContextBaseJavaModule {
     constants.put("_crypto_secretstream_xchacha20poly1305_TAG_PUSH", Sodium.crypto_secretstream_xchacha20poly1305_tag_push());
     constants.put("_crypto_secretstream_xchacha20poly1305_TAG_REKEY", Sodium.crypto_secretstream_xchacha20poly1305_tag_rekey());
     constants.put("_crypto_secretstream_xchacha20poly1305_TAG_FINAL", Sodium.crypto_secretstream_xchacha20poly1305_tag_final());
+    constants.put("crypto_kx_PUBLICKEYBYTES", Sodium.crypto_kx_publickeybytes());
+    constants.put("crypto_kx_SECRETKEYBYTES", Sodium.crypto_kx_secretkeybytes());
 
     // These may be useful for future extensions
 
@@ -148,12 +157,39 @@ public class SodiumModule extends ReactContextBaseJavaModule {
     // constants.put("crypto_shorthash_KEYBYTES", Sodium.crypto_shorthash_keybytes());
     // constants.put("crypto_hash_sha256_BYTES", Sodium.crypto_hash_sha256_bytes());
     // constants.put("crypto_hash_sha512_BYTES", Sodium.crypto_hash_sha512_bytes());
-    // constants.put("crypto_kx_PUBLICKEYBYTES", Sodium.crypto_kx_publickeybytes());
-    // constants.put("crypto_kx_SECRETKEYBYTES", Sodium.crypto_kx_secretkeybytes());
     // constants.put("crypto_kx_SEEDBYTES", Sodium.crypto_kx_seedbytes());
     // constants.put("crypto_kx_SESSIONKEYBYTES", Sodium.crypto_kx_sessionkeybytes());
 
     return constants;
+  }
+
+  @ReactMethod(isBlockingSynchronousMethod = true)
+  public WritableArray sodium_pad (ReadableArray buf, int unpadded_buflen, int blocksize) throws Exception {
+    byte[] _buf = ArgumentsEx.toByteArray(buf);
+    int[] padded_buflen = new int[1];
+
+    if (unpadded_buflen > _buf.length) throw new Exception("unpadded length cannot exceed buffer length");
+    if (blocksize > _buf.length) throw new Exception("block size cannot exceed buffer length");
+    if (blocksize < 1) throw new Exception("block sizemust be at least 1 byte");
+    if (_buf.length < unpadded_buflen + (blocksize - (unpadded_buflen % blocksize))) throw new Exception("buf not long enough");
+
+    Sodium.sodium_pad(padded_buflen, _buf, unpadded_buflen, blocksize, _buf.length);
+
+    return ArrayUtil.toWritableArray( Arrays.copyOfRange(_buf, 0, padded_buflen[0] ) );
+  }
+
+  @ReactMethod(isBlockingSynchronousMethod = true)
+  public WritableArray sodium_unpad (ReadableArray buf, int padded_buflen, int blocksize) throws Exception {
+    byte[] _buf = ArgumentsEx.toByteArray(buf);
+    int[] unpadded_buflen = new int[1];
+
+    if (padded_buflen > _buf.length) throw new Exception("padded length cannot exceed buffer length");
+    if (blocksize > _buf.length) throw new Exception("block size cannot exceed buffer length");
+    if (blocksize < 1) throw new Exception("block sizemust be at least 1 byte");
+
+    Sodium.sodium_unpad(unpadded_buflen, _buf, padded_buflen, blocksize);
+
+    return ArrayUtil.toWritableArray( Arrays.copyOfRange(_buf, 0, unpadded_buflen[0] ) );
   }
 
   @ReactMethod(isBlockingSynchronousMethod = true)
@@ -199,7 +235,7 @@ public class SodiumModule extends ReactContextBaseJavaModule {
 
     try {
       ArgumentsEx.check(_npub, Sodium.crypto_aead_xchacha20poly1305_ietf_npubbytes(),"ERR_BAD_NPUB");
-      ArgumentsEx.check(_k, Sodium.crypto_secretbox_keybytes(), "ERR_BAD_KEY");
+      ArgumentsEx.check(_k, Sodium.crypto_aead_xchacha20poly1305_ietf_keybytes(), "ERR_BAD_KEY");
       ArgumentsEx.check(_c, _m.length + Sodium.crypto_aead_xchacha20poly1305_ietf_abytes(), "ERR_BAD_CIPHERTEXT");
     } catch (Exception e) {
       throw e;
@@ -233,7 +269,7 @@ public class SodiumModule extends ReactContextBaseJavaModule {
 
     try {
       ArgumentsEx.check(_npub, Sodium.crypto_aead_xchacha20poly1305_ietf_npubbytes(), "ERR_BAD_NPUB");
-      ArgumentsEx.check(_k, Sodium.crypto_secretbox_keybytes(), "ERR_BAD_KEY");
+      ArgumentsEx.check(_k, Sodium.crypto_aead_xchacha20poly1305_ietf_keybytes(), "ERR_BAD_KEY");
       ArgumentsEx.check(_m, _c.length - Sodium.crypto_aead_xchacha20poly1305_ietf_abytes(), "ERR_BAD_MSG");
     } catch (Exception e) {
       throw e;
@@ -250,6 +286,75 @@ public class SodiumModule extends ReactContextBaseJavaModule {
   }
 
   @ReactMethod(isBlockingSynchronousMethod = true)
+  public WritableArray crypto_aead_chacha20poly1305_ietf_encrypt (
+      ReadableArray c,
+      ReadableArray m,
+      ReadableArray ad,
+      ReadableArray nsec,
+      ReadableArray npub,
+      ReadableArray k
+  ) throws Exception {
+    byte[] _c = ArgumentsEx.toByteArray(c);
+    byte[] _m = ArgumentsEx.toByteArray(m);
+    byte[] _ad = ArgumentsEx.toByteArray(ad);
+    byte[] _nsec = ArgumentsEx.toByteArray(nsec);
+    byte[] _npub = ArgumentsEx.toByteArray(npub);
+    byte[] _k = ArgumentsEx.toByteArray(k);
+    int[] clen_p = new int[1];
+
+    try {
+      ArgumentsEx.check(_npub, Sodium.crypto_aead_chacha20poly1305_ietf_npubbytes(),"ERR_BAD_NPUB");
+      ArgumentsEx.check(_k, Sodium.crypto_aead_chacha20poly1305_ietf_keybytes(), "ERR_BAD_KEY");
+      ArgumentsEx.check(_c, _m.length + Sodium.crypto_aead_chacha20poly1305_ietf_abytes(), "ERR_BAD_CIPHERTEXT");
+    } catch (Exception e) {
+      throw e;
+    }
+
+    Sodium.crypto_aead_chacha20poly1305_ietf_encrypt(
+      _c, clen_p,
+      _m, m.size(),
+      _ad, ad.size(),
+      _nsec, _npub, _k);
+
+    return ArrayUtil.toWritableArray( Arrays.copyOfRange(_c, 0, clen_p[0] ) );
+  }
+
+  @ReactMethod(isBlockingSynchronousMethod = true)
+  public WritableArray crypto_aead_chacha20poly1305_ietf_decrypt (
+      ReadableArray m,
+      ReadableArray nsec,
+      ReadableArray c,
+      ReadableArray ad,
+      ReadableArray npub,
+      ReadableArray k
+  ) throws Exception {
+    byte[] _m = ArgumentsEx.toByteArray(m);
+    byte[] _nsec = ArgumentsEx.toByteArray(nsec);
+    byte[] _c = ArgumentsEx.toByteArray(c);
+    byte[] _ad = ArgumentsEx.toByteArray(ad);
+    byte[] _npub = ArgumentsEx.toByteArray(npub);
+    byte[] _k = ArgumentsEx.toByteArray(k);
+    int[] mlen_p = new int[1];
+
+    try {
+      ArgumentsEx.check(_npub, Sodium.crypto_aead_chacha20poly1305_ietf_npubbytes(), "ERR_BAD_NPUB");
+      ArgumentsEx.check(_k, Sodium.crypto_aead_chacha20poly1305_ietf_keybytes(), "ERR_BAD_KEY");
+      ArgumentsEx.check(_m, _c.length - Sodium.crypto_aead_chacha20poly1305_ietf_abytes(), "ERR_BAD_MSG");
+    } catch (Exception e) {
+      throw e;
+    }
+
+    Sodium.crypto_aead_chacha20poly1305_ietf_decrypt(
+      _m, mlen_p,
+      _nsec,
+      _c,  c.size(),
+      _ad, ad.size(),
+      _npub, _k);
+
+    return ArrayUtil.toWritableArray( Arrays.copyOfRange(_m, 0, mlen_p[0] ) );
+  }
+
+  @ReactMethod(isBlockingSynchronousMethod = true)
   public WritableArray crypto_secretstream_xchacha20poly1305_keygen (ReadableArray k) throws Exception {
     byte[] key = ArgumentsEx.toByteArray(k);
 
@@ -262,6 +367,34 @@ public class SodiumModule extends ReactContextBaseJavaModule {
     Sodium.crypto_secretstream_xchacha20poly1305_keygen(key);
 
     return ArrayUtil.toWritableArray(key);
+  }
+
+  @ReactMethod(isBlockingSynchronousMethod = true)
+  public WritableArray crypto_kx_keypair (ReadableArray pk, ReadableArray sk) throws Exception {
+    byte[] _pk = ArgumentsEx.toByteArray(pk);
+    byte[] _sk = ArgumentsEx.toByteArray(sk);
+
+    try {
+      ArgumentsEx.check(_pk, Sodium.crypto_kx_publickeybytes(), "ERR_BAD_KEY");
+      ArgumentsEx.check(_sk, Sodium.crypto_kx_secretkeybytes(), "ERR_BAD_KEY");
+    } catch (Exception e) {
+      throw e;
+    }
+
+    Sodium.crypto_kx_keypair(_pk, _sk);
+
+    ByteArrayOutputStream outputStream = new ByteArrayOutputStream( );
+
+    try {
+      outputStream.write( _pk );
+      outputStream.write( _sk );
+    } catch (IOException e) {
+      throw e;
+    }
+
+    byte ret[] = outputStream.toByteArray( );
+
+    return ArrayUtil.toWritableArray(ret);
   }
 
   @ReactMethod(isBlockingSynchronousMethod = true)
@@ -543,6 +676,49 @@ public class SodiumModule extends ReactContextBaseJavaModule {
   }
 
   @ReactMethod(isBlockingSynchronousMethod = true)
+  public WritableArray crypto_scalarmult (
+      ReadableArray q,
+      ReadableArray n,
+      ReadableArray p
+  ) throws Exception {
+    byte[] _q = ArgumentsEx.toByteArray(q);
+    byte[] _n = ArgumentsEx.toByteArray(n);
+    byte[] _p = ArgumentsEx.toByteArray(p);
+
+    try {
+      ArgumentsEx.check(_q, Sodium.crypto_scalarmult_bytes(), "ERR_BAD_EC_POINT");
+      ArgumentsEx.check(_n, Sodium.crypto_scalarmult_scalarbytes(), "ERR_BAD_SCALAR");
+      ArgumentsEx.check(_p, Sodium.crypto_scalarmult_bytes(), "ERR_BAD_EC_POINT");
+    } catch (Exception e) {
+      throw e;
+    }
+
+    Sodium.crypto_scalarmult(_q, _n, _p);
+
+    return ArrayUtil.toWritableArray(_q);
+  }
+
+  @ReactMethod(isBlockingSynchronousMethod = true)
+  public WritableArray crypto_scalarmult_base (
+      ReadableArray q,
+      ReadableArray n
+  ) throws Exception {
+    byte[] _q = ArgumentsEx.toByteArray(q);
+    byte[] _n = ArgumentsEx.toByteArray(n);
+
+    try {
+      ArgumentsEx.check(_q, Sodium.crypto_scalarmult_bytes(), "ERR_BAD_EC_POINT");
+      ArgumentsEx.check(_n, Sodium.crypto_scalarmult_scalarbytes(), "ERR_BAD_SCALAR");
+    } catch (Exception e) {
+      throw e;
+    }
+
+    Sodium.crypto_scalarmult_base(_q, _n);
+
+    return ArrayUtil.toWritableArray(_q);
+  }
+
+  @ReactMethod(isBlockingSynchronousMethod = true)
   public WritableArray crypto_scalarmult_ed25519 (
       ReadableArray q,
       ReadableArray n,
@@ -639,8 +815,8 @@ public class SodiumModule extends ReactContextBaseJavaModule {
 
     try {
       ArgumentsEx.check(_state, Sodium.crypto_generichash_statebytes(), "ERR_BAD_STATE");
-      ArgumentsEx.check(_key, Sodium.crypto_generichash_keybytes_min(),
-                              Sodium.crypto_generichash_keybytes_max(), "ERR_BAD_KEY");
+      if (_key.length > 0) ArgumentsEx.check(_key, Sodium.crypto_generichash_keybytes_min(),
+                                   Sodium.crypto_generichash_keybytes_max(), "ERR_BAD_KEY");
     } catch (Exception e) {
       throw e;
     }

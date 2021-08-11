@@ -36,6 +36,10 @@ Full API documentation for each method may be found under the links in each sect
   crypto_aead_xchacha20poly1305_ietf_keygen
   crypto_aead_xchacha20poly1305_ietf_encrypt
   crypto_aead_xchacha20poly1305_ietf_decrypt
+
+  crypto_aead_chacha20poly1305_ietf_keygen
+  crypto_aead_chacha20poly1305_ietf_encrypt
+  crypto_aead_chacha20poly1305_ietf_decrypt
 ```
 
 #### Constants
@@ -43,11 +47,15 @@ Full API documentation for each method may be found under the links in each sect
   crypto_aead_xchacha20poly1305_ietf_KEYBYTES
   crypto_aead_xchacha20poly1305_ietf_NPUBBYTES
   crypto_aead_xchacha20poly1305_ietf_ABYTES
+
+  crypto_aead_chacha20poly1305_ietf_KEYBYTES
+  crypto_aead_chacha20poly1305_ietf_NPUBBYTES
+  crypto_aead_chacha20poly1305_ietf_ABYTES
 ```
 
 ### Curve arithemetic
 
-[Ed25519 arithmetic](https://sodium-friends.github.io/docs/docs/finitefieldarithmetic)
+[Curve25519 & Ed25519 arithmetic](https://sodium-friends.github.io/docs/docs/finitefieldarithmetic)
 
 #### Methods
 ```
@@ -55,6 +63,9 @@ Full API documentation for each method may be found under the links in each sect
   crypto_core_ed25519_add
   crypto_core_ed25519_sub
   crypto_core_ed25519_from_uniform
+
+  crypto_scalarmult
+  crypto_scalarmult_base
 
   crypto_scalarmult_ed25519
   crypto_scalarmult_ed25519_base
@@ -84,6 +95,7 @@ Clamping involves clearing the lowest 3 bits of the result, ensuring the result 
 #### Methods
 ```
   crypto_pwhash
+  crypto_pwhash_async
 ```
 
 #### Constants
@@ -124,6 +136,7 @@ Clamping involves clearing the lowest 3 bits of the result, ensuring the result 
 
 #### Methods
 ```
+  crypto_generichash
   crypto_generichash_init
   crypto_generichash_update
   crypto_generichash_final
@@ -138,6 +151,21 @@ Clamping involves clearing the lowest 3 bits of the result, ensuring the result 
   crypto_generichash_BYTES
   crypto_generichash_BYTES_MIN
   crypto_generichash_BYTES_MAX
+```
+
+#### `crypto_kx`
+
+[Key exchange](https://sodium-friends.github.io/docs/docs/keyexchange)
+
+#### Methods
+```
+  crypto_kx_keypair
+```
+
+#### Constants
+```
+  crypto_kx_PUBLICKEYBYTES
+  crypto_kx_SECRETKEYBYTES
 ```
 
 #### `crypto_kdf`
@@ -201,6 +229,15 @@ Clamping involves clearing the lowest 3 bits of the result, ensuring the result 
 
 ```
   randombytes_buf
+```
+
+### Padding
+
+[Padding](https://sodium-friends.github.io/docs/docs/padding).
+
+```
+  sodium_pad
+  sodium_unpad
 ```
 
 ### Utilities

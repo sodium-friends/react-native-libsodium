@@ -37,7 +37,7 @@ These bindings may be found [here for [iOS](./ios/RCTSodium/RCTSodium.m) and .
 
 Our JNI [bindings](./android/src/main/cpp/sodium-jni.c) are written in C++ and accessed via the interface defined in [SodiumJNI.java](./android/src/main/java/com/reactnativelibsodium/jni/SodiumJNI.java).
 
-For most methods, the process of writing these bindings is straightforward. Inputs are typically received from Java as either `jbyteArray`, `jintArray` or `jint`.
+For most methods, bindings for new methods can easily be adapted from the existing methods. Inputs are typically received from Java as either `jbyteArray` for `Buffers`/`Uint8Arrays`, or `jint` for `Numbers`. When libsodium expects a pointer, eg. `size_t *` for writing a buffer length to, the appropriate JNI type is a `jintArray` and cast to the correct pointer type, see `sodium_pad`/`sodium_unpad` for an example.
 
 #### Buffers
 
