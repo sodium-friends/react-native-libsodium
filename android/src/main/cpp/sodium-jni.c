@@ -901,32 +901,34 @@ JNIEXPORT jint JNICALL Java_com_reactnativelibsodium_jni_SodiumJNI_crypto_1scala
 
 JNIEXPORT jint JNICALL Java_com_reactnativelibsodium_jni_SodiumJNI_sodium_1pad(JNIEnv *jenv,
                                                                               jclass jcls,
-                                                                              jintArray j_padded_buflen_p,
+                                                                              jintArray j_pblen_p,
                                                                               jbyteArray j_buf,
                                                                               jint j_unpadded_buflen,
                                                                               jint j_blocksize,
                                                                               jint j_max_buflen) {
 
   unsigned char *buf = (unsigned char *) (*jenv)->GetByteArrayElements(jenv, j_buf, 0);
-  size_t *plen_p = (size_t *) (*jenv)->GetIntArrayElements(jenv, j_padded_buflen_p, 0);
-  int result = sodium_pad(plen_p, buf, j_unpadded_buflen, j_blocksize, j_max_buflen);
+  size_t *pblen_p = (size_t *) (*jenv)->GetIntArrayElements(jenv, j_pblen_p, 0);
+  int result = sodium_pad(pblen_p, buf, j_unpadded_buflen, j_blocksize, j_max_buflen);
 
   (*jenv)->ReleaseByteArrayElements(jenv, j_buf, (jbyte *) buf, 0);
+  (*jenv)->ReleaseIntArrayElements(jenv, j_pblen_p, (jint *) pblen_p, 0);
   return (jint)result;
 }
 
 JNIEXPORT jint JNICALL Java_com_reactnativelibsodium_jni_SodiumJNI_sodium_1unpad(JNIEnv *jenv,
                                                                                 jclass jcls,
-                                                                                jintArray j_unpadded_buflen_p,
+                                                                                jintArray j_upblen_p,
                                                                                 jbyteArray j_buf,
                                                                                 jint j_padded_buflen,
                                                                                 jint j_blocksize) {
 
   unsigned char *buf = (unsigned char *) (*jenv)->GetByteArrayElements(jenv, j_buf, 0);
-  size_t *blen_p = (size_t *) (*jenv)->GetIntArrayElements(jenv, j_unpadded_buflen_p, 0);
-  int result = sodium_unpad(blen_p, buf, j_padded_buflen, j_blocksize);
+  size_t *upblen_p = (size_t *) (*jenv)->GetIntArrayElements(jenv, j_upblen_p, 0);
+  int result = sodium_unpad(upblen_p, buf, j_padded_buflen, j_blocksize);
 
   (*jenv)->ReleaseByteArrayElements(jenv, j_buf, (jbyte *) buf, 0);
+  (*jenv)->ReleaseIntArrayElements(jenv, j_upblen_p, (jint *) upblen_p, 0);
   return (jint)result;
 }
 
