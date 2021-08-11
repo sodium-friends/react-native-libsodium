@@ -637,6 +637,32 @@ JNIEXPORT jint JNICALL Java_com_reactnativelibsodium_jni_SodiumJNI_crypto_1secre
 }
 
 /* *****************************************************************************
+ * Key exchange
+ * *****************************************************************************
+ */
+
+JNIEXPORT jint JNICALL Java_com_reactnativelibsodium_jni_SodiumJNI_crypto_1kx_1publickeybytes(JNIEnv *jenv, jclass jcls) {
+  return (jint)crypto_kx_PUBLICKEYBYTES;
+}
+
+JNIEXPORT jint JNICALL Java_com_reactnativelibsodium_jni_SodiumJNI_crypto_1kx_1secretkeybytes(JNIEnv *jenv, jclass jcls) {
+  return (jint)crypto_kx_SECRETKEYBYTES;
+}
+
+JNIEXPORT void JNICALL
+Java_com_reactnativelibsodium_jni_SodiumJNI_crypto_1kx_1keypair(JNIEnv *jenv,
+                                                     jclass clazz,
+                                                     jbyteArray j_pk,
+                                                     jbyteArray j_sk) {
+
+  unsigned char *pk = (unsigned char *) (*jenv)->GetByteArrayElements(jenv, j_pk, 0);
+  unsigned char *sk = (unsigned char *) (*jenv)->GetByteArrayElements(jenv, j_sk, 0);
+  crypto_kx_keypair(pk, sk);
+  (*jenv)->ReleaseByteArrayElements(jenv, j_pk, (jbyte *) pk, 0);
+  (*jenv)->ReleaseByteArrayElements(jenv, j_sk, (jbyte *) sk, 0);
+}
+
+/* *****************************************************************************
  * Key derivation
  * *****************************************************************************
  */
