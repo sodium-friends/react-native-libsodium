@@ -812,16 +812,24 @@ public class SodiumModule extends ReactContextBaseJavaModule {
   ) throws Exception {
     byte[] _state = ArgumentsEx.toByteArray(state);
     byte[] _key = ArgumentsEx.toByteArray(key);
+    int keylen;
+
+    if (_key.length == 0) {
+      _key = null;
+      keylen = 0;
+    } else {
+      keylen = _key.length;
+    }
 
     try {
       ArgumentsEx.check(_state, Sodium.crypto_generichash_statebytes(), "ERR_BAD_STATE");
-      ArgumentsEx.check(_key, Sodium.crypto_generichash_keybytes_min(),
-                              Sodium.crypto_generichash_keybytes_max(), "ERR_BAD_KEY");
+      if (_key != null) ArgumentsEx.check(_key, Sodium.crypto_generichash_keybytes_min(),
+                                Sodium.crypto_generichash_keybytes_max(), "ERR_BAD_KEY");
     } catch (Exception e) {
       throw e;
     }
 
-    Sodium.crypto_generichash_init(_state, _key, _key.length, (int) outlen);
+    Sodium.crypto_generichash_init(_state, _key, keylen, (int) outlen);
 
     return ArrayUtil.toWritableArray(_state);
   }
