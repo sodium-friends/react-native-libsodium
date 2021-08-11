@@ -292,7 +292,6 @@ function crypto_kx_keypair (...args) {
 
 function sodium_pad (...args) {
   const nativeResult = Sodium.sodium_pad(...Array.from(args, mapArgs))
-  console.log(nativeResult)
   if (typeof nativeResult === 'string') throw new Error('sodium_pad execution failed: ' + nativeResult + '.')
 
   args[0].set(new Uint8Array(nativeResult))
