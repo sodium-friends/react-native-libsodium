@@ -299,7 +299,7 @@ function sodium_pad (...args) {
 }
 
 function sodium_unpad (...args) {
-  const nativeResult = Sodium.sodium_pad(...Array.from(args, mapArgs))
+  const nativeResult = Sodium.sodium_unpad(...Array.from(args, mapArgs))
   if (typeof nativeResult === 'string') throw new Error('sodium_unpad execution failed: ' + nativeResult + '.')
 
   args[0].set(new Uint8Array(nativeResult))
