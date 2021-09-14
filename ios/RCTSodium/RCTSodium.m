@@ -142,7 +142,8 @@ RCT_EXPORT_BLOCKING_SYNCHRONOUS_METHOD(
              unpad_len: (nonnull NSNumber *) unpad_len
              blksize: (nonnull NSNumber *) blksize)
 {
-  RN_RESULT_BUFFER_SIZE_T(buf)
+  size_t len;
+  RN_ARG_BUFFER_NO_CHECK(buf)
   RN_INT_MIN_MAX(unpad_len, 0, buflen, @"Unpadded length cannot exceed buffer length")
   RN_INT_MIN_MAX(blksize, 1, buflen, @"Blocksize must be at least 1 byte and cannot exceed buffer length")
 
@@ -158,13 +159,14 @@ RCT_EXPORT_BLOCKING_SYNCHRONOUS_METHOD(
              pad_len: (nonnull NSNumber *) pad_len
              blksize: (nonnull NSNumber *) blksize)
 {
-  RN_RESULT_BUFFER_SIZE_T(buf)
+  size_t len;
+  RN_ARG_UCONST_BUFFER_NO_CHECK(buf)
   RN_INT_MIN_MAX(pad_len, 0, buflen, @"Unpadded length cannot exceed buffer length")
   RN_INT_MIN_MAX(blksize, 1, buflen, @"Blocksize must be at least 1 byte and cannot exceed buffer length")
 
-  sodium_unpad(&buflen, buf_data, pad_len_val, blksize_val);
+  sodium_unpad(&len, buf_data, pad_len_val, blksize_val);
 
-  RN_RETURN_BUFFER(buf)
+  RN_RETURN_SIZE_T(len)
 }
 
 RCT_EXPORT_BLOCKING_SYNCHRONOUS_METHOD(

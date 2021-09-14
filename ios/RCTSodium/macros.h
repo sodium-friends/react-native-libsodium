@@ -140,6 +140,10 @@
     return bytes from ObjC to React-Native
 */
 
+// Returns size_t value to javascript
+#define RN_RETURN_SIZE_T(arg) \
+  return [NSNumber numberWithInt:arg];
+
 // Writes bytes back into the NSArray
 // originally passed to the function
 #define RN_RETURN_BUFFER(arg) \
