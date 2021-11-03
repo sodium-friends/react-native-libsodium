@@ -163,18 +163,14 @@ function crypto_pwhash (...args) {
 }
 
 async function crypto_pwhash_async (...args) {
-  const _args = args.slice(0, args.length - 1)
-  const cb = args[args.length - 1]
-
   let nativeResult
   try {
-    nativeResult = await Sodium.crypto_pwhash_async(...Array.from(_args, mapArgs))
+    nativeResult = await Sodium.crypto_pwhash_async(...Array.from(args, mapArgs))
   } catch (e) {
-    return cb(e)
+    throw new Error('crypto_pwhash execution failed: ' + e.message + '.')
   }
 
   args[0].set(new Uint8Array(nativeResult))
-  cb()
 }
 
 function crypto_scalarmult (...args) {
