@@ -11,7 +11,7 @@ buildscript {
 apply plugin: 'com.android.library'
 
 android {
-    ndkVersion '19.2.5345600'
+    ndkVersion '20.1.5948944'
 
     compileSdkVersion 28
     buildToolsVersion "28.0.3"
