@@ -1,6 +1,6 @@
 # react-native-libsodium
 
-A port of Frank Denis' [libsodium](https://libsodium.gitbook.io/doc/) cryptography library for React Native. This library is intended to be a drop in replacement for pre-existing [NodeJs and JavaScript ports](https://sodium-friends.github.io/docs/docs/getstarted). 
+A port of Frank Denis' [libsodium](https://libsodium.gitbook.io/doc/) cryptography library for React Native. This library is intended to be a drop-in replacement for pre-existing [NodeJs and JavaScript ports](https://sodium-friends.github.io/docs/docs/getstarted). 
 
 Only a subset of the functions have been exposed, however, contributions are most welcome. You can read our [guide](./CONTRIBUTING.md) for clear information on how to go about exposing new methods.
 
