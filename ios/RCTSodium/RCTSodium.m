@@ -92,6 +92,10 @@ RCT_EXPORT_MODULE()
     @"crypto_pwhash_MEMLIMIT_MODERATE": @ crypto_pwhash_MEMLIMIT_MODERATE,
     @"crypto_pwhash_OPSLIMIT_SENSITIVE": @ crypto_pwhash_OPSLIMIT_SENSITIVE,
     @"crypto_pwhash_MEMLIMIT_SENSITIVE": @ crypto_pwhash_MEMLIMIT_SENSITIVE,
+    @"crypto_sign_BYTES": @ crypto_sign_BYTES,
+    @"crypto_sign_SEEDBYTES": @ crypto_sign_SEEDBYTES,
+    @"crypto_sign_PUBLICKEYBYTES": @ crypto_sign_PUBLICKEYBYTES,
+    @"crypto_sign_SECRETKEYBYTES": @ crypto_sign_SECRETKEYBYTES,
     @"crypto_scalarmult_ed25519_BYTES": @ crypto_scalarmult_ed25519_BYTES,
     @"crypto_scalarmult_ed25519_SCALARBYTES": @ crypto_scalarmult_ed25519_SCALARBYTES,
     @"crypto_scalarmult_BYTES": @ crypto_scalarmult_BYTES,
@@ -701,6 +705,64 @@ RCT_EXPORT_BLOCKING_SYNCHRONOUS_METHOD(
                                                               adlen))
 
   RN_RETURN_BUFFERS_3(state, tag_p, m, mlen)
+}
+
+RCT_EXPORT_BLOCKING_SYNCHRONOUS_METHOD(
+  crypto_sign_keypair:(NSArray *) pk
+                      sk: (NSArray *) sk)
+{
+  RN_RESULT_BUFFER(pk, crypto_sign_PUBLICKEYBYTES, ERR_BAD_KEY)
+  RN_RESULT_BUFFER(sk, crypto_sign_SECRETKEYBYTES, ERR_BAD_KEY)
+
+  RN_CHECK_FAILURE(crypto_sign_keypair(pk_data, sk_data))
+
+  RN_RETURN_BUFFERS_2(pk, sk, sklen)
+}
+
+RCT_EXPORT_BLOCKING_SYNCHRONOUS_METHOD(
+  crypto_sign_seed_keypair:(NSArray *) pk
+                           sk: (NSArray *) sk
+                           seed: (NSArray *) seed)
+{
+  RN_RESULT_BUFFER(pk, crypto_sign_PUBLICKEYBYTES, ERR_BAD_KEY)
+  RN_RESULT_BUFFER(sk, crypto_sign_SECRETKEYBYTES, ERR_BAD_KEY)
+  RN_ARG_UCONST_BUFFER(seed, crypto_sign_SEEDBYTES, ERR_BAD_SEED)
+
+  RN_CHECK_FAILURE(crypto_sign_seed_keypair(pk_data, sk_data, seed_data))
+
+  RN_RETURN_BUFFERS_2(pk, sk, sklen)
+}
+
+RCT_EXPORT_BLOCKING_SYNCHRONOUS_METHOD(
+  crypto_sign:(NSArray *) sm
+               m: (NSArray *) m
+               sk: (NSArray *) sk)
+{
+  RN_ARG_UCONST_BUFFER_NO_CHECK(m)
+  RN_ARG_UCONST_BUFFER(sk, crypto_sign_SECRETKEYBYTES, ERR_BAD_KEY)
+
+  unsigned long long smlen_check = mlen + crypto_sign_BYTES;
+  RN_RESULT_BUFFER(sm, smlen_check, ERR_BAD_CIPHERTEXT)
+
+  RN_CHECK_FAILURE(crypto_sign(sm_data, &smlen, m_data, mlen, sk_data))
+
+  RN_RETURN_BUFFER(sm)
+}
+
+RCT_EXPORT_BLOCKING_SYNCHRONOUS_METHOD(
+  crypto_sign_open:(NSArray *) m
+                   sm: (NSArray *) sm
+                   pk: (NSArray *) pk)
+{
+  RN_ARG_UCONST_BUFFER_NO_CHECK(sm)
+  RN_ARG_UCONST_BUFFER(pk, crypto_sign_PUBLICKEYBYTES, ERR_BAD_KEY)
+
+  unsigned long long mlen_check = smlen - crypto_sign_BYTES;
+  RN_RESULT_BUFFER(m, mlen_check, ERR_BAD_CIPHERTEXT)
+
+  RN_CHECK_FAILURE(crypto_sign_open(m_data, &mlen, sm_data, smlen, pk_data))
+
+  RN_RETURN_BUFFER(m)
 }
 
 RCT_EXPORT_BLOCKING_SYNCHRONOUS_METHOD(
