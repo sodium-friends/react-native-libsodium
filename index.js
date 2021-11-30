@@ -48,6 +48,9 @@ const SodiumAPI = {
   crypto_sign_seed_keypair,
   crypto_sign,
   crypto_sign_open,
+  crypto_sign_detached,
+  crypto_sign_verify_detached,
+  crypto_sign_ed25519_sk_to_pk,
   crypto_stream_xor,
   crypto_secretstream_xchacha20poly1305_keygen,
   crypto_secretstream_xchacha20poly1305_init_push,
@@ -322,6 +325,27 @@ function crypto_sign (...args) {
 function crypto_sign_open (...args) {
   const nativeResult = Sodium.crypto_sign_open(...Array.from(args, mapArgs))
   if (typeof nativeResult === 'string') throw new Error('crypto_sign_open execution failed: ' + nativeResult + '.')
+
+  args[0].set(new Uint8Array(nativeResult))
+}
+
+function crypto_sign_detached (...args) {
+  const nativeResult = Sodium.crypto_sign_detached(...Array.from(args, mapArgs))
+  if (typeof nativeResult === 'string') throw new Error('crypto_sign_detached execution failed: ' + nativeResult + '.')
+
+  args[0].set(new Uint8Array(nativeResult))
+}
+
+function crypto_sign_verify_detached (...args) {
+  const nativeResult = Sodium.crypto_sign_verify_detached(...Array.from(args, mapArgs))
+  if (typeof nativeResult === 'string') throw new Error('crypto_sign_verify_detached execution failed: ' + nativeResult + '.')
+
+  return true
+}
+
+function crypto_sign_ed25519_sk_to_pk (...args) {
+  const nativeResult = Sodium.crypto_sign_ed25519_sk_to_pk(...Array.from(args, mapArgs))
+  if (typeof nativeResult === 'string') throw new Error('crypto_sign_ed25519_sk_to_pk execution failed: ' + nativeResult + '.')
 
   args[0].set(new Uint8Array(nativeResult))
 }

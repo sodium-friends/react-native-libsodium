@@ -691,6 +691,57 @@ Java_com_reactnativelibsodium_jni_SodiumJNI_crypto_1sign_1open(
 }
 
 JNIEXPORT jint JNICALL
+Java_com_reactnativelibsodium_jni_SodiumJNI_crypto_1sign_1detached(
+  JNIEnv *jenv,
+  jclass clazz,
+  jbyteArray j_sig,
+  jintArray j_siglen_p,
+  jbyteArray j_m,
+  jint j_mlen,
+  jbyteArray j_sk
+) {
+  unsigned char *sig = (unsigned char *) (*jenv)->GetByteArrayElements(jenv, j_sig, 0);
+  unsigned char *m = as_unsigned_char_array(jenv, j_m);
+  unsigned char *sk = as_unsigned_char_array(jenv, j_sk);
+
+  int result = crypto_sign(sig, NULL, m, j_mlen, sk);
+  (*jenv)->ReleaseByteArrayElements(jenv, j_sig, (jbyte *) sig, 0);
+  return (jint)result;
+}
+
+JNIEXPORT jint JNICALL
+Java_com_reactnativelibsodium_jni_SodiumJNI_crypto_1sign_1verify_1detached(
+  JNIEnv *jenv,
+  jclass clazz,
+  jbyteArray j_sig,
+  jbyteArray j_m,
+  jint j_mlen,
+  jbyteArray j_pk
+) {
+  unsigned char *sig = as_unsigned_char_array(jenv, j_sig);
+  unsigned char *m = as_unsigned_char_array(jenv, j_m);
+  unsigned char *pk = as_unsigned_char_array(jenv, j_pk);
+
+  int result = crypto_sign_verify_detached(sig, m, j_mlen, pk);
+  return (jint)result;
+}
+
+JNIEXPORT jint JNICALL
+Java_com_reactnativelibsodium_jni_SodiumJNI_crypto_1sign_1ed25519_1sk_1to_1pk(
+  JNIEnv *jenv,
+  jclass clazz,
+  jbyteArray j_pk,
+  jbyteArray j_sk
+) {
+  unsigned char *pk = (unsigned char *) (*jenv)->GetByteArrayElements(jenv, j_pk, 0);
+  unsigned char *sk = as_unsigned_char_array(jenv, j_sk);
+
+  int result = crypto_sign_ed25519_sk_to_pk(pk, sk);
+  (*jenv)->ReleaseByteArrayElements(jenv, j_pk, (jbyte *) pk, 0);
+  return (jint)result;
+}
+
+JNIEXPORT jint JNICALL
 Java_com_reactnativelibsodium_jni_SodiumJNI_crypto_1sign_1bytes(
   JNIEnv *env,
   jclass clazz

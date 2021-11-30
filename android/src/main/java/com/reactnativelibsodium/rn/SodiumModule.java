@@ -493,6 +493,80 @@ public class SodiumModule extends ReactContextBaseJavaModule {
   }
 
   @ReactMethod(isBlockingSynchronousMethod = true)
+  public WritableArray crypto_sign_detached (
+    ReadableArray sig,
+    ReadableArray m,
+    ReadableArray sk
+  ) throws Exception {
+    byte[] _sig = ArgumentsEx.toByteArray(sig);
+    byte[] _m = ArgumentsEx.toByteArray(m);
+    byte[] _sk = ArgumentsEx.toByteArray(sk);
+
+    try {
+      ArgumentsEx.check(_sk, Sodium.crypto_sign_secretkeybytes(), "ERR_BAD_KEY");
+      ArgumentsEx.check(_sig, Sodium.crypto_sign_bytes(), "ERR_BAD_SIGNATURE_LENGTH");
+    } catch (Exception e) {
+      throw e;
+    }
+
+    int success = Sodium.crypto_sign_detached(_sig, null, _m, _m.length, _sk);
+    if (success != 0) {
+      Exception e = new Exception("crypto_sign_detached execution failed");
+      throw e;
+    }
+
+    return ArrayUtil.toWritableArray(_sig);
+  }
+
+  @ReactMethod(isBlockingSynchronousMethod = true)
+  public void crypto_sign_verify_detached (
+    ReadableArray sig,
+    ReadableArray m,
+    ReadableArray pk
+  ) throws Exception {
+    byte[] _sig = ArgumentsEx.toByteArray(sig);
+    byte[] _m = ArgumentsEx.toByteArray(m);
+    byte[] _pk = ArgumentsEx.toByteArray(pk);
+
+    try {
+      ArgumentsEx.check(_pk, Sodium.crypto_sign_publickeybytes(), "ERR_BAD_KEY");
+      ArgumentsEx.check(_sig, Sodium.crypto_sign_bytes(), "ERR_BAD_SIGNATURE_LENGTH");
+    } catch (Exception e) {
+      throw e;
+    }
+
+    int success = Sodium.crypto_sign_verify_detached(_sig, _m, _m.length, _pk);
+    if (success != 0) {
+      Exception e = new Exception("Signature could not be verified");
+      throw e;
+    }
+  }
+
+  @ReactMethod(isBlockingSynchronousMethod = true)
+  public WritableArray crypto_sign_ed25519_sk_to_pk (
+    ReadableArray pk,
+    ReadableArray sk
+  ) throws Exception {
+    byte[] _pk = ArgumentsEx.toByteArray(pk);
+    byte[] _sk = ArgumentsEx.toByteArray(sk);
+
+    try {
+      ArgumentsEx.check(_pk, Sodium.crypto_sign_publickeybytes(), "ERR_BAD_PUBLICKEY");
+      ArgumentsEx.check(_sk, Sodium.crypto_sign_secretkeybytes(), "ERR_BAD_SECRETKEY");
+    } catch (Exception e) {
+      throw e;
+    }
+
+    int success = Sodium.crypto_sign_ed25519_sk_to_pk(_pk, _sk);
+    if (success != 0) {
+      Exception e = new Exception("Public key could not be derived");
+      throw e;
+    }
+
+    return ArrayUtil.toWritableArray(_pk);
+  }
+
+  @ReactMethod(isBlockingSynchronousMethod = true)
   public WritableArray crypto_stream_xor (
     ReadableArray c,
     ReadableArray m,

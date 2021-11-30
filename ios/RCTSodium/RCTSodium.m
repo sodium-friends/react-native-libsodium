@@ -768,6 +768,46 @@ RCT_EXPORT_BLOCKING_SYNCHRONOUS_METHOD(
 }
 
 RCT_EXPORT_BLOCKING_SYNCHRONOUS_METHOD(
+  crypto_sign_detached:(NSArray *) sig
+                       m: (NSArray *) m
+                       sk: (NSArray *) sk)
+{
+  RN_RESULT_BUFFER(sig, crypto_sign_BYTES, ERR_BAD_OUTPUT)
+  RN_ARG_UCONST_BUFFER_NO_CHECK(m)
+  RN_ARG_UCONST_BUFFER(sk, crypto_sign_SECRETKEYBYTES, ERR_BAD_KEY)
+
+  RN_CHECK_FAILURE(crypto_sign_detached(sig_data, NULL, m_data, mlen, sk_data))
+
+  RN_RETURN_BUFFER(sig)
+}
+
+RCT_EXPORT_BLOCKING_SYNCHRONOUS_METHOD(
+  crypto_sign_verify_detached:(NSArray *) sig
+                             m: (NSArray *) m
+                             pk: (NSArray *) pk)
+{
+  RN_ARG_UCONST_BUFFER(sig, crypto_sign_BYTES, ERR_BAD_SIG)
+  RN_ARG_UCONST_BUFFER_NO_CHECK(m)
+  RN_ARG_UCONST_BUFFER(pk, crypto_sign_PUBLICKEYBYTES, ERR_BAD_KEY)
+
+  RN_CHECK_FAILURE(crypto_sign_verify_detached(sig_data, m_data, mlen, pk_data))
+
+  return NULL;
+}
+
+RCT_EXPORT_BLOCKING_SYNCHRONOUS_METHOD(
+  crypto_sign_ed25519_sk_to_pk:(NSArray *) pk
+                               sk: (NSArray *) sk)
+{
+  RN_RESULT_BUFFER(pk, crypto_sign_PUBLICKEYBYTES, ERR_BAD_OUTPUT)
+  RN_ARG_UCONST_BUFFER(sk, crypto_sign_SECRETKEYBYTES, ERR_BAD_KEY)
+
+  RN_CHECK_FAILURE(crypto_sign_ed25519_sk_to_pk(pk_data, sk_data))
+
+  RN_RETURN_BUFFER(pk)
+}
+
+RCT_EXPORT_BLOCKING_SYNCHRONOUS_METHOD(
   crypto_stream_xor:(NSArray *) c
                      m: (NSArray *) m
                      n: (NSArray *) n
