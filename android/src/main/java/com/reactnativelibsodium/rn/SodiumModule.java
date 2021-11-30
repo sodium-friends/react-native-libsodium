@@ -243,8 +243,8 @@ public class SodiumModule extends ReactContextBaseJavaModule {
 
     Sodium.crypto_aead_xchacha20poly1305_ietf_encrypt(
       _c, clen_p,
-      _m, m.size(),
-      _ad, ad.size(),
+      _m, _m.length,
+      _ad, _ad.length,
       _nsec, _npub, _k);
     
     return ArrayUtil.toWritableArray( Arrays.copyOfRange(_c, 0, clen_p[0] ) );
@@ -278,8 +278,8 @@ public class SodiumModule extends ReactContextBaseJavaModule {
     Sodium.crypto_aead_xchacha20poly1305_ietf_decrypt(
       _m, mlen_p,
       _nsec,
-      _c,  c.size(),
-      _ad, ad.size(),
+      _c,  _c.length,
+      _ad, _ad.length,
       _npub, _k);
     
     return ArrayUtil.toWritableArray( Arrays.copyOfRange(_m, 0, mlen_p[0] ) );
@@ -312,8 +312,8 @@ public class SodiumModule extends ReactContextBaseJavaModule {
 
     Sodium.crypto_aead_chacha20poly1305_ietf_encrypt(
       _c, clen_p,
-      _m, m.size(),
-      _ad, ad.size(),
+      _m, _m.length,
+      _ad, _ad.length,
       _nsec, _npub, _k);
 
     return ArrayUtil.toWritableArray( Arrays.copyOfRange(_c, 0, clen_p[0] ) );
@@ -347,8 +347,8 @@ public class SodiumModule extends ReactContextBaseJavaModule {
     Sodium.crypto_aead_chacha20poly1305_ietf_decrypt(
       _m, mlen_p,
       _nsec,
-      _c,  c.size(),
-      _ad, ad.size(),
+      _c,  _c.length,
+      _ad, _ad.length,
       _npub, _k);
 
     return ArrayUtil.toWritableArray( Arrays.copyOfRange(_m, 0, mlen_p[0] ) );
@@ -456,7 +456,7 @@ public class SodiumModule extends ReactContextBaseJavaModule {
       throw e;
     }
 
-    int success = Sodium.crypto_sign(_sm, smlen_p, _m, m.size(), _sk);
+    int success = Sodium.crypto_sign(_sm, smlen_p, _m, _m.length, _sk);
     if (success != 0) {
       Exception e = new Exception("crypto_sign execution failed");
       throw e;
@@ -483,7 +483,7 @@ public class SodiumModule extends ReactContextBaseJavaModule {
       throw e;
     }
 
-    int success = Sodium.crypto_sign_open(_m, mlen_p, _sm, sm.size(), _pk);
+    int success = Sodium.crypto_sign_open(_m, mlen_p, _sm, _sm.length, _pk);
     if (success != 0) {
       Exception e = new Exception("Signature could not be verified");
       throw e;
@@ -507,12 +507,12 @@ public class SodiumModule extends ReactContextBaseJavaModule {
     try {
       ArgumentsEx.check(_n, Sodium.crypto_stream_noncebytes(), "ERR_BAD_NONCE");
       ArgumentsEx.check(_k, Sodium.crypto_stream_keybytes(), "ERR_BAD_KEY");
-      ArgumentsEx.check(_c, m.size(), "ERR_BAD_PLAINTEXT_LENGTH");
+      ArgumentsEx.check(_c, _m.length, "ERR_BAD_PLAINTEXT_LENGTH");
     } catch (Exception e) {
       throw e;
     }
 
-    int success = Sodium.crypto_stream_xor(_c, _m, m.size(), _n, _k);
+    int success = Sodium.crypto_stream_xor(_c, _m, _m.length, _n, _k);
     if (success != 0) {
       Exception e = new Exception("crypto_stream_xor execution failed");
       throw e;
