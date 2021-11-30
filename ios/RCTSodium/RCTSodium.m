@@ -110,6 +110,8 @@ RCT_EXPORT_MODULE()
     @"crypto_kdf_BYTES_MIN": @ crypto_kdf_BYTES_MIN,
     @"crypto_kdf_BYTES_MAX": @ crypto_kdf_BYTES_MAX,
     @"crypto_kdf_CONTEXTBYTES": @ crypto_kdf_CONTEXTBYTES,
+    @"crypto_stream_KEYBYTES": @ crypto_stream_KEYBYTES,
+    @"crypto_stream_NONCEBYTES": @ crypto_stream_NONCEBYTES,
     @"crypto_secretstream_xchacha20poly1305_STATEBYTES":@ 52,
     @"crypto_secretstream_xchacha20poly1305_ABYTES": @ crypto_secretstream_xchacha20poly1305_ABYTES,
     @"crypto_secretstream_xchacha20poly1305_HEADERBYTES": @ crypto_secretstream_xchacha20poly1305_HEADERBYTES,
@@ -763,6 +765,23 @@ RCT_EXPORT_BLOCKING_SYNCHRONOUS_METHOD(
   RN_CHECK_FAILURE(crypto_sign_open(m_data, &mlen, sm_data, smlen, pk_data))
 
   RN_RETURN_BUFFER(m)
+}
+
+RCT_EXPORT_BLOCKING_SYNCHRONOUS_METHOD(
+  crypto_stream_xor:(NSArray *) c
+                     m: (NSArray *) m
+                     n: (NSArray *) n
+                     k: (NSArray *) k)
+{
+  RN_ARG_UCONST_BUFFER_NO_CHECK(m)
+  RN_ARG_UCONST_BUFFER(n, crypto_stream_NONCEBYTES, ERR_BAD_NONCE)
+  RN_ARG_UCONST_BUFFER(k, crypto_stream_KEYBYTES, ERR_BAD_KEY)
+
+  RN_RESULT_BUFFER(c, mlen, ERR_BAD_CIPHERTEXT)
+
+  RN_CHECK_FAILURE(crypto_stream_xor(c_data, m_data, mlen, n_data, k_data))
+
+  RN_RETURN_BUFFER(c)
 }
 
 RCT_EXPORT_BLOCKING_SYNCHRONOUS_METHOD(

@@ -296,6 +296,9 @@ public class SodiumJNI {
   public final static native int crypto_sign_ed25519_seed_keypair(byte[] jarg1, byte[] jarg2, byte[] jarg3);
   public final static native int crypto_sign_ed25519_pk_to_curve25519(byte[] jarg1, byte[] jarg2);
   public final static native int crypto_sign_ed25519_sk_to_curve25519(byte[] jarg1, byte[] jarg2);
+  public final static native int crypto_stream_keybytes();
+  public final static native int crypto_stream_noncebytes();
+  public final static native int crypto_stream_xor(byte[] jarg1, byte[] jarg2, int jarg3, byte[] jarg4, byte[] jarg5);
   public final static native int crypto_stream_chacha20_keybytes();
   public final static native int crypto_stream_chacha20_noncebytes();
   public final static native int crypto_stream_chacha20(byte[] jarg1, int jarg2, byte[] jarg3, byte[] jarg4);

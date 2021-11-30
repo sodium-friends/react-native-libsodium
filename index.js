@@ -48,6 +48,7 @@ const SodiumAPI = {
   crypto_sign_seed_keypair,
   crypto_sign,
   crypto_sign_open,
+  crypto_stream_xor,
   crypto_secretstream_xchacha20poly1305_keygen,
   crypto_secretstream_xchacha20poly1305_init_push,
   crypto_secretstream_xchacha20poly1305_push,
@@ -321,6 +322,13 @@ function crypto_sign (...args) {
 function crypto_sign_open (...args) {
   const nativeResult = Sodium.crypto_sign_open(...Array.from(args, mapArgs))
   if (typeof nativeResult === 'string') throw new Error('crypto_sign_open execution failed: ' + nativeResult + '.')
+
+  args[0].set(new Uint8Array(nativeResult))
+}
+
+function crypto_stream_xor (...args) {
+  const nativeResult = Sodium.crypto_stream_xor(...Array.from(args, mapArgs))
+  if (typeof nativeResult === 'string') throw new Error('crypto_stream_xor execution failed: ' + nativeResult + '.')
 
   args[0].set(new Uint8Array(nativeResult))
 }

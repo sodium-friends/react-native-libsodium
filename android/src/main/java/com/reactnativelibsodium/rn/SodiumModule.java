@@ -88,6 +88,8 @@ public class SodiumModule extends ReactContextBaseJavaModule {
     constants.put("crypto_scalarmult_ed25519_BYTES", Sodium.crypto_scalarmult_ed25519_bytes());
     constants.put("crypto_scalarmult_ed25519_SCALARBYTES", Sodium.crypto_scalarmult_ed25519_scalarbytes());
     constants.put("crypto_scalarmult_BYTES", Sodium.crypto_scalarmult_bytes());
+    constants.put("crypto_stream_KEYBYTES", Sodium.crypto_stream_keybytes());
+    constants.put("crypto_stream_NONCEBYTES", Sodium.crypto_stream_noncebytes());
     constants.put("crypto_scalarmult_SCALARBYTES", Sodium.crypto_scalarmult_scalarbytes());
     constants.put("crypto_aead_xchacha20poly1305_ietf_ABYTES", Sodium.crypto_aead_xchacha20poly1305_ietf_abytes());
     constants.put("crypto_aead_xchacha20poly1305_ietf_KEYBYTES", Sodium.crypto_aead_xchacha20poly1305_ietf_keybytes());
@@ -130,8 +132,6 @@ public class SodiumModule extends ReactContextBaseJavaModule {
     // constants.put("crypto_secretbox_NONCEBYTES", Sodium.crypto_secretbox_noncebytes());
     // constants.put("crypto_secretbox_MACBYTES", Sodium.crypto_secretbox_macbytes());
     // constants.put("crypto_box_SEALBYTES", Sodium.crypto_box_sealbytes());
-    // constants.put("crypto_stream_KEYBYTES", Sodium.crypto_stream_keybytes());
-    // constants.put("crypto_stream_NONCEBYTES", Sodium.crypto_stream_noncebytes());
     // constants.put("crypto_stream_chacha20_KEYBYTES", Sodium.crypto_stream_chacha20_keybytes());
     // constants.put("crypto_stream_chacha20_NONCEBYTES", Sodium.crypto_stream_chacha20_noncebytes());
     // constants.put("crypto_auth_BYTES", Sodium.crypto_auth_bytes());
@@ -490,6 +490,35 @@ public class SodiumModule extends ReactContextBaseJavaModule {
     }
 
     return ArrayUtil.toWritableArray( Arrays.copyOfRange(_m, 0, mlen_p[0] ) );
+  }
+
+  @ReactMethod(isBlockingSynchronousMethod = true)
+  public WritableArray crypto_stream_xor (
+    ReadableArray c,
+    ReadableArray m,
+    ReadableArray n,
+    ReadableArray k
+  ) throws Exception {
+    byte[] _c = ArgumentsEx.toByteArray(c);
+    byte[] _m = ArgumentsEx.toByteArray(m);
+    byte[] _n = ArgumentsEx.toByteArray(n);
+    byte[] _k = ArgumentsEx.toByteArray(k);
+
+    try {
+      ArgumentsEx.check(_n, Sodium.crypto_stream_noncebytes(), "ERR_BAD_NONCE");
+      ArgumentsEx.check(_k, Sodium.crypto_stream_keybytes(), "ERR_BAD_KEY");
+      ArgumentsEx.check(_c, m.size(), "ERR_BAD_PLAINTEXT_LENGTH");
+    } catch (Exception e) {
+      throw e;
+    }
+
+    int success = Sodium.crypto_stream_xor(_c, _m, m.size(), _n, _k);
+    if (success != 0) {
+      Exception e = new Exception("crypto_stream_xor execution failed");
+      throw e;
+    }
+
+    return ArrayUtil.toWritableArray(_c);
   }
 
   @ReactMethod(isBlockingSynchronousMethod = true)
