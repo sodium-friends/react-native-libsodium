@@ -926,6 +926,47 @@ Java_com_reactnativelibsodium_jni_SodiumJNI_crypto_1secretstream_1xchacha20poly1
 }
 
 /* *****************************************************************************
+ * Stream cipher
+ * *****************************************************************************
+ */
+
+JNIEXPORT jint JNICALL
+Java_com_reactnativelibsodium_jni_SodiumJNI_crypto_1stream_1xor(
+  JNIEnv *jenv,
+  jclass clazz,
+  jbyteArray j_c,
+  jbyteArray j_m,
+  jint j_mlen,
+  jbyteArray j_n,
+  jbyteArray j_k
+) {
+  unsigned char *c = (unsigned char *) (*jenv)->GetByteArrayElements(jenv, j_c, 0);
+  unsigned char *m = as_unsigned_char_array(jenv, j_m);
+  unsigned char *n = as_unsigned_char_array(jenv, j_n);
+  unsigned char *k = as_unsigned_char_array(jenv, j_k);
+
+  int result = crypto_stream_xor(c, m, j_mlen, n, k);
+  (*jenv)->ReleaseByteArrayElements(jenv, j_c, (jbyte *) c, 0);
+  return (jint)result;
+}
+
+JNIEXPORT jint JNICALL
+Java_com_reactnativelibsodium_jni_SodiumJNI_crypto_1stream_1keybytes(
+  JNIEnv *env,
+  jclass clazz
+) {
+  return (jint)crypto_stream_KEYBYTES;
+}
+
+JNIEXPORT jint JNICALL
+Java_com_reactnativelibsodium_jni_SodiumJNI_crypto_1stream_1noncebytes(
+  JNIEnv *env,
+  jclass clazz
+) {
+  return (jint)crypto_stream_NONCEBYTES;
+}
+
+/* *****************************************************************************
  * Key exchange
  * *****************************************************************************
  */
