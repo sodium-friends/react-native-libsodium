@@ -44,6 +44,10 @@ const SodiumAPI = {
   crypto_kdf_keygen,
   crypto_kdf_derive_from_key,
   crypto_kx_keypair,
+  crypto_sign_keypair,
+  crypto_sign_seed_keypair,
+  crypto_sign,
+  crypto_sign_open,
   crypto_secretstream_xchacha20poly1305_keygen,
   crypto_secretstream_xchacha20poly1305_init_push,
   crypto_secretstream_xchacha20poly1305_push,
@@ -287,6 +291,38 @@ function crypto_kx_keypair (...args) {
   const resultBuf = new Uint8Array(nativeResult)
   args[0].set(resultBuf.subarray(0, constants.crypto_kx_PUBLICKEYBYTES))
   args[1].set(resultBuf.subarray(constants.crypto_kx_PUBLICKEYBYTES))
+}
+
+function crypto_sign_keypair (...args) {
+  const nativeResult = Sodium.crypto_sign_keypair(...Array.from(args, mapArgs))
+  if (typeof nativeResult === 'string') throw new Error('crypto_sign_keypair execution failed: ' + nativeResult + '.')
+
+  const resultBuf = new Uint8Array(nativeResult)
+  args[0].set(resultBuf.subarray(0, constants.crypto_kx_PUBLICKEYBYTES))
+  args[1].set(resultBuf.subarray(constants.crypto_kx_PUBLICKEYBYTES))
+}
+
+function crypto_sign_seed_keypair (...args) {
+  const nativeResult = Sodium.crypto_sign_seed_keypair(...Array.from(args, mapArgs))
+  if (typeof nativeResult === 'string') throw new Error('crypto_sign_seed_keypair execution failed: ' + nativeResult + '.')
+
+  const resultBuf = new Uint8Array(nativeResult)
+  args[0].set(resultBuf.subarray(0, constants.crypto_kx_PUBLICKEYBYTES))
+  args[1].set(resultBuf.subarray(constants.crypto_kx_PUBLICKEYBYTES))
+}
+
+function crypto_sign (...args) {
+  const nativeResult = Sodium.crypto_sign(...Array.from(args, mapArgs))
+  if (typeof nativeResult === 'string') throw new Error('crypto_sign execution failed: ' + nativeResult + '.')
+
+  args[0].set(new Uint8Array(nativeResult))
+}
+
+function crypto_sign_open (...args) {
+  const nativeResult = Sodium.crypto_sign_open(...Array.from(args, mapArgs))
+  if (typeof nativeResult === 'string') throw new Error('crypto_sign_open execution failed: ' + nativeResult + '.')
+
+  args[0].set(new Uint8Array(nativeResult))
 }
 
 function sodium_pad (...args) {

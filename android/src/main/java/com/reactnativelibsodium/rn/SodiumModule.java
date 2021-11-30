@@ -71,6 +71,10 @@ public class SodiumModule extends ReactContextBaseJavaModule {
     constants.put("crypto_pwhash_MEMLIMIT_MODERATE", Sodium.crypto_pwhash_memlimit_moderate());
     constants.put("crypto_pwhash_OPSLIMIT_SENSITIVE", Sodium.crypto_pwhash_opslimit_sensitive());
     constants.put("crypto_pwhash_MEMLIMIT_SENSITIVE", Sodium.crypto_pwhash_memlimit_sensitive());
+    constants.put("crypto_sign_SEEDBYTES", Sodium.crypto_sign_seedbytes());
+    constants.put("crypto_sign_PUBLICKEYBYTES", Sodium.crypto_sign_publickeybytes());
+    constants.put("crypto_sign_SECRETKEYBYTES", Sodium.crypto_sign_secretkeybytes());
+    constants.put("crypto_sign_BYTES", Sodium.crypto_sign_bytes());
     constants.put("crypto_scalarmult_BYTES", Sodium.crypto_scalarmult_bytes());
     constants.put("crypto_scalarmult_SCALARBYTES", Sodium.crypto_scalarmult_scalarbytes());
     constants.put("crypto_kdf_BYTES_MIN", Sodium.crypto_kdf_bytes_min());
@@ -116,10 +120,6 @@ public class SodiumModule extends ReactContextBaseJavaModule {
     // constants.put("crypto_stream_xor_STATEBYTES", Sodium.crypto_stream_xor_statebytes());
     // constants.put("crypto_stream_chacha20_xor_STATEBYTES", Sodium.crypto_stream_chacha20_xor_statebytes());
     // constants.put("randombytes_SEEDBYTES", Sodium.randombytes_seedbytes());
-    // constants.put("crypto_sign_SEEDBYTES", Sodium.crypto_sign_seedbytes());
-    // constants.put("crypto_sign_PUBLICKEYBYTES", Sodium.crypto_sign_publickeybytes());
-    // constants.put("crypto_sign_SECRETKEYBYTES", Sodium.crypto_sign_secretkeybytes());
-    // constants.put("crypto_sign_BYTES", Sodium.crypto_sign_bytes());
     // constants.put("crypto_hash_BYTES", Sodium.crypto_hash_bytes());
     // constants.put("crypto_box_SEEDBYTES", Sodium.crypto_box_seedbytes());
     // constants.put("crypto_box_PUBLICKEYBYTES", Sodium.crypto_box_publickeybytes());
@@ -367,6 +367,129 @@ public class SodiumModule extends ReactContextBaseJavaModule {
     Sodium.crypto_secretstream_xchacha20poly1305_keygen(key);
 
     return ArrayUtil.toWritableArray(key);
+  }
+
+  @ReactMethod(isBlockingSynchronousMethod = true)
+  public WritableArray crypto_sign_keypair (ReadableArray pk, ReadableArray sk) throws Exception {
+    byte[] _pk = ArgumentsEx.toByteArray(pk);
+    byte[] _sk = ArgumentsEx.toByteArray(sk);
+
+    try {
+      ArgumentsEx.check(_pk, Sodium.crypto_sign_publickeybytes(), "ERR_BAD_KEY");
+      ArgumentsEx.check(_sk, Sodium.crypto_sign_secretkeybytes(), "ERR_BAD_KEY");
+    } catch (Exception e) {
+      throw e;
+    }
+
+    int success = Sodium.crypto_sign_keypair(_pk, _sk);
+    if (success != 0) {
+      Exception e = new Exception("crypto_sign_keypair execution failed");
+      throw e;
+    }
+
+    ByteArrayOutputStream outputStream = new ByteArrayOutputStream( );
+
+    try {
+      outputStream.write( _pk );
+      outputStream.write( _sk );
+    } catch (IOException e) {
+      throw e;
+    }
+
+    byte ret[] = outputStream.toByteArray( );
+
+    return ArrayUtil.toWritableArray(ret);
+  }
+
+  @ReactMethod(isBlockingSynchronousMethod = true)
+  public WritableArray crypto_sign_seed_keypair (
+    ReadableArray pk,
+    ReadableArray sk,
+    ReadableArray seed
+  ) throws Exception {
+    byte[] _pk = ArgumentsEx.toByteArray(pk);
+    byte[] _sk = ArgumentsEx.toByteArray(sk);
+    byte[] _seed = ArgumentsEx.toByteArray(seed);
+
+    try {
+      ArgumentsEx.check(_pk, Sodium.crypto_sign_publickeybytes(), "ERR_BAD_KEY");
+      ArgumentsEx.check(_sk, Sodium.crypto_sign_secretkeybytes(), "ERR_BAD_KEY");
+    } catch (Exception e) {
+      throw e;
+    }
+
+    int success = Sodium.crypto_sign_seed_keypair(_pk, _sk, _seed);
+    if (success != 0) {
+      Exception e = new Exception("crypto_sign_seed_keypair execution failed");
+      throw e;
+    }
+
+    ByteArrayOutputStream outputStream = new ByteArrayOutputStream( );
+
+    try {
+      outputStream.write( _pk );
+      outputStream.write( _sk );
+    } catch (IOException e) {
+      throw e;
+    }
+
+    byte ret[] = outputStream.toByteArray( );
+
+    return ArrayUtil.toWritableArray(ret);
+  }
+
+  @ReactMethod(isBlockingSynchronousMethod = true)
+  public WritableArray crypto_sign (
+    ReadableArray sm,
+    ReadableArray m,
+    ReadableArray sk
+  ) throws Exception {
+    byte[] _sm = ArgumentsEx.toByteArray(sm);
+    byte[] _m = ArgumentsEx.toByteArray(m);
+    byte[] _sk = ArgumentsEx.toByteArray(sk);
+    int[] smlen_p = new int[1];
+
+    try {
+      ArgumentsEx.check(_sk, Sodium.crypto_sign_secretkeybytes(), "ERR_BAD_KEY");
+      ArgumentsEx.check(_sm, _m.length + Sodium.crypto_sign_bytes(), "ERR_BAD_CIPHERTEXT_LENGTH");
+    } catch (Exception e) {
+      throw e;
+    }
+
+    int success = Sodium.crypto_sign(_sm, smlen_p, _m, m.size(), _sk);
+    if (success != 0) {
+      Exception e = new Exception("crypto_sign execution failed");
+      throw e;
+    }
+
+    return ArrayUtil.toWritableArray( Arrays.copyOfRange(_sm, 0, smlen_p[0] ) );
+  }
+
+  @ReactMethod(isBlockingSynchronousMethod = true)
+  public WritableArray crypto_sign_open (
+    ReadableArray m,
+    ReadableArray sm,
+    ReadableArray pk
+  ) throws Exception {
+    byte[] _m = ArgumentsEx.toByteArray(m);
+    byte[] _sm = ArgumentsEx.toByteArray(sm);
+    byte[] _pk = ArgumentsEx.toByteArray(pk);
+    int[] mlen_p = new int[1];
+
+    try {
+      ArgumentsEx.check(_pk, Sodium.crypto_sign_publickeybytes(), "ERR_BAD_KEY");
+      ArgumentsEx.check(_m, _sm.length - Sodium.crypto_sign_bytes(), "ERR_BAD_PLAINTEXT_LENGTH");
+    } catch (Exception e) {
+      throw e;
+    }
+
+    int success = Sodium.crypto_sign_open(_m, mlen_p, _sm, sm.size(), _pk);
+    if (success != 0) {
+      Exception e = new Exception("Signature could not be verified");
+      throw e;
+    }
+
+    return ArrayUtil.toWritableArray( Arrays.copyOfRange(_m, 0, mlen_p[0] ) );
   }
 
   @ReactMethod(isBlockingSynchronousMethod = true)
