@@ -171,8 +171,17 @@ function crypto_pwhash (...args) {
 }
 
 async function crypto_pwhash_async (...args) {
-  const nativeResult = await Sodium.crypto_pwhash_async(...Array.from(args, mapArgs))
+  const cb = args[args.length - 1]
+
+  let nativeResult
+  try {
+    nativeResult = await Sodium.crypto_pwhash_async(...Array.from(args.slice(0, args.length - 1), mapArgs))
+  } catch (e) {
+    return cb(e)
+  }
+
   args[0].set(new Uint8Array(nativeResult))
+  return cb()
 }
 
 function crypto_scalarmult (...args) {
